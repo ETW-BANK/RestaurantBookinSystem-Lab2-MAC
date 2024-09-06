@@ -47,7 +47,7 @@ namespace RetaurantBooking.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        public async Task<IActionResult> DeleteCustomer(int id)
         {
             var result = await _customerService.RemoveAsync(id);
             return result.Success ? Ok(result.Message) : BadRequest(result.Message);

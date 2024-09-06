@@ -114,7 +114,7 @@ namespace RestaurantBookingApp.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var response = await _httpClient.DeleteAsync($"Customer/DeleteUser/{id}");
+            var response = await _httpClient.DeleteAsync($"Customer/DeleteCustomer/{id}");
             if (response.IsSuccessStatusCode)
             {
                 TempData["success"] = "Customer Deleted successfully";

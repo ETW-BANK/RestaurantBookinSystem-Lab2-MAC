@@ -55,18 +55,18 @@ namespace RestaurantBookingApp.Controllers
 
         public async Task<IActionResult> Edit(int id)
         {
-            var response = await _httpClient.GetAsync($"Customer/GetCustomer/{id}");
+            var response = await _httpClient.GetAsync($"Table/GetTable/{id}");
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-                var customerResponse = JsonConvert.DeserializeObject<ServiceResponse<CustomerVM>>(data);
+                var tableResponse = JsonConvert.DeserializeObject<ServiceResponse<TablesVM>>(data);
 
-                ViewBag.PageTitle = "Edit Customer";
+                ViewBag.PageTitle = "Edit Table";
                 ViewBag.ButtonLabel = "Update";
 
-                if (customerResponse?.Data != null)
+                if (tableResponse?.Data != null)
                 {
-                    return View("Create", customerResponse.Data);
+                    return View("Create", tableResponse.Data);
                 }
             }
 
@@ -76,26 +76,26 @@ namespace RestaurantBookingApp.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Edit(CustomerVM customer)
+        public async Task<IActionResult> Edit(TablesVM table)
         {
-            var content = new StringContent(JsonConvert.SerializeObject(customer), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PutAsync("Customer/Update", content);
+            var content = new StringContent(JsonConvert.SerializeObject(table), Encoding.UTF8, "application/json");
+            var response = await _httpClient.PutAsync("Table/Update", content);
 
             if (response.IsSuccessStatusCode)
             {
 
-                TempData["success"] = "Customer Info Updated successfully";
+                TempData["success"] = "Table Info Updated successfully";
             }
-            return response.IsSuccessStatusCode ? RedirectToAction("Index") : View(customer);
+            return response.IsSuccessStatusCode ? RedirectToAction("Index") : View(table);
         }
 
         public async Task<IActionResult> Delete(int id)
         {
-            var response = await _httpClient.GetAsync($"Customer/GetCustomer/{id}");
+            var response = await _httpClient.GetAsync($"Table/GetTable/{id}");
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-                var serviceResponse = JsonConvert.DeserializeObject<ServiceResponse<CustomerVM>>(data);
+                var serviceResponse = JsonConvert.DeserializeObject<ServiceResponse<TablesVM>>(data);
                 if (serviceResponse.Success)
                 {
 
@@ -110,10 +110,10 @@ namespace RestaurantBookingApp.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var response = await _httpClient.DeleteAsync($"Customer/DeleteUser/{id}");
+            var response = await _httpClient.DeleteAsync($"Table/DeleteTable/{id}");
             if (response.IsSuccessStatusCode)
             {
-                TempData["success"] = "Customer Deleted successfully";
+                TempData["success"] = "Table Deleted successfully";
                 return RedirectToAction("Index");
             }
 

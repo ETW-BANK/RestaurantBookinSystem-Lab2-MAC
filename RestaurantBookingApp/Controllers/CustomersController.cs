@@ -35,7 +35,7 @@ namespace RestaurantBookingApp.Controllers
                 return Json(serviceResponse.Success ? new { data = serviceResponse.Data } : new { data = new List<CustomerVM>(), error = serviceResponse.Message });
             }
 
-            return Json(new { data = new List<CustomerVM>(), error = "Unable to retrieve customers from the server." });
+            return Json(new { data = new List<CustomerVM>(), error =  "Unable to retrieve customers from the server." });
         }
 
         [HttpGet]
@@ -43,6 +43,7 @@ namespace RestaurantBookingApp.Controllers
         {
             ViewBag.PageTitle = "Create Customer";
             ViewBag.ButtonLabel = "Create";
+          
             return View(new CustomerVM()); 
         }
 
@@ -52,6 +53,7 @@ namespace RestaurantBookingApp.Controllers
         {
             var content = new StringContent(JsonConvert.SerializeObject(customer), Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync("Customer/CreateNewCustomer", content);
+            TempData["success"] = "Customer Created successfully";
             return response.IsSuccessStatusCode ? RedirectToAction(nameof(Index)) : View(customer);
         }
 
@@ -86,7 +88,7 @@ namespace RestaurantBookingApp.Controllers
             if(response.IsSuccessStatusCode)
             {
 
-
+                TempData["success"] = "Customer Info Updated successfully";
             }
             return response.IsSuccessStatusCode ? RedirectToAction("Index") : View(customer);
         }
@@ -100,6 +102,7 @@ namespace RestaurantBookingApp.Controllers
                 var serviceResponse = JsonConvert.DeserializeObject<ServiceResponse<CustomerVM>>(data);
                 if (serviceResponse.Success)
                 {
+                  
                     return View(serviceResponse.Data); 
                 }
             }
@@ -114,6 +117,7 @@ namespace RestaurantBookingApp.Controllers
             var response = await _httpClient.DeleteAsync($"Customer/DeleteUser/{id}");
             if (response.IsSuccessStatusCode)
             {
+                TempData["success"] = "Customer Deleted successfully";
                 return RedirectToAction("Index"); 
             }
 

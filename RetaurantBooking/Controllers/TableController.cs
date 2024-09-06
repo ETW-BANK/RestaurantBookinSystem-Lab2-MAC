@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Restaurant.Data.Access.Repository.Services;
 using Restaurant.Data.Access.Repository.Services.IServices;
 using Restaurant.Models.DTOs;
 
 namespace RetaurantBooking.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[Action]")]
     [ApiController]
     public class TableController : ControllerBase
     {
@@ -15,84 +16,39 @@ namespace RetaurantBooking.Controllers
             _tableService = tableService;
         }
 
-
-        [HttpGet]
-        [Route("GetSingleTable")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetTable(int id)
         {
             var result = await _tableService.GetSingleAsync(id);
-
-            if (!result.Success)
-            {
-                return NotFound(result.Message);
-            }
-            return Ok(result);
+            return result.Success ? Ok(result) : NotFound(result.Message);
         }
 
         [HttpGet]
-        [Route("GetAllTables")]
         public async Task<IActionResult> GetAllTables()
         {
             var result = await _tableService.GetAllAsync();
-
-            if (!result.Success)
-            {
-                return NotFound(result.Message);
-            }
-            return Ok(result);
+            return result.Success ? Ok(result) : BadRequest(result.Message);
         }
 
-
         [HttpPost]
-        [Route("CreateTable")]
-
-        public async Task<IActionResult> CreateTable([FromQuery] TablesDto table)
+        public async Task<IActionResult> CreateNewTable([FromBody] TablesDto table)
         {
-            var result=await _tableService.AddItemAsync(table);
-
-            if(!result.Success)
-            {
-                return BadRequest(result.Message);
-            }
-            
-            return Ok(result.Message);
+            var response = await _tableService.AddItemAsync(table);
+            return response.Success ? CreatedAtAction(nameof(GetTable), new { id = response.Message }, response.Data) : BadRequest(response.Message);
         }
 
         [HttpPut]
-        [Route("UpdateTable")]
-
-        public async Task<IActionResult> Update([FromQuery] TablesDto table)
-
+        public async Task<IActionResult> Update([FromBody] TablesDto table)
         {
-
             var result = await _tableService.UpdateTableAsync(table);
-
-            if (!result.Success)
-            {
-                return BadRequest(result.Message);
-            }
-
-            return Ok(result.Message);
-
+            return result.Success ? Ok(result.Message) : NotFound(result.Message);
         }
 
-        [HttpDelete]
-        [Route("DeleteTable")]
-
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTable(int id)
-
         {
-
-           var result= await _tableService.RemoveAsync(id); 
-
-            if (!result.Success)
-            {
-                return BadRequest(result.Message);
-            }
-
-
-            return Ok(result.Message);
-
+            var result = await _tableService.RemoveAsync(id);
+            return result.Success ? Ok(result.Message) : BadRequest(result.Message);
         }
     }
 

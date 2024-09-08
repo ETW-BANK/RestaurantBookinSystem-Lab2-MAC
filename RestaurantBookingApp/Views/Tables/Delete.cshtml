@@ -1,0 +1,38 @@
+﻿@model TablesVM
+
+<div class="card shadow border-0 mt-4">
+    <div class="card-header bg-danger bg-gradient mt-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Delete Table</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4 text-center">
+        <h4>Are you sure you want to delete this Table?</h4>
+        <p>
+            <strong>Table Number:: </strong> @Model.TableNumber  <br />
+           
+            
+        </p>
+
+        <form asp-action="DeleteConfirmed" method="post">
+            <input type="hidden" asp-for="Id" />
+            <div class="row pt-2">
+                <div class="col-6 col-md-3">
+                    <button type="submit" class="btn btn-danger form-control">Delete</button>
+                </div>
+
+                <div class="col-6 col-md-3">
+                    <a asp-controller="Tables" asp-action="Index" class="btn btn-outline-secondary border form-control">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

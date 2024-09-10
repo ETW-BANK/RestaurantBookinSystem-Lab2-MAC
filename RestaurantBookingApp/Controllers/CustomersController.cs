@@ -18,7 +18,7 @@ namespace RestaurantBookingApp.Controllers
         public CustomersController(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            _httpClient.BaseAddress = new Uri("https://localhost:7232/api/");
+            _httpClient.BaseAddress = new Uri("https://localhost:7232/api/Customer/");
         }
 
         [HttpGet]
@@ -27,7 +27,7 @@ namespace RestaurantBookingApp.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllCustomers()
         {
-            var response = await _httpClient.GetAsync("Customer/GetAllCustomers");
+            var response = await _httpClient.GetAsync("GetAllCustomers");
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
@@ -52,14 +52,14 @@ namespace RestaurantBookingApp.Controllers
         public async Task<IActionResult> Create(CustomerVM customer)
         {
             var content = new StringContent(JsonConvert.SerializeObject(customer), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync("Customer/CreateNewCustomer", content);
+            var response = await _httpClient.PostAsync("CreateNewCustomer", content);
             TempData["success"] = "Customer Created successfully";
             return response.IsSuccessStatusCode ? RedirectToAction(nameof(Index)) : View(customer);
         }
 
         public async Task<IActionResult> Edit(int id)
         {
-            var response = await _httpClient.GetAsync($"Customer/GetCustomer/{id}");
+            var response = await _httpClient.GetAsync($"GetCustomer/{id}");
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
@@ -83,7 +83,7 @@ namespace RestaurantBookingApp.Controllers
         public async Task<IActionResult> Edit(CustomerVM customer)
         {
             var content = new StringContent(JsonConvert.SerializeObject(customer), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PutAsync("Customer/Update", content);
+            var response = await _httpClient.PutAsync("Update", content);
 
             if(response.IsSuccessStatusCode)
             {
@@ -95,7 +95,7 @@ namespace RestaurantBookingApp.Controllers
 
         public async Task<IActionResult> Delete(int id)
         {
-            var response = await _httpClient.GetAsync($"Customer/GetCustomer/{id}");
+            var response = await _httpClient.GetAsync($"GetCustomer/{id}");
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
@@ -114,7 +114,7 @@ namespace RestaurantBookingApp.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var response = await _httpClient.DeleteAsync($"Customer/DeleteCustomer/{id}");
+            var response = await _httpClient.DeleteAsync($"DeleteCustomer/{id}");
             if (response.IsSuccessStatusCode)
             {
                 TempData["success"] = "Customer Deleted successfully";

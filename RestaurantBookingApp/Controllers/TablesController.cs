@@ -14,7 +14,7 @@ namespace RestaurantBookingApp.Controllers
         public TablesController(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            _httpClient.BaseAddress = new Uri("https://localhost:7232/api/");
+            _httpClient.BaseAddress = new Uri("https://localhost:7232/api/Table/");
         }
 
         [HttpGet]
@@ -23,7 +23,7 @@ namespace RestaurantBookingApp.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllTables()
         {
-            var response = await _httpClient.GetAsync("Table/GetAllTables");
+            var response = await _httpClient.GetAsync("GetAllTables");
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
@@ -48,14 +48,14 @@ namespace RestaurantBookingApp.Controllers
         public async Task<IActionResult> Create(TablesVM table)
         {
             var content = new StringContent(JsonConvert.SerializeObject(table), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync("Table/CreateNewTable", content);
+            var response = await _httpClient.PostAsync("CreateNewTable", content);
             TempData["success"] = "Table Created successfully";
             return response.IsSuccessStatusCode ? RedirectToAction(nameof(Index)) : View(table);
         }
 
         public async Task<IActionResult> Edit(int id)
         {
-            var response = await _httpClient.GetAsync($"Table/GetTable/{id}");
+            var response = await _httpClient.GetAsync($"GetTable/{id}");
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
@@ -79,7 +79,7 @@ namespace RestaurantBookingApp.Controllers
         public async Task<IActionResult> Edit(TablesVM table)
         {
             var content = new StringContent(JsonConvert.SerializeObject(table), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PutAsync("Table/Update", content);
+            var response = await _httpClient.PutAsync("Update", content);
 
             if (response.IsSuccessStatusCode)
             {
@@ -91,7 +91,7 @@ namespace RestaurantBookingApp.Controllers
 
         public async Task<IActionResult> Delete(int id)
         {
-            var response = await _httpClient.GetAsync($"Table/GetTable/{id}");
+            var response = await _httpClient.GetAsync($"GetTable/{id}");
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
@@ -110,7 +110,7 @@ namespace RestaurantBookingApp.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var response = await _httpClient.DeleteAsync($"Table/DeleteTable/{id}");
+            var response = await _httpClient.DeleteAsync($"DeleteTable/{id}");
             if (response.IsSuccessStatusCode)
             {
                 TempData["success"] = "Table Deleted successfully";

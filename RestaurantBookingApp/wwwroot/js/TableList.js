@@ -9,14 +9,12 @@ function loadDataTable() {
             "type": "GET",
             "datatype": "json",
             "dataSrc": "data",
-            "error": function (xhr, error, thrown) {
-                console.log(xhr.responseText);  // Log any errors for debugging
-            }
+          
         },
         "columns": [
             { "data": 'tableNumber', "width": "20%" },
             { "data": 'numberOfSeats', "width": "20%" },
-            { "data": 'isAvialable', "width": "20%" },  // Match the typo in API response
+            { "data": 'isAvialable', "width": "20%" },  
             {
                 "data": 'id',
                 "render": function (data) {

@@ -30,7 +30,7 @@ namespace RestaurantBookingApp.Controllers
                 return Json(serviceResponse.Success ? new { data = serviceResponse.Data } : new { data = new List<CustomerVM>(), error = serviceResponse.Message });
             }
 
-            return Json(new { data = new List<MenuVM>(), error = "Unable to retrieve Menue from the server." });
+            return Json(new { data = new List<MenuVM>(), error = "Unable to retrieve Menu from the server." });
         }
 
         [HttpGet]

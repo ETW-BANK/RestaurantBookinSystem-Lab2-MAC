@@ -1,13 +1,14 @@
 ﻿using Azure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Restaurant.Data.Access.Repository.Services;
 using Restaurant.Data.Access.Repository.Services.IServices;
 using Restaurant.Models.DTOs;
 using Restaurant.Utility;
 
 namespace RetaurantBooking.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[Action]")]
     [ApiController]
     public class FoodMenuController : ControllerBase
     {
@@ -18,87 +19,39 @@ namespace RetaurantBooking.Controllers
         }
 
 
-        [HttpGet]
-        [Route("GetSingleMenu")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetMenu(int id)
         {
             var result = await _foodService.GetSingleAsync(id);
-            if (!result.Success)
-            {
-                return NotFound(result.Message);
-            }
-            return Ok(result);
+            return result.Success ? Ok(result) : NotFound(result.Message);
         }
 
         [HttpGet]
-        [Route("GetAllMenues")]
-        public async Task<IActionResult> GetAllMenu()
+        public async Task<IActionResult> GetAllMenues()
         {
             var result = await _foodService.GetAllAsync();
-
-            if (!result.Success )
-            {
-                return BadRequest(result.Message);
-            }
-            return Ok(result);
+            return result.Success ? Ok(result) : BadRequest(result.Message);
         }
 
-
         [HttpPost]
-        [Route("CreateMenue")]
-
-        public async Task<IActionResult> CreateNewMenu([FromQuery] FoodMenuDto foodmenu)
+        public async Task<IActionResult> CreateNewMenu([FromBody] FoodMenuDto menu)
         {
-      
-            var response = await _foodService.AddItemAsync(foodmenu);
-
-
-            if (!response.Success)
-            {
-                return BadRequest(response.Message);
-            }
-            return Ok(response.Message);
-
-          
-            
-            
-            
-            
+            var response = await _foodService.AddItemAsync(menu);
+            return response.Success ? CreatedAtAction(nameof(GetMenu), new { id = response.Message }, response.Data) : BadRequest(response.Message);
         }
 
         [HttpPut]
-        [Route("UpdateMenu")]
-        public async Task<IActionResult> Update([FromQuery] FoodMenuDto foodmenu)
+        public async Task<IActionResult> Update([FromBody] FoodMenuDto meue)
         {
-
-            var result = await _foodService.UpdateMenueAsync(foodmenu);
-
-            if (!result.Success)
-            {
-
-                return NotFound(result.Message);
-            }
-           
-
-            return Ok(result.Message);
+            var result = await _foodService.UpdateMenueAsync(meue);
+            return result.Success ? Ok(result.Message) : NotFound(result.Message);
         }
 
-        [HttpDelete]
-        [Route("DeleteMenu")]
-
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMenu(int id)
-
         {
-
-           var result= await _foodService.RemoveAsync(id);
-
-            if (!result.Success)
-            {
-                return BadRequest(result.Message);
-            }
-
-            return Ok(result.Message);
-
+            var result = await _foodService.RemoveAsync(id);
+            return result.Success ? Ok(result.Message) : BadRequest(result.Message);
         }
     }
 

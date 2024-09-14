@@ -33,6 +33,7 @@ namespace RestaurantBookingApp.Controllers
 
             return Json(new { data = new List<BookingVM>(), error = "Unable to retrieve bookings from the server." });
         }
+
         [HttpGet]
         public IActionResult Create()
         {
@@ -42,7 +43,7 @@ namespace RestaurantBookingApp.Controllers
             return View(new BookingVM());
         }
 
-
+       
         [HttpPost]
         public async Task<IActionResult> Create(BookingVM booking)
         {
@@ -51,9 +52,6 @@ namespace RestaurantBookingApp.Controllers
             TempData["success"] = "Booking Created successfully";
             return response.IsSuccessStatusCode ? RedirectToAction(nameof(Index)) : View(booking);
         }
-
-
-        [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
             var response = await _httpClient.GetAsync($"GetBooking/{id}");
@@ -74,22 +72,23 @@ namespace RestaurantBookingApp.Controllers
             return View("Error");
         }
 
+
+
         [HttpPost]
         public async Task<IActionResult> Edit(BookingVM booking)
         {
-            if (ModelState.IsValid)
-            {
-                var content = new StringContent(JsonConvert.SerializeObject(booking), Encoding.UTF8, "application/json");
-                var response = await _httpClient.PutAsync($"Update/{booking.Id}", content);
-                if (response.IsSuccessStatusCode)
-                {
-                    TempData["success"] = "Booking updated successfully";
-                    return RedirectToAction(nameof(Index));
-                }
-            }
-            return View("Create", booking);
-        }
+            var content = new StringContent(JsonConvert.SerializeObject(booking), Encoding.UTF8, "application/json");
+            var response = await _httpClient.PutAsync("Update", content);
 
+            if (response.IsSuccessStatusCode)
+            {
+
+                TempData["success"] = "Booking Info Updated successfully";
+                
+
+            }
+            return response.IsSuccessStatusCode ? RedirectToAction("Index") : View(booking);
+        }
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
@@ -107,14 +106,14 @@ namespace RestaurantBookingApp.Controllers
             return View("Error");
         }
 
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var response = await _httpClient.DeleteAsync($"DeleteBooking/{id}");
             if (response.IsSuccessStatusCode)
             {
-                TempData["success"] = "Booking deleted successfully";
-                return RedirectToAction(nameof(Index));
+                TempData["success"] = "Booking Deleted successfully";
+                return RedirectToAction("Index");
             }
 
             return View("Error");

@@ -36,11 +36,12 @@ namespace RetaurantBooking.Controllers
             return result.Success ? Ok(result) : BadRequest(result.Message);
         }
 
+      
         [HttpPost]
         public async Task<IActionResult> CreateNewBooking([FromBody] BookingDto booking)
         {
             var response = await _bookingService.AddItemAsync(booking);
-            return response.Success ? CreatedAtAction(nameof(GetBooking), new {  response.Message }, response.Data) : BadRequest(response.Message);
+            return response.Success ? CreatedAtAction(nameof(GetBooking), new { id = response.Message }, response.Data) : BadRequest(response.Message);
         }
 
         [HttpPut]
@@ -49,7 +50,6 @@ namespace RetaurantBooking.Controllers
             var result = await _bookingService.UpdateBookingAsync(booking);
             return result.Success ? Ok(result.Message) : NotFound(result.Message);
         }
-
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBooking(int id)
         {

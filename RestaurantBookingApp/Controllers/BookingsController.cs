@@ -35,23 +35,26 @@ namespace RestaurantBookingApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public IActionResult Create(int? id)
         {
-            ViewBag.PageTitle = "Create Booking";
-            ViewBag.ButtonLabel = "Create";
+            if (id.HasValue)
+            {
+                ViewBag.PageTitle = "Edit Booking";
+                ViewBag.ButtonLabel = "Update";
 
-            return View(new BookingVM());
+                // Fetch the booking details for editing
+                return RedirectToAction("Edit", new { id = id.Value });
+            }
+            else
+            {
+                ViewBag.PageTitle = "Create Booking";
+                ViewBag.ButtonLabel = "Create";
+
+                return View(new BookingVM());
+            }
         }
 
-       
-        [HttpPost]
-        public async Task<IActionResult> Create(BookingVM booking)
-        {
-            var content = new StringContent(JsonConvert.SerializeObject(booking), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync("CreateNewBooking", content);
-            TempData["success"] = "Booking Created successfully";
-            return response.IsSuccessStatusCode ? RedirectToAction(nameof(Index)) : View(booking);
-        }
+        [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
             var response = await _httpClient.GetAsync($"GetBooking/{id}");
@@ -60,11 +63,9 @@ namespace RestaurantBookingApp.Controllers
                 var data = await response.Content.ReadAsStringAsync();
                 var bookingResponse = JsonConvert.DeserializeObject<ServiceResponse<BookingVM>>(data);
 
-                ViewBag.PageTitle = "Edit Booking";
-                ViewBag.ButtonLabel = "Update";
-
                 if (bookingResponse?.Data != null)
                 {
+                    // Pass the fetched booking data to the view
                     return View("Create", bookingResponse.Data);
                 }
             }
@@ -72,23 +73,35 @@ namespace RestaurantBookingApp.Controllers
             return View("Error");
         }
 
-
-
         [HttpPost]
-        public async Task<IActionResult> Edit(BookingVM booking)
+        public async Task<IActionResult> CreateOrEdit(BookingVM booking)
         {
-            var content = new StringContent(JsonConvert.SerializeObject(booking), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PutAsync("Update", content);
-
-            if (response.IsSuccessStatusCode)
+            if (booking.Id == 0)
             {
-
-                TempData["success"] = "Booking Info Updated successfully";
-                
-
+                // Handle Create
+                var content = new StringContent(JsonConvert.SerializeObject(booking), Encoding.UTF8, "application/json");
+                var response = await _httpClient.PostAsync("CreateNewBooking", content);
+                if (response.IsSuccessStatusCode)
+                {
+                    TempData["success"] = "Booking Created successfully";
+                    return RedirectToAction(nameof(Index));
+                }
             }
-            return response.IsSuccessStatusCode ? RedirectToAction("Index") : View(booking);
+            else
+            {
+                // Handle Edit
+                var content = new StringContent(JsonConvert.SerializeObject(booking), Encoding.UTF8, "application/json");
+                var response = await _httpClient.PutAsync("Update", content);
+                if (response.IsSuccessStatusCode)
+                {
+                    TempData["success"] = "Booking Info Updated successfully";
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+
+            return View("Create", booking);
         }
+
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {

@@ -1,3 +1,5 @@
+using Restaurant.Data.Access.Repository.Services.IServices;
+
 namespace RestaurantBookingApp
 {
     public class Program
@@ -8,7 +10,7 @@ namespace RestaurantBookingApp
             builder.Services.AddHttpClient();
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-
+           
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

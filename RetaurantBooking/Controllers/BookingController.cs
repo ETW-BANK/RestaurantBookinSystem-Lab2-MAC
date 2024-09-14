@@ -1,6 +1,7 @@
 ﻿using Azure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Restaurant.Data.Access.Repository.Services;
 using Restaurant.Data.Access.Repository.Services.IServices;
 using Restaurant.Models;
 using Restaurant.Models.DTOs;
@@ -8,8 +9,9 @@ using Restaurant.Utility;
 
 namespace RetaurantBooking.Controllers
 {
-    [Route("api/[controller]")]
+   
     [ApiController]
+    [Route("api/[controller]/[Action]")]
     public class BookingController : ControllerBase
     {
         private readonly IBookingService _bookingService;
@@ -19,87 +21,40 @@ namespace RetaurantBooking.Controllers
         }
 
 
-        [HttpGet]
-        [Route("GetSingleBooking")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetBooking(int id)
         {
             var result = await _bookingService.GetSingleAsync(id);
-            if (!result.Success)
-            {
-                return NotFound(result.Message);
-            }
-            return Ok(result);
+            return result.Success ? Ok(result) : NotFound(result.Message);
         }
 
         [HttpGet]
-        [Route("GetAllBookings")]
         public async Task<IActionResult> GetAllBookings()
         {
             var result = await _bookingService.GetAllAsync();
 
-            if (!result.Success )
-            {
-                return BadRequest(result.Message);
-            }
-            return Ok(result.Data);
+            return result.Success ? Ok(result) : BadRequest(result.Message);
         }
 
-
         [HttpPost]
-        [Route("CreateBooking")]
-
-        public async Task<IActionResult> CreateNweBooking([FromQuery] BookingCreateDto booking)
+        public async Task<IActionResult> CreateNewBooking([FromBody] BookingDto booking)
         {
-      
             var response = await _bookingService.AddItemAsync(booking);
-
-
-            if (!response.Success)
-            {
-                return BadRequest(response.Message);
-            }
-            return Ok(response.Message);
-
-          
-            
-            
-            
-            
+            return response.Success ? CreatedAtAction(nameof(GetBooking), new {  response.Message }, response.Data) : BadRequest(response.Message);
         }
 
         [HttpPut]
-        [Route("UpdateBooking")]
-        public async Task<IActionResult> Update([FromQuery] BookingCreateDto booking)
+        public async Task<IActionResult> Update([FromBody] BookingDto booking)
         {
-
             var result = await _bookingService.UpdateBookingAsync(booking);
-
-            if (!result.Success)
-            {
-
-                return NotFound(result.Message);
-            }
-           
-
-            return Ok(result.Message);
+            return result.Success ? Ok(result.Message) : NotFound(result.Message);
         }
 
-        [HttpDelete]
-        [Route("DeleteBooking")]
-
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBooking(int id)
-
         {
-
-           var result= await _bookingService.RemoveAsync(id);
-
-            if (!result.Success)
-            {
-                return BadRequest(result.Message);
-            }
-
-            return Ok(result.Message);
-
+            var result = await _bookingService.RemoveAsync(id);
+            return result.Success ? Ok(result.Message) : BadRequest(result.Message);
         }
     }
 

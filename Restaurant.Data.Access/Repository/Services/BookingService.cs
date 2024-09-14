@@ -4,76 +4,74 @@ using Restaurant.Models.DTOs;
 using Restaurant.Models;
 using Restaurant.Utility;
 using System.Linq.Expressions;
+using Restaurant.Data.Access.Repository;
 
 public class BookingService : IBookingService
 {
     private readonly IBookngRepository _bookingRepo;
     private readonly ITableRepository _tableRepo;
     private readonly ICustomerRepository _customerRepo;
-    private readonly IFoodMenuRepository _fooRepo;
+ 
 
-    public BookingService(IBookngRepository bookingRepo, ITableRepository ?tableRepo, ICustomerRepository? customerRepo,IFoodMenuRepository fooRepo)
+    public BookingService(IBookngRepository bookingRepo, ITableRepository tableRepo, ICustomerRepository customerRepo)
     {
         _bookingRepo = bookingRepo;
         _tableRepo = tableRepo;
         _customerRepo = customerRepo;
-        _fooRepo = fooRepo; 
+   
     }
 
-
-    public async Task<ServiceResponse<string>> AddItemAsync(BookingCreateDto item)
+    public async Task<ServiceResponse<string>> AddItemAsync(BookingDto item)
     {
         var response = new ServiceResponse<string>();
 
         try
         {
+            
+            var customer = await _customerRepo.GetSingleAsync(item.Id);
+            if (customer == null)
+            {
+                customer = new Customer
+                {
+                    FirstName = item.Customer.FirstName,
+                    LasttName = item.Customer.LasttName,
+                    Email = item.Customer.LasttName,
+                    Phone = item.Customer.LasttName,
+                };
+                await _customerRepo.AddItemAsync(customer);
+                await _customerRepo.SaveAsync();
+            }
 
-            var table = await _tableRepo.GetSingleAsync(item.TablesId);
-            //var customer=await _customerRepo.GetSingleAsync(item.CustomerId);   
-            if (table == null)
+            var availableTables = await _tableRepo.GetAllAsync();
+            var suitableTable = availableTables
+                .Where(t => t.NumberOfSeats >= item.NumberOfGuests && t.isAvialable)
+                .OrderBy(t => t.NumberOfSeats) 
+                .FirstOrDefault();
+
+            if (suitableTable == null)
             {
                 response.Success = false;
-                response.Message = Messages.BookingTableNotFound;
-                return response;
-            }
-            else if (table.isAvialable == false)
-            {
-                response.Success = false;
-                response.Message = Messages.BookingTableNotAvailable;
+                response.Message = "No suitable table available for the number of guests.";
                 return response;
             }
 
+         
             var newBooking = new Booking
             {
-                Id = item.Id,
-                FoodMenuId = item.FoodMenuId,
-                CustomerId = item.CustomerId,
-
-                TablesId = item.TablesId,
                 BookingDate = item.BookingDate,
                 NumberOfGuests = item.NumberOfGuests,
-                Tables = table,
-          
-
-                
-               
-                
+                Tables = suitableTable,
+                Customer = customer
             };
 
-            if (newBooking.NumberOfGuests > newBooking.Tables.NumberOfSeats)
-            {
-                response.Success = false;
-                response.Message = Messages.BookingTableLimit;
-                return response;
-            }
-            
-         
            
-           
-
             await _bookingRepo.AddItemAsync(newBooking);
-            newBooking.Tables.isAvialable = false;
             await _bookingRepo.SaveAsync();
+
+            // Mark table as not available
+            suitableTable.isAvialable = false;
+            await _tableRepo.UpdateTableAsync(suitableTable);
+            await _tableRepo.SaveAsync();
 
             response.Data = newBooking.Id.ToString();
             response.Success = true;
@@ -91,70 +89,57 @@ public class BookingService : IBookingService
 
 
 
-    public async Task<ServiceResponse<IEnumerable<BookingDto>>> GetAllAsync(params Expression<Func<Booking, object>>[] includes)
+    public async Task<ServiceResponse<IEnumerable<BookingDto>>> GetAllAsync()
     {
-        var response = new ServiceResponse<IEnumerable<BookingDto>>();
+        var bookings = await _bookingRepo.GetAllAsync(
+            b => b.Customer,
+            b => b.Tables
+            //b => b.FoodMenu
+        );
 
-        try
+        var bookingDtos = bookings.Select(b => new BookingDto
         {
-            var bookingList = await _bookingRepo.GetAllAsync(b => b.Customer,
-        b => b.Tables,
-        b => b.FoodMenu);
-
-
-            if (bookingList != null && bookingList.Any())
+            Id = b.Id,
+            BookingDate = b.BookingDate,
+            NumberOfGuests = b.NumberOfGuests,
+            CustomerId = b.CustomerId,
+            TablesId = b.TablesId,
+            //FoodMenuId = b.FoodMenu?.Id ?? 0,
+            Customer = b.Customer != null ? new CustomerDto
             {
-                response.Data = bookingList.Select(u => new BookingDto
-                {
-                    Id = u.Id,
-                    BookingDate = u.BookingDate,
-                    NumberOfGuests = u.NumberOfGuests,
-                    TablesId = u.Tables?.Id ?? 0,
-                    CustomerId = u.Customer?.Id ?? 0,
-
-                    FoodMenuId = u.FoodMenu?.Id ?? 0,
-                    Customer = u.Customer != null ? new CustomerDto
-                    {
-                        Id = u.Customer.Id,
-                        FirstName = u.Customer.FirstName,
-                        LasttName = u.Customer.LasttName,
-                        Email = u.Customer.Email,
-                        Phone = u.Customer.Phone
-                    } : null,
-                    Tables = u.Tables != null ? new TablesDto
-                    {
-                        Id = u.Tables.Id,
-                        TableNumber = u.Tables.TableNumber,
-                        NumberOfSeats = u.Tables.NumberOfSeats,
-                        isAvialable = u.Tables.isAvialable
-                    } : null,
-                    FoodMenu = u.FoodMenu != null ? new FoodMenuDto
-                    {
-                        Id = u.FoodMenu.Id,
-                        Title = u.FoodMenu.Title,
-                        ImageUrl = u.FoodMenu.ImageUrl,
-                        IsAvailable = u.FoodMenu.IsAvailable
-                    } : null
-                }).ToList();
-
-                response.Success = true;
-               
-            }
-            else
+                Id = b.Customer.Id,
+                FirstName = b.Customer.FirstName,
+                LasttName = b.Customer.LasttName,
+                Email = b.Customer.Email,
+                Phone = b.Customer.Phone
+            } : null,
+            //FoodMenu = b.FoodMenu != null ? new FoodMenuDto
+            //{
+            //    Id = b.FoodMenu.Id,
+            //    Title = b.FoodMenu.Title,
+            //    price = b.FoodMenu.Price,
+            //    IsAvailable = b.FoodMenu.IsAvailable,
+            //    ImageUrl = b.FoodMenu.ImageUrl
+            //} : null,
+            Tables = b.Tables != null ? new TablesDto
             {
-                response.Success = false;
-                response.Message = Messages.NoData;
-            }
-        }
-        catch (Exception ex)
+                Id = b.Tables.Id,
+                TableNumber = b.Tables.TableNumber,
+                NumberOfSeats = b.Tables.NumberOfSeats,
+                isAvialable = b.Tables.isAvialable
+            } : null
+        }).ToList();
+
+        return new ServiceResponse<IEnumerable<BookingDto>>
         {
-            response.Success = false;
-            response.Message = ex.Message;
-
-        }
-
-        return response;
+            Data = bookingDtos,
+            Success = true,
+            Message = null
+        };
     }
+
+
+
 
 
 
@@ -165,7 +150,7 @@ public class BookingService : IBookingService
         try
         {
            
-            var singleBooking = await _bookingRepo.GetSingleAsync(id, b => b.Customer, b => b.Tables, b => b.FoodMenu);
+            var singleBooking = await _bookingRepo.GetSingleAsync(id, b => b.Customer, b => b.Tables/*, b => b.FoodMenu*/);
 
             if (singleBooking != null)
             {
@@ -198,14 +183,14 @@ public class BookingService : IBookingService
                         isAvialable = singleBooking.Tables.isAvialable
                     } : null,
 
-                    FoodMenu = singleBooking.FoodMenu != null ? new FoodMenuDto
-                    {
-                        Id = singleBooking.FoodMenu.Id,
-                        Title = singleBooking.FoodMenu.Title,
-                        price = singleBooking.FoodMenu.Price,  
-                        ImageUrl = singleBooking.FoodMenu.ImageUrl,
-                        IsAvailable = singleBooking.FoodMenu.IsAvailable
-                    } : null
+                    //FoodMenu = singleBooking.FoodMenu != null ? new FoodMenuDto
+                    //{
+                    //    Id = singleBooking.FoodMenu.Id,
+                    //    Title = singleBooking.FoodMenu.Title,
+                    //    price = singleBooking.FoodMenu.Price,  
+                    //    ImageUrl = singleBooking.FoodMenu.ImageUrl,
+                    //    IsAvailable = singleBooking.FoodMenu.IsAvailable
+                    //} : null
                 };
 
                 response.Success = true;
@@ -261,7 +246,7 @@ public class BookingService : IBookingService
         return response;
     }
 
-    public async Task<ServiceResponse<bool>> UpdateBookingAsync(BookingCreateDto? bookingDto)
+    public async Task<ServiceResponse<bool>> UpdateBookingAsync(BookingDto bookingDto)
     {
         var response = new ServiceResponse<bool>();
 
@@ -270,9 +255,9 @@ public class BookingService : IBookingService
             
             var existingBooking = await _bookingRepo.GetSingleAsync(bookingDto.Id);
             var table = await _tableRepo.GetSingleAsync(bookingDto.TablesId);
-            var menu = await _customerRepo.GetSingleAsync(bookingDto.CustomerId);
-            var foodmenu = await _fooRepo.GetSingleAsync(bookingDto.FoodMenuId);
-            var customer = await _customerRepo.GetSingleAsync(bookingDto.CustomerId);
+            var menu = await _customerRepo.GetSingleAsync(bookingDto.Id);
+            //var foodmenu = await _fooRepo.GetSingleAsync(bookingDto.FoodMenuId);
+            var customer = await _customerRepo.GetSingleAsync(bookingDto.Id);
 
             if (existingBooking == null)
             {
@@ -300,10 +285,10 @@ public class BookingService : IBookingService
             existingBooking.NumberOfGuests = bookingDto.NumberOfGuests;
             existingBooking.BookingDate = bookingDto.BookingDate;
             existingBooking.Tables = table;
-            existingBooking.FoodMenu= foodmenu;
+            //existingBooking.FoodMenu = foodmenu;
             existingBooking.Customer = customer;
 
-          
+
             await _bookingRepo.UpdateBookingAsync(existingBooking);
             await _bookingRepo.SaveAsync();
 

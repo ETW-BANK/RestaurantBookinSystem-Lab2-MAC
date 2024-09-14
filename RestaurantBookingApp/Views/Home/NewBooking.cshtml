@@ -1,0 +1,42 @@
+﻿@model IEnumerable<RestaurantBookingApp.Models.ViewModel.BookingVM>
+
+@{
+    ViewData["Title"] = "GetAllBookings";
+}
+
+<div class="card shadow border-0 my-4">
+    <div class="card-header bg-secondary bg-gradient mt-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Bookings List</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <div class="row pb-3">
+            <div class="col-6">
+            </div>
+            <div class="col-6 text-end">
+                <a asp-controller="Bookings" asp-action="Create" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Create New Booking
+                </a>
+            </div>
+        </div>
+
+        <table id="tblData" class="table table-bordered table-striped" width="100%">
+            <thead>
+                <tr>
+                    <th>First Namer</th>
+                    <th>Last Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/CustomerList.js"></script>
+}

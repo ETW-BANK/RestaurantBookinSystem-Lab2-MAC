@@ -19,6 +19,7 @@ namespace Restaurant.Models.DTOs
 
         public string LasttName { get; set; }
 
+        [EmailAddress]
         public string Email { get; set; }
 
 

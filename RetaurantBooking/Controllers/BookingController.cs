@@ -48,7 +48,7 @@ namespace RetaurantBooking.Controllers
         public async Task<IActionResult> Update([FromBody] BookingDto booking)
         {
             var result = await _bookingService.UpdateBookingAsync(booking);
-            return result.Success ? Ok(result.Message) : NotFound(result.Message);
+            return result.Success ? Ok(result.Data) : NotFound(result.Message);
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBooking(int id)

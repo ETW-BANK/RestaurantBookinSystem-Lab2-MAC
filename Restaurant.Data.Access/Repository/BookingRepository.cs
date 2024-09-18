@@ -21,25 +21,10 @@ namespace Restaurant.Data.Access.Repository
         }
         public async Task UpdateBookingAsync(Booking booking)
         {
-            var existingBooking = await _context.Bookings
-                .Include(b => b.Tables)
-                .Include(b => b.Customer)
-                .FirstOrDefaultAsync(u => u.Id == booking.Id);
+           
 
-            if (existingBooking != null)
-            {
-                // Update properties of the existing booking
-                existingBooking.NumberOfGuests = booking.NumberOfGuests;
-                existingBooking.BookingDate = booking.BookingDate;
-                existingBooking.TablesId = booking.TablesId;
-                existingBooking.CustomerId = booking.CustomerId;
+            _context.Bookings.Update(booking);
 
-                // Optionally set navigation properties (if needed)
-                existingBooking.Tables = booking.Tables;
-                existingBooking.Customer = booking.Customer;
-
-                _context.Bookings.Update(existingBooking);
-            }
 
             await _context.SaveChangesAsync();
         }

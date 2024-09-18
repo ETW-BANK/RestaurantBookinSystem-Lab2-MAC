@@ -249,7 +249,6 @@ public class BookingService : IBookingService
 
         try
         {
-            // Fetch the existing booking
             var existingBooking = await _bookingRepo.GetSingleAsync(bookingDto.Id);
 
             if (existingBooking == null)
@@ -259,7 +258,6 @@ public class BookingService : IBookingService
                 return response;
             }
 
-            // Fetch the table
             var table = await _tableRepo.GetSingleAsync(bookingDto.TablesId);
             if (table == null)
             {
@@ -268,7 +266,6 @@ public class BookingService : IBookingService
                 return response;
             }
 
-            // Fetch the customer
             var customer = await _customerRepo.GetSingleAsync(bookingDto.CustomerId);
             if (customer == null)
             {
@@ -277,7 +274,6 @@ public class BookingService : IBookingService
                 return response;
             }
 
-            // Check if the number of guests exceeds the table's limit
             if (bookingDto.NumberOfGuests > table.NumberOfSeats)
             {
                 response.Success = false;
@@ -285,11 +281,9 @@ public class BookingService : IBookingService
                 return response;
             }
 
-            // Update the existing booking properties
+            // Update the existing booking
             existingBooking.NumberOfGuests = bookingDto.NumberOfGuests;
             existingBooking.BookingDate = bookingDto.BookingDate;
-
-            // Update table and customer relationships
             existingBooking.TablesId = bookingDto.TablesId;
             existingBooking.CustomerId = bookingDto.CustomerId;
 
@@ -305,7 +299,7 @@ public class BookingService : IBookingService
 
             response.Data = true;
             response.Success = true;
-            response.Message = Messages.BookingUpdateSucces;
+            response.Message = Messages.BookingSucces;
         }
         catch (Exception ex)
         {

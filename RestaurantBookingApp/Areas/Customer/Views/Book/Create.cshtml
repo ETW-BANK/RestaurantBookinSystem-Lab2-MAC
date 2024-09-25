@@ -4,54 +4,63 @@
     <div class="card-header bg-secondary bg-gradient mt-0 py-3">
         <div class="row">
             <div class="col-12 text-center">
-                <h2 class="text-white py-2"> @(Model.Id != 0 ? "Update" : "Create") Booking</h2>
+                <h2 class="text-white py-2"> @(Model.Id != 0 ? "Update" : "Make A") Booking</h2>
             </div>
         </div>
     </div>
     <div class="card-body p-4">
-        <form method="post" class="row">
-            <input asp-for="Id" hidden />
-            <div class="border p-3">
-                <div class="form-floating py-2 col-12">
-                    <input asp-for="Customer.FirstName" class="form-control border-0 shadow" />
-                    <label asp-for="Customer. FirstName" class="ms-2"></label>
-                    <span asp-validation-for="Customer.FirstName" class="text-danger"></span>
-                </div>
-                <div class="form-floating py-2 col-12">
-                    <input asp-for="Customer.LasttName" class="form-control border-0 shadow" />
-                    <label asp-for="Customer.LasttName" class="ms-2"></label>
-                    <span asp-validation-for="Customer.LasttName" class="text-danger"></span>
-                </div>
-                <div class="form-floating py-2 col-12">
-                    <input asp-for="Customer.Email" class="form-control border-0 shadow" />
-                    <label asp-for="Customer.Email" class="ms-2"></label>
-                    <span asp-validation-for="Customer.Email" class="text-danger"></span>
-                </div>
-                <div class="form-floating py-2 col-12">
-                    <input asp-for="Customer.Phone" class="form-control border-0 shadow" />
-                    <label asp-for="Customer.Phone" class="ms-2"></label>
-                    <span asp-validation-for="Customer.Phone" class="text-danger"></span>
-                </div>
-                <div class="form-floating py-2 col-12">
-                    <input asp-for="BookingDate" class="form-control border-0 shadow" />
-                    <label asp-for="BookingDate" class="ms-2"></label>
-                    <span asp-validation-for="BookingDate" class="text-danger"></span>
-                </div>
-                <div class="form-floating py-2 col-12">
-                    <input asp-for="NumberOfGuests" class="form-control border-0 shadow" />
-                    <label asp-for="NumberOfGuests" class="ms-2"></label>
-                    <span asp-validation-for="NumberOfGuests" class="text-danger"></span>
-                </div>
-                <div class="row pt-2">
-                    <div class="col-6 col-md-3">
-                        <button type="submit" class="btn btn-primary form-control">@ViewBag.ButtonLabel</button>
-                    </div>
-                    <div class="col-6 col-md-3">
-                        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary border form-control">Cancel</a>
-                    </div>
-                </div>
+        <div class="row">
+          
+            <div class="col-md-6 d-flex align-items-center">
+                <img src="~/image/bg-hero.jpg" class="img-fluid rounded" style="height: 100%; width: auto;" alt="Booking image" />
             </div>
-        </form>
+
+            <div class="col-md-6">
+                <form method="post" class="row">
+                    <input asp-for="Id" hidden />
+                    <div class="border p-3">
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="Customer.FirstName" class="form-control border-0 shadow" />
+                            <label asp-for="Customer.FirstName" class="ms-2"></label>
+                            <span asp-validation-for="Customer.FirstName" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="Customer.LasttName" class="form-control border-0 shadow" />
+                            <label asp-for="Customer.LasttName" class="ms-2"></label>
+                            <span asp-validation-for="Customer.LasttName" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="Customer.Email" class="form-control border-0 shadow" />
+                            <label asp-for="Customer.Email" class="ms-2"></label>
+                            <span asp-validation-for="Customer.Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="Customer.Phone" class="form-control border-0 shadow" />
+                            <label asp-for="Customer.Phone" class="ms-2"></label>
+                            <span asp-validation-for="Customer.Phone" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="BookingDate" class="form-control border-0 shadow" />
+                            <label asp-for="BookingDate" class="ms-2"></label>
+                            <span asp-validation-for="BookingDate" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="NumberOfGuests" class="form-control border-0 shadow" />
+                            <label asp-for="NumberOfGuests" class="ms-2"></label>
+                            <span asp-validation-for="NumberOfGuests" class="text-danger"></span>
+                        </div>
+                        <div class="row pt-2">
+                            <div class="col-6 col-md-3">
+                                <button type="submit" class="btn btn-primary form-control">@ViewBag.ButtonLabel</button>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary border form-control">Cancel</a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 

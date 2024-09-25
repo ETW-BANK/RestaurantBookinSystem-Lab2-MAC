@@ -21,7 +21,7 @@ namespace RestaurantBookingApp.Areas.Customer.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            ViewBag.PageTitle = "Create Booking";
+            ViewBag.PageTitle = "Make A Reservation";
             ViewBag.ButtonLabel = "Create";
             return View(new BookingVM());
         }

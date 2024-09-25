@@ -13,11 +13,8 @@ namespace RestaurantBookingApp.Areas.Customer.Controllers
         {
             _logger = logger;
         }
-
-        public IActionResult Index()
-        {
-            return View();
-        }
+        [HttpGet]
+        public IActionResult Index() => View();
 
         public IActionResult Privacy()
         {

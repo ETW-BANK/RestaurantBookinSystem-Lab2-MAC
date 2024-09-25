@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,15 +14,14 @@ namespace Restaurant.Models.DTOs
         public DateTime BookingDate { get; set; }
         public int NumberOfGuests { get; set; }
         public int CustomerId { get; set; }
-        public int TablesId { get; set; }
       
+
 
         public CustomerDto? Customer { get; set; }
-       
 
+        public int TablesId { get; set; }
         public TablesDto? Tables { get; set; }
 
-      
 
     }
 }

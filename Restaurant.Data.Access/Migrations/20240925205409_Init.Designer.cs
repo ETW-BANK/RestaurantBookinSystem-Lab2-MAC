@@ -12,8 +12,8 @@ using Restaurant.Data.Access.Data;
 namespace Restaurant.Data.Access.Migrations
 {
     [DbContext(typeof(RestaurantDbContext))]
-    [Migration("20240825113423_priceaddedtomenu")]
-    partial class priceaddedtomenu
+    [Migration("20240925205409_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -144,7 +144,7 @@ namespace Restaurant.Data.Access.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Restaurant.Models.FoodMenu", "FoodMenu")
+                    b.HasOne("Restaurant.Models.FoodMenu", null)
                         .WithMany("MenuBooking")
                         .HasForeignKey("FoodMenuId");
 
@@ -155,8 +155,6 @@ namespace Restaurant.Data.Access.Migrations
                         .IsRequired();
 
                     b.Navigation("Customer");
-
-                    b.Navigation("FoodMenu");
 
                     b.Navigation("Tables");
                 });

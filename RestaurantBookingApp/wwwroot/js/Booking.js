@@ -7,14 +7,14 @@ $(document).ready(function () {
 function loadDataTable() {
     dataTable = $('#tblData').DataTable({
         "ajax": {
-            "url": 'Bookings/GetAllBooking',  
+            "url": 'Bookings/GetAllBooking',
             "type": "GET",
             "datatype": "json",
             "dataSrc": "data",
         },
         "columns": [
             { "data": 'customer.firstName', "width": "10%" },
-            { "data": 'customer.lasttName', "width": "10%" },  
+            { "data": 'customer.lasttName', "width": "10%" },
             { "data": 'customer.email', "width": "10%" },
             { "data": 'customer.phone', "width": "10%" },
             { "data": 'bookingDate', "width": "15%", "render": function (data) { return new Date(data).toLocaleDateString(); } },

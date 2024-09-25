@@ -12,8 +12,8 @@ using Restaurant.Data.Access.Data;
 namespace Restaurant.Data.Access.Migrations
 {
     [DbContext(typeof(RestaurantDbContext))]
-    [Migration("20240823080436_Init")]
-    partial class Init
+    [Migration("20240925214801_datechange")]
+    partial class datechange
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,6 +40,9 @@ namespace Restaurant.Data.Access.Migrations
                         .HasColumnType("int");
 
                     b.Property<int?>("FoodMenuId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NumberOfGuests")
                         .HasColumnType("int");
 
                     b.Property<int>("TablesId")
@@ -99,6 +102,9 @@ namespace Restaurant.Data.Access.Migrations
                     b.Property<bool>("IsAvailable")
                         .HasColumnType("bit");
 
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -138,7 +144,7 @@ namespace Restaurant.Data.Access.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Restaurant.Models.FoodMenu", "FoodMenu")
+                    b.HasOne("Restaurant.Models.FoodMenu", null)
                         .WithMany("MenuBooking")
                         .HasForeignKey("FoodMenuId");
 
@@ -149,8 +155,6 @@ namespace Restaurant.Data.Access.Migrations
                         .IsRequired();
 
                     b.Navigation("Customer");
-
-                    b.Navigation("FoodMenu");
 
                     b.Navigation("Tables");
                 });

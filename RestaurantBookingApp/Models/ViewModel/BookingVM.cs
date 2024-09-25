@@ -15,10 +15,10 @@ namespace RestaurantBookingApp.Models.ViewModel
 
         [Required]
         public int CustomerId { get; set; }
-        public CustomerVM Customer { get; set; }
+        public CustomerVM? Customer { get; set; }
 
         [Required]
         public int TablesId { get; set; }
-        public TablesVM Tables { get; set; }
+        public TablesVM? Tables { get; set; }
     }
 }

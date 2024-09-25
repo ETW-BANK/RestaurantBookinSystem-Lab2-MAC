@@ -14,9 +14,9 @@ namespace Restaurant.Models
         public int Id { get; set; }
 
         [Required]
-        public DateTime BookingDate { get; set; }= DateTime.Now;
+        public DateTime BookingDate { get; set; } 
 
-        public int NumberOfGuests {  get; set; }     
+        public int NumberOfGuests { get; set; }
 
         [ForeignKey("CustomerId")]
         public int CustomerId { get; set; }
@@ -26,9 +26,8 @@ namespace Restaurant.Models
         public int TablesId { get; set; }
         public Tables Tables { get; set; }
 
-        
 
-      
+
 
 
 

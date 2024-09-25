@@ -141,7 +141,7 @@ namespace Restaurant.Data.Access.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Restaurant.Models.FoodMenu", "FoodMenu")
+                    b.HasOne("Restaurant.Models.FoodMenu", null)
                         .WithMany("MenuBooking")
                         .HasForeignKey("FoodMenuId");
 
@@ -152,8 +152,6 @@ namespace Restaurant.Data.Access.Migrations
                         .IsRequired();
 
                     b.Navigation("Customer");
-
-                    b.Navigation("FoodMenu");
 
                     b.Navigation("Tables");
                 });

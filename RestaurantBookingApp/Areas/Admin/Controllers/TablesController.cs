@@ -5,8 +5,9 @@ using Restaurant.Utility;
 using RestaurantBookingApp.Models.ViewModel;
 using System.Text;
 
-namespace RestaurantBookingApp.Controllers
+namespace RestaurantBookingApp.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class TablesController : Controller
     {
         private readonly HttpClient _httpClient;

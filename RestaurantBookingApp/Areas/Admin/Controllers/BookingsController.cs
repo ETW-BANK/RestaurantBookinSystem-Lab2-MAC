@@ -5,8 +5,9 @@ using RestaurantBookingApp.Models.ViewModel;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RestaurantBookingApp.Controllers
+namespace RestaurantBookingApp.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class BookingsController : Controller
     {
         private readonly HttpClient _httpClient;
@@ -21,7 +22,7 @@ namespace RestaurantBookingApp.Controllers
         public IActionResult Index() => View();
 
         [HttpGet]
-        public async Task<IActionResult> GetAllBookings()
+        public async Task<IActionResult> GetAllBooking()
         {
             var response = await _httpClient.GetAsync("GetAllBookings");
             if (response.IsSuccessStatusCode)
@@ -33,7 +34,7 @@ namespace RestaurantBookingApp.Controllers
 
             return Json(new { data = new List<BookingVM>(), error = "Unable to retrieve bookings from the server." });
         }
-
+       
         [HttpGet]
         public IActionResult Create()
         {

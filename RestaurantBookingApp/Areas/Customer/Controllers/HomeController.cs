@@ -2,8 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using RestaurantBookingApp.Models;
 using System.Diagnostics;
 
-namespace RestaurantBookingApp.Controllers
+namespace RestaurantBookingApp.Areas.Customer.Controllers
 {
+    [Area("Customer")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

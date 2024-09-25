@@ -1,14 +1,14 @@
 ﻿@model IEnumerable<RestaurantBookingApp.Models.ViewModel.BookingVM>
 
 @{
-    ViewData["Title"] = "GetAllBookings";
+    ViewData["Title"] = "Bookings";
 }
 
 <div class="card shadow border-0 my-4">
     <div class="card-header bg-secondary bg-gradient mt-0 py-3">
         <div class="row">
             <div class="col-12 text-center">
-                <h2 class="text-white py-2">Bookings List</h2>
+                <h2 class="text-white py-2">Bookings</h2>
             </div>
         </div>
     </div>
@@ -17,7 +17,7 @@
             <div class="col-6">
             </div>
             <div class="col-6 text-end">
-                <a asp-controller="Bookings" asp-action="Create" class="btn btn-primary">
+                <a asp-controller="Bookings" asp-action="Create"  class="btn btn-primary">
                     <i class="bi bi-plus-circle"></i> Create New Booking
                 </a>
             </div>
@@ -26,10 +26,14 @@
         <table id="tblData" class="table table-bordered table-striped" width="100%">
             <thead>
                 <tr>
-                    <th>First Namer</th>
+                    <th>First Name</th>
                     <th>Last Name</th>
                     <th>Email</th>
                     <th>Phone</th>
+                    <th>Booking Date</th>
+                    <th>Table Number</th>
+                    <th>Number Of Seats</th>
+                    <th>Number Of Guests</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -38,5 +42,5 @@
 </div>
 
 @section Scripts {
-    <script src="~/js/CustomerList.js"></script>
+    <script src="~/js/Booking.js"></script>
 }

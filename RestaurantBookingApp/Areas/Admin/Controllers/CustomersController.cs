@@ -9,8 +9,9 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 
-namespace RestaurantBookingApp.Controllers
+namespace RestaurantBookingApp.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class CustomersController : Controller
     {
         private readonly HttpClient _httpClient;
@@ -25,7 +26,7 @@ namespace RestaurantBookingApp.Controllers
         public IActionResult Index() => View();
 
         [HttpGet]
-        public async Task<IActionResult> GetAllCustomers()
+        public async Task<IActionResult> GetAllCustomer()
         {
             var response = await _httpClient.GetAsync("GetAllCustomers");
             if (response.IsSuccessStatusCode)
@@ -35,7 +36,7 @@ namespace RestaurantBookingApp.Controllers
                 return Json(serviceResponse.Success ? new { data = serviceResponse.Data } : new { data = new List<CustomerVM>(), error = serviceResponse.Message });
             }
 
-            return Json(new { data = new List<CustomerVM>(), error =  "Unable to retrieve customers from the server." });
+            return Json(new { data = new List<CustomerVM>(), error = "Unable to retrieve customers from the server." });
         }
 
         [HttpGet]
@@ -43,8 +44,8 @@ namespace RestaurantBookingApp.Controllers
         {
             ViewBag.PageTitle = "Create Customer";
             ViewBag.ButtonLabel = "Create";
-          
-            return View(new CustomerVM()); 
+
+            return View(new CustomerVM());
         }
 
 
@@ -70,7 +71,7 @@ namespace RestaurantBookingApp.Controllers
 
                 if (customerResponse?.Data != null)
                 {
-                    return View("Create", customerResponse.Data); 
+                    return View("Create", customerResponse.Data);
                 }
             }
 
@@ -85,7 +86,7 @@ namespace RestaurantBookingApp.Controllers
             var content = new StringContent(JsonConvert.SerializeObject(customer), Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync("Update", content);
 
-            if(response.IsSuccessStatusCode)
+            if (response.IsSuccessStatusCode)
             {
 
                 TempData["success"] = "Customer Info Updated successfully";
@@ -102,8 +103,8 @@ namespace RestaurantBookingApp.Controllers
                 var serviceResponse = JsonConvert.DeserializeObject<ServiceResponse<CustomerVM>>(data);
                 if (serviceResponse.Success)
                 {
-                  
-                    return View(serviceResponse.Data); 
+
+                    return View(serviceResponse.Data);
                 }
             }
 
@@ -118,10 +119,10 @@ namespace RestaurantBookingApp.Controllers
             if (response.IsSuccessStatusCode)
             {
                 TempData["success"] = "Customer Deleted successfully";
-                return RedirectToAction("Index"); 
+                return RedirectToAction("Index");
             }
 
-            return View("Error"); 
+            return View("Error");
         }
 
     }

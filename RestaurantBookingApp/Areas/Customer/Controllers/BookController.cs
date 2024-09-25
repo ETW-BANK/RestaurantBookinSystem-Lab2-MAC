@@ -41,7 +41,7 @@ namespace RestaurantBookingApp.Areas.Customer.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // Optionally, capture the error message
+          
             var errorData = await response.Content.ReadAsStringAsync();
             ModelState.AddModelError(string.Empty, $"Error: {errorData}");
 

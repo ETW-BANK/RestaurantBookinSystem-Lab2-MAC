@@ -34,6 +34,8 @@ namespace RestaurantBookingApp.Areas.Admin.Controllers
 
             return Json(new { data = new List<BookingVM>(), error = "Unable to retrieve bookings from the server." });
         }
+
+    
        
         [HttpGet]
         public IActionResult Create()

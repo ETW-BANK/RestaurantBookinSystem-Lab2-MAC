@@ -29,7 +29,7 @@ function loadDataTable() {
                             <a href="Bookings/Edit?id=${data}" class="btn btn-primary mx-2">
                                 <i class="bi bi-pencil-square"></i> Edit
                             </a>
-                            <a href="/Bookings/Delete?id=${data}" class="btn btn-danger mx-2">
+                            <a href="Bookings/Delete?id=${data}" class="btn btn-danger mx-2">
                                 <i class="bi bi-trash-fill"></i> Delete
                             </a>
                         </div>

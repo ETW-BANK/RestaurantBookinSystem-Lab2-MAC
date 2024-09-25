@@ -9,12 +9,11 @@ function loadDataTable() {
             "type": "GET",
             "datatype": "json",
             "dataSrc": "data",
-          
         },
         "columns": [
             { "data": 'tableNumber', "width": "20%" },
             { "data": 'numberOfSeats', "width": "20%" },
-            { "data": 'isAvialable', "width": "20%" },  
+            { "data": 'isAvialable', "width": "20%" },
             {
                 "data": 'id',
                 "render": function (data) {

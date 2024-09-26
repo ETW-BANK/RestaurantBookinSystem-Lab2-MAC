@@ -142,7 +142,7 @@ public class BookingService : IBookingService
         try
         {
 
-            var singleBooking = await _bookingRepo.GetSingleAsync(id, b => b.Customer, b => b.Tables/*, b => b.FoodMenu*/);
+            var singleBooking = await _bookingRepo.GetSingleAsync(id, b => b.Customer, b => b.Tables);
 
             if (singleBooking != null)
             {
@@ -249,8 +249,8 @@ public class BookingService : IBookingService
 
         try
         {
+            // Retrieve the existing booking
             var existingBooking = await _bookingRepo.GetSingleAsync(bookingDto.Id);
-
             if (existingBooking == null)
             {
                 response.Success = false;
@@ -258,6 +258,7 @@ public class BookingService : IBookingService
                 return response;
             }
 
+            // Fetch related table and customer from their respective repositories
             var table = await _tableRepo.GetSingleAsync(bookingDto.TablesId);
             if (table == null)
             {
@@ -274,6 +275,7 @@ public class BookingService : IBookingService
                 return response;
             }
 
+            // Check if the number of guests exceeds the table's seat limit
             if (bookingDto.NumberOfGuests > table.NumberOfSeats)
             {
                 response.Success = false;
@@ -281,23 +283,22 @@ public class BookingService : IBookingService
                 return response;
             }
 
-            // Update the existing booking
+            // Update existing booking details
             existingBooking.NumberOfGuests = bookingDto.NumberOfGuests;
             existingBooking.BookingDate = bookingDto.BookingDate;
-            existingBooking.TablesId = bookingDto.TablesId;
-            existingBooking.CustomerId = bookingDto.CustomerId;
+            existingBooking.TablesId = table.Id;
+            existingBooking.CustomerId = customer.Id;
 
-            // Optionally set navigation properties (if needed)
+            // Associate the updated table and customer entities
             existingBooking.Tables = table;
             existingBooking.Customer = customer;
 
             // Update the booking in the repository
             await _bookingRepo.UpdateBookingAsync(existingBooking);
 
-            // Save changes to the database
+            // Save the changes
             await _bookingRepo.SaveAsync();
 
-            response.Data = true;
             response.Success = true;
             response.Message = Messages.BookingSucces;
         }

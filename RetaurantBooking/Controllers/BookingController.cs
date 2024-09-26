@@ -45,7 +45,7 @@ namespace RetaurantBooking.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update([FromBody] BookingDto booking)
+        public async Task<IActionResult> Update( BookingDto booking)
         {
             var result = await _bookingService.UpdateBookingAsync(booking);
             return result.Success ? Ok(result.Data) : NotFound(result.Message);

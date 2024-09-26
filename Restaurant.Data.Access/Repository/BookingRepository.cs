@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Restaurant.Data.Access.Data;
 using Restaurant.Data.Access.Repository.IRepository;
+using Restaurant.Data.Access.Repository.Services;
 using Restaurant.Models;
 using System;
 using System.Collections.Generic;
@@ -18,15 +19,16 @@ namespace Restaurant.Data.Access.Repository
         public BookingRepository(RestaurantDbContext context) : base(context)
         {
             _context = context;
+           
         }
         public async Task UpdateBookingAsync(Booking booking)
         {
-           
-
-            _context.Bookings.Update(booking);
-
-
-            await _context.SaveChangesAsync();
+            var existingBooking = await _context.Bookings.FirstOrDefaultAsync(u => u.Id == booking.Id);
+            if (existingBooking != null)
+            {
+                _context.Entry(existingBooking).CurrentValues.SetValues(booking);
+                await _context.SaveChangesAsync();
+            }
         }
 
 

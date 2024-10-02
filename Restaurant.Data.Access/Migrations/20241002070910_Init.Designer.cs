@@ -12,8 +12,8 @@ using Restaurant.Data.Access.Data;
 namespace Restaurant.Data.Access.Migrations
 {
     [DbContext(typeof(RestaurantDbContext))]
-    [Migration("20240925214801_datechange")]
-    partial class datechange
+    [Migration("20241002070910_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

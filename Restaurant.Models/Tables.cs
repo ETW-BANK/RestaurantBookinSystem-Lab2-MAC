@@ -12,18 +12,14 @@ namespace Restaurant.Models
     {
         [Key]
         public int Id { get; set; }
-
         [Required]
         public int TableNumber { get; set; }
-
         [Required]
         public int NumberOfSeats { get; set; }
-
         [Required]
+        public bool IsAvailable { get; set; }
 
-        public bool isAvialable { get; set; }
 
-      
-       
+
     }
 }

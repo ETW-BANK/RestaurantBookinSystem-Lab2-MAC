@@ -13,11 +13,11 @@ namespace RestaurantBookingApp.Models.ViewModel
         [Range(1, int.MaxValue, ErrorMessage = "Number of guests must be at least 1.")]
         public int NumberOfGuests { get; set; }
 
-        [Required]
+      
         public int CustomerId { get; set; }
         public CustomerVM? Customer { get; set; }
 
-        [Required]
+      
         public int TablesId { get; set; }
         public TablesVM? Tables { get; set; }
     }

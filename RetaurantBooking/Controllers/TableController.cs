@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.Data.Access.Repository.Services;
 using Restaurant.Data.Access.Repository.Services.IServices;
-using Restaurant.Models.DTOs;
+using RestaurantViewModels;
+
 
 namespace RetaurantBooking.Controllers
 {
@@ -19,36 +20,59 @@ namespace RetaurantBooking.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTable(int id)
         {
-            var result = await _tableService.GetSingleAsync(id);
-            return result.Success ? Ok(result) : NotFound(result.Message);
+            var result =  _tableService.GetById(id);
+
+           return Ok(result);
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllTables()
         {
-            var result = await _tableService.GetAllAsync();
-            return result.Success ? Ok(result) : BadRequest(result.Message);
+            IEnumerable<TablesVM> tables = _tableService.GetAllTables();
+
+            return Ok(tables);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateNewTable([FromBody] TablesDto table)
+        public async Task<IActionResult> CreateNewTable(TablesVM table)
         {
-            var response = await _tableService.AddItemAsync(table);
-            return response.Success ? CreatedAtAction(nameof(GetTable), new { id = response.Message }, response.Data) : BadRequest(response.Message);
+             _tableService.CreateTable(table);
+          
+            return Ok("Table Created Succesfully");
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Update([FromBody] TablesDto table)
+        [HttpGet]
+
+        public IActionResult Update(int id)
         {
-            var result = await _tableService.UpdateTableAsync(table);
-            return result.Success ? Ok(result.Message) : NotFound(result.Message);
+            var table = _tableService.GetById(id);
+            if (table == null)
+            {
+                return NotFound("Table Not Found");
+            }
+            
+            return Ok(table);   
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Update(TablesVM table)
+        {
+             _tableService.UpdateTable(table);
+
+            return Ok("Table Updated");    
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTable(int id)
         {
-            var result = await _tableService.RemoveAsync(id);
-            return result.Success ? Ok(result.Message) : BadRequest(result.Message);
+         _tableService.DeleteTable(id);
+            if (id == 0)
+            {
+                return NotFound("Table Not Found");
+
+            }
+            return Ok("Table Deleted Successfully");
         }
     }
 

@@ -1,5 +1,4 @@
-﻿using Restaurant.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace Restaurant.Data.Access.Repository.IRepository
 {
-   public interface IFoodMenuRepository:IRepository<FoodMenu>
+    public interface IUnitOfWork
     {
-        Task UpdateMenuAsync(FoodMenu menu);
+        IRepository<T> Repository<T>() where T : class;
+
+        void Save();
     }
 }

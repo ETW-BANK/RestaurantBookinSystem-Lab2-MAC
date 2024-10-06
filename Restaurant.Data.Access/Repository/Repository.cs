@@ -13,61 +13,113 @@ namespace Restaurant.Data.Access.Repository
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        public readonly RestaurantDbContext _context;
+        private readonly RestaurantDbContext _context;
 
-        internal DbSet<T> dbSet;
+        internal DbSet<T> DbSet;
 
         public Repository(RestaurantDbContext context)
         {
             _context = context;
-            this.dbSet = _context.Set<T>();
-        }
-        public async Task AddItemAsync(T item/*, params Expression<Func<T, object>>[] include*//*s*/)
-        {
-            await dbSet.AddAsync(item);
+            DbSet = _context.Set<T>();
         }
 
-
-
-        public async Task<IEnumerable<T>> GetAllAsync(params Expression<Func<T, object>>[]? includes)
+        public void Add(T entity)
         {
-            IQueryable<T> query = dbSet;
-
-            foreach (var include in includes)
-            {
-                query = query.Include(include);
-            }
-
-            return await query.ToListAsync();
+            DbSet.Add(entity);
         }
 
-        public async Task<T> GetSingleAsync(int id, params Expression<Func<T, object>>[] includes)
+        public async Task<T> AddAsync(T entity)
         {
-            IQueryable<T> query = dbSet;
-
-            foreach (var include in includes)
-            {
-                query = query.Include(include);
-            }
-
-            T? entity = await query.FirstOrDefaultAsync(e => EF.Property<int>(e, "Id") == id);
+            DbSet.Add(entity);
 
             return entity;
         }
-    
 
-    
-
-        public async Task RemoveAsync(int id)
+        public void Delete(T entity)
         {
-            T entity = await dbSet.FindAsync(id);
-
-            dbSet.Remove(entity);
+            if (_context.Entry(entity).State == EntityState.Detached)
+            {
+                DbSet.Attach(entity);
+            }
+            DbSet.Remove(entity);
         }
 
-        public async Task SaveAsync()
+        public async Task<T> DeleteAsync(T entity)
         {
-            await _context.SaveChangesAsync();
+            if (_context.Entry(entity).State == EntityState.Detached)
+            {
+                DbSet.Attach(entity);
+            }
+            DbSet.Remove(entity);
+            return entity;
         }
+
+
+        private bool disposed = false;
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    _context.Dispose();
+                }
+
+                this.disposed = true;
+            }
+        }
+
+        public IEnumerable<T> GetAll(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> OrderBy = null, string includeproperties = "")
+        {
+            IQueryable<T> query = DbSet;
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+            foreach (var includeProperty in includeproperties.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                query = query.Include(includeProperty);
+            }
+
+            if (OrderBy != null)
+            {
+                return OrderBy(query).ToList();
+            }
+
+            return query.ToList();
+        }
+
+
+        public T GetById(object id)
+        {
+            return DbSet.Find(id);
+        }
+        public async Task<T> GetByIdAsync(object id)
+        {
+            return await DbSet.FindAsync(id);
+        }
+
+        public void Update(T entity)
+        {
+            DbSet.Attach(entity);
+            _context.Entry(entity).State = EntityState.Modified;
+
+        }
+
+        public async Task<T> UpdateAsync(T entity)
+        {
+            DbSet.Attach(entity);
+            _context.Entry(entity).State = EntityState.Modified;
+
+            return entity;
+        }
+
     }
 }

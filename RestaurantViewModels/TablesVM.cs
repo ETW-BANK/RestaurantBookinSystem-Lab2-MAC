@@ -5,21 +5,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Restaurant.Models.DTOs
+namespace RestaurantViewModels
 {
-    public class TablesDto
+    public class TablesVM
     {
-     
+
+        [Required]
+        [Key]
         public int Id { get; set; }
 
-     
+        [Required]
         public int TableNumber { get; set; }
-
-      
+        [Required]
         public int NumberOfSeats { get; set; }
-
-       
-
-        public bool isAvialable { get; set; }
+        public bool IsAvailable { get; set; }
     }
 }

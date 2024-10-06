@@ -22,16 +22,20 @@ namespace RestaurantBookingApp.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllTables()
         {
-            var response = await _httpClient.GetAsync("GetAllTables");
+            var response = await _httpClient.GetAsync("GetAllTable");
+
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
                 var serviceResponse = JsonConvert.DeserializeObject<List<TablesVM>>(data);
-                return Json(data);
+
+               
+                return Json(new { data = serviceResponse });
             }
 
             return Json(new { data = new List<TablesVM>(), error = "Unable to retrieve Tables from the server." });
         }
+
 
         [HttpGet]
         public IActionResult Create()

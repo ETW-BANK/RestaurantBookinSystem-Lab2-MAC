@@ -5,15 +5,15 @@
 function loadDataTable() {
     dataTable = $('#tblData').DataTable({
         "ajax": {
-            "url": 'Tables/GetAllTables',
+            "url": 'Tables/GetAllTables',  // Ensure this URL matches your controller's route
             "type": "GET",
             "datatype": "json",
-            "dataSrc": "",
+            "dataSrc": ""  // Since the response is an array directly, no need for 'dataSrc': "data"
         },
         "columns": [
             { "data": 'tableNumber', "width": "20%" },
             { "data": 'numberOfSeats', "width": "20%" },
-            { "data": 'isAvialable', "width": "20%" },
+            { "data": 'isAvailable', "width": "20%" }
             {
                 "data": 'id',
                 "render": function (data) {

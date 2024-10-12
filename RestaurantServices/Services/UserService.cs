@@ -42,7 +42,7 @@ namespace RestaurantServices.Services
 
         public async Task<IEnumerable<UserVm>> GetAllUsers()
         {
-           
+
             List<ApplicationUser> users = await _dbContext.ApplicationUsers.ToListAsync();
             List<IdentityUserRole<string>> userRoles = await _dbContext.UserRoles.ToListAsync();
             List<IdentityRole> roles = await _dbContext.Roles.ToListAsync();
@@ -51,14 +51,14 @@ namespace RestaurantServices.Services
 
             foreach (var user in users)
             {
-              
+
                 var userRole = userRoles.FirstOrDefault(r => r.UserId == user.Id);
                 if (userRole != null)
                 {
                     var role = roles.FirstOrDefault(r => r.Id == userRole.RoleId);
                     if (role != null)
                     {
-                      
+
                         listOfUsers.Add(new UserVm
                         {
                             Id = user.Id,
@@ -69,15 +69,16 @@ namespace RestaurantServices.Services
                             State = user.State,
                             PostalCode = user.PostalCode,
                             PhoneNumber = user.PhoneNumber,
-                            Role = role.Name 
+                            Role = role.Name
                         });
                     }
                 }
             }
 
-           
+
             return listOfUsers;
         }
+
 
 
         public UserVm GetById(int id)

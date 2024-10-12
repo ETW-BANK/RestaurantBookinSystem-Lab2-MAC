@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Restaurant.Utility;
 using RestaurantViewModels;
 using System.Text;
 
 namespace RestaurantBookingApp.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles =StaticData.Role_Admin)]
     public class TablesController : Controller
     {
         private readonly HttpClient _httpClient;

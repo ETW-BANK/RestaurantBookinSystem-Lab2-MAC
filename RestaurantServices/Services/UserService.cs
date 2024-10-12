@@ -43,43 +43,42 @@ namespace RestaurantServices.Services
         public async Task<IEnumerable<UserVm>> GetAllUsers()
         {
            
-            List<ApplicationUser> list=_dbContext.ApplicationUsers.ToList();
+            List<ApplicationUser> users = await _dbContext.ApplicationUsers.ToListAsync();
+            List<IdentityUserRole<string>> userRoles = await _dbContext.UserRoles.ToListAsync();
+            List<IdentityRole> roles = await _dbContext.Roles.ToListAsync();
 
-            var userroles=await _dbContext.UserRoles.ToListAsync();
-            var roles=await _dbContext.Roles.ToListAsync(); 
+            List<UserVm> listOfUsers = new List<UserVm>();
 
-            foreach (var user in list)
+            foreach (var user in users)
             {
-                var roleid=await _dbContext.UserRoles.FirstOrDefaultAsync(r => r.UserId==user.Id);
-                var role = await _dbContext.Roles.FirstOrDefaultAsync(u=>u.Id ==roleid.RoleId);
-
-
-
-                var listOfUsers = await _dbContext.ApplicationUsers
-                    .Select(user => new UserVm
+              
+                var userRole = userRoles.FirstOrDefault(r => r.UserId == user.Id);
+                if (userRole != null)
+                {
+                    var role = roles.FirstOrDefault(r => r.Id == userRole.RoleId);
+                    if (role != null)
                     {
-                        Id = user.Id,
-                        Name = user.Name,
-                        Email = user.Email,
-                        StreetAddress = user.StreetAddress,
-                        City = user.City,
-                        State = user.State,
-                        PostalCode = user.PostalCode,
-                        PhoneNumber = user.PhoneNumber,
-
-                        Role = role.Name
-
-
-                    })
-                    .ToListAsync();
-
-                return listOfUsers;
+                      
+                        listOfUsers.Add(new UserVm
+                        {
+                            Id = user.Id,
+                            Name = user.Name,
+                            Email = user.Email,
+                            StreetAddress = user.StreetAddress,
+                            City = user.City,
+                            State = user.State,
+                            PostalCode = user.PostalCode,
+                            PhoneNumber = user.PhoneNumber,
+                            Role = role.Name 
+                        });
+                    }
+                }
             }
 
-            return null;
-
-          
+           
+            return listOfUsers;
         }
+
 
         public UserVm GetById(int id)
         {

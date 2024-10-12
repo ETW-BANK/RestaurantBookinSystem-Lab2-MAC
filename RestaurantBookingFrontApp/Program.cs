@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Restaurant.Data.Access.Data;
+using Restaurant.Utility;
 namespace RestaurantBookingFrontApp
 {
     public class Program
@@ -11,7 +13,8 @@ namespace RestaurantBookingFrontApp
             var connectionstring = builder.Configuration.GetConnectionString("RestDb");
             builder.Services.AddDbContext<RestaurantDbContext>(option => option.UseSqlServer(connectionstring));
 
-            builder.Services.AddDefaultIdentity<IdentityUser>().AddEntityFrameworkStores<RestaurantDbContext>().AddDefaultTokenProviders();
+            builder.Services.AddIdentity<IdentityUser,IdentityRole>().AddEntityFrameworkStores<RestaurantDbContext>().AddDefaultTokenProviders();
+            builder.Services.AddScoped<IEmailSender, EmailSender>();
             builder.Services.AddHttpClient();
             // Add services to the container.
             builder.Services.AddControllersWithViews();

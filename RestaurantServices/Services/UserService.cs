@@ -38,29 +38,50 @@ namespace RestaurantServices.Services
             throw new NotImplementedException();
         }
 
-      
 
-            public async Task<IEnumerable<UserVm>> GetAllUsers()
+
+        public async Task<IEnumerable<UserVm>> GetAllUsers()
+        {
+           
+            List<ApplicationUser> list=_dbContext.ApplicationUsers.ToList();
+
+            var userroles=await _dbContext.UserRoles.ToListAsync();
+            var roles=await _dbContext.Roles.ToListAsync(); 
+
+            foreach (var user in list)
             {
-              
+                var roleid=await _dbContext.UserRoles.FirstOrDefaultAsync(r => r.UserId==user.Id);
+                var role = await _dbContext.Roles.FirstOrDefaultAsync(u=>u.Id ==roleid.RoleId);
+
+
+
                 var listOfUsers = await _dbContext.ApplicationUsers
-                    .Select(x => new UserVm
+                    .Select(user => new UserVm
                     {
-                        Id = x.Id,
-                        Name = x.Name,  
-                        Email = x.Email,
-                        StreetAddress = x.StreetAddress,
-                        City = x.City,
-                        State = x.State,
-                        PostalCode = x.PostalCode,
-                        PhoneNumber = x.PhoneNumber
+                        Id = user.Id,
+                        Name = user.Name,
+                        Email = user.Email,
+                        StreetAddress = user.StreetAddress,
+                        City = user.City,
+                        State = user.State,
+                        PostalCode = user.PostalCode,
+                        PhoneNumber = user.PhoneNumber,
+
+                        Role = role.Name
+
+
                     })
-                    .ToListAsync();  
+                    .ToListAsync();
 
                 return listOfUsers;
             }
 
-            public UserVm GetById(int id)
+            return null;
+
+          
+        }
+
+        public UserVm GetById(int id)
         {
             throw new NotImplementedException();
         }

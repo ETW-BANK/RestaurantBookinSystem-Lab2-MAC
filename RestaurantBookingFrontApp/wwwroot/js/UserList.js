@@ -11,13 +11,14 @@ function loadDataTable() {
             "dataSrc": "data",
         },
         "columns": [
-            { "data": 'name', "width": "20%" },
+            { "data": 'name', "width": "15%" },
             { "data": 'email', "width": "20%" },
             { "data": 'streetAddress', "width": "20%" },
-            { "data": 'city', "width": "20%" },
-            { "data": 'state', "width": "20%" },
-            { "data": 'postalCode', "width": "20%" },
-            { "data": 'phoneNumber', "width": "20%" },
+            { "data": 'city', "width": "15%" },
+            { "data": 'state', "width": "10%" },
+            { "data": 'postalCode', "width": "7%" },
+            { "data": 'phoneNumber', "width": "15%" },
+            { "data": 'role', "width": "8%" },
             {
                 "data": 'id',
                 "render": function (data) {

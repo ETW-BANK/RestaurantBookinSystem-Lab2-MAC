@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Restaurant.Data.Access.Data;
 namespace RestaurantBookingFrontApp
 {
     public class Program
@@ -5,10 +8,14 @@ namespace RestaurantBookingFrontApp
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            var connectionstring = builder.Configuration.GetConnectionString("RestDb");
+            builder.Services.AddDbContext<RestaurantDbContext>(option => option.UseSqlServer(connectionstring));
+
+            builder.Services.AddDefaultIdentity<IdentityUser>().AddEntityFrameworkStores<RestaurantDbContext>().AddDefaultTokenProviders();
             builder.Services.AddHttpClient();
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-
+            builder.Services.AddRazorPages();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -21,11 +28,13 @@ namespace RestaurantBookingFrontApp
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            
 
             app.UseRouting();
-
+          
+            app.MapRazorPages(); 
+            app.UseAuthentication();
             app.UseAuthorization();
-
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}");

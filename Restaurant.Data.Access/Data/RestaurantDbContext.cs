@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Restaurant.Models;
 using System;
 using System.Collections.Generic;
@@ -6,9 +8,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Restaurant.Data.Access.Data
 {
-   public class RestaurantDbContext:DbContext
+   public class RestaurantDbContext:IdentityDbContext
     {
       
         public DbSet<Tables> Table { get; set; }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Restaurant.Data.Access.Repository.IRepository;
 using Restaurant.Data.Access.Repository.Services;
 using Restaurant.Data.Access.Repository.Services.IServices;
 using RestaurantViewModels;
@@ -12,9 +13,11 @@ namespace RetaurantBooking.Controllers
     public class TableController : ControllerBase
     {
         private readonly ITableService _tableService;
-        public TableController(ITableService tableService)
+        private readonly IUnitOfWork _unitOfWork;   
+        public TableController(ITableService tableService,IUnitOfWork unitOfWork)
         {
             _tableService = tableService;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet("{id}")]
@@ -36,7 +39,7 @@ namespace RetaurantBooking.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateNewTable(TablesVM table)
         {
-             _tableService.CreateTable(table);
+            _tableService.CreateTable(table);
           
             return Ok("Table Created Succesfully");
         }
@@ -50,15 +53,16 @@ namespace RetaurantBooking.Controllers
             {
                 return NotFound("Table Not Found");
             }
-            
-            return Ok(table);   
+
+            return Ok(table);
 
         }
 
-        [HttpPost]
+        [HttpPut]
         public async Task<IActionResult> Update(TablesVM table)
         {
-             _tableService.UpdateTable(table);
+            _tableService.UpdateTable(table);
+     
 
             return Ok("Table Updated");    
         }

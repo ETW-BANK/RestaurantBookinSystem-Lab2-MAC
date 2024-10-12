@@ -29,13 +29,11 @@ namespace RestaurantBookingApp.Areas.Admin.Controllers
                 var data = await response.Content.ReadAsStringAsync();
                 var serviceResponse = JsonConvert.DeserializeObject<List<TablesVM>>(data);
 
-               
                 return Json(new { data = serviceResponse });
             }
 
             return Json(new { data = new List<TablesVM>(), error = "Unable to retrieve Tables from the server." });
         }
-
 
         [HttpGet]
         public IActionResult Create()
@@ -46,16 +44,22 @@ namespace RestaurantBookingApp.Areas.Admin.Controllers
             return View(new TablesVM());
         }
 
-
         [HttpPost]
         public async Task<IActionResult> Create(TablesVM table)
         {
             var content = new StringContent(JsonConvert.SerializeObject(table), Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync("CreateNewTable", content);
-            TempData["success"] = "Table Created successfully";
-            return response.IsSuccessStatusCode ? RedirectToAction(nameof(Index)) : View(table);
+
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["success"] = "Table Created successfully";
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(table);
         }
 
+        [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
             var response = await _httpClient.GetAsync($"GetTable/{id}");
@@ -67,7 +71,7 @@ namespace RestaurantBookingApp.Areas.Admin.Controllers
                 ViewBag.PageTitle = "Edit Table";
                 ViewBag.ButtonLabel = "Update";
 
-                if (tableResponse!= null)
+                if (tableResponse != null)
                 {
                     return View("Create", tableResponse);
                 }
@@ -75,8 +79,6 @@ namespace RestaurantBookingApp.Areas.Admin.Controllers
 
             return View("Error");
         }
-
-
 
         [HttpPost]
         public async Task<IActionResult> Edit(TablesVM table)
@@ -86,12 +88,14 @@ namespace RestaurantBookingApp.Areas.Admin.Controllers
 
             if (response.IsSuccessStatusCode)
             {
-
                 TempData["success"] = "Table Info Updated successfully";
+                return RedirectToAction(nameof(Index));
             }
-            return response.IsSuccessStatusCode ? RedirectToAction("Index") : View(table);
+
+            return View("Create", table);
         }
 
+        [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
             var response = await _httpClient.GetAsync($"GetTable/{id}");
@@ -99,16 +103,14 @@ namespace RestaurantBookingApp.Areas.Admin.Controllers
             {
                 var data = await response.Content.ReadAsStringAsync();
                 var serviceResponse = JsonConvert.DeserializeObject<TablesVM>(data);
-                if (serviceResponse!=null)
+                if (serviceResponse != null)
                 {
-
                     return View(serviceResponse);
                 }
             }
 
             return View("Error");
         }
-
 
         [HttpPost]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -117,11 +119,10 @@ namespace RestaurantBookingApp.Areas.Admin.Controllers
             if (response.IsSuccessStatusCode)
             {
                 TempData["success"] = "Table Deleted successfully";
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
 
             return View("Error");
         }
-
     }
 }

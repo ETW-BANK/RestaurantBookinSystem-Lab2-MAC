@@ -5,6 +5,8 @@ using Restaurant.Data.Access.Repository;
 using Restaurant.Data.Access.Repository.IRepository;
 using Restaurant.Data.Access.Repository.Services;
 using Restaurant.Data.Access.Repository.Services.IServices;
+using RestaurantServices.Services;
+using RestaurantServices.Services.IServices;
 
 namespace RetaurantBooking
 {
@@ -23,6 +25,8 @@ namespace RetaurantBooking
 
             builder.Services.AddScoped<ITableService, TableService>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+          
+            builder.Services.AddScoped<IUserService, UserService>();
 
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

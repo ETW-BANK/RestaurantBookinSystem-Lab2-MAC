@@ -7,6 +7,9 @@ using Restaurant.Data.Access.Repository.Services.IServices;
 using Restaurant.Data.Access.Repository.Services;
 using Restaurant.Data.Access.Repository;
 using Restaurant.Utility;
+using RestaurantServices.Services.IServices;
+using RestaurantServices.Services;
+using Restaurant.Models;
 namespace RestaurantBookingFrontApp
 {
     public class Program
@@ -23,6 +26,8 @@ namespace RestaurantBookingFrontApp
             // Add services to the container.
             builder.Services.AddScoped<ITableService, TableService>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
 

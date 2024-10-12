@@ -2,6 +2,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Restaurant.Data.Access.Data;
+using Restaurant.Data.Access.Repository.IRepository;
+using Restaurant.Data.Access.Repository.Services.IServices;
+using Restaurant.Data.Access.Repository.Services;
+using Restaurant.Data.Access.Repository;
 using Restaurant.Utility;
 namespace RestaurantBookingFrontApp
 {
@@ -13,10 +17,12 @@ namespace RestaurantBookingFrontApp
             var connectionstring = builder.Configuration.GetConnectionString("RestDb");
             builder.Services.AddDbContext<RestaurantDbContext>(option => option.UseSqlServer(connectionstring));
 
-            builder.Services.AddIdentity<IdentityUser,IdentityRole>().AddEntityFrameworkStores<RestaurantDbContext>().AddDefaultTokenProviders();
+            builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<RestaurantDbContext>().AddDefaultTokenProviders();
             builder.Services.AddScoped<IEmailSender, EmailSender>();
             builder.Services.AddHttpClient();
             // Add services to the container.
+            builder.Services.AddScoped<ITableService, TableService>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
 
@@ -39,11 +45,11 @@ namespace RestaurantBookingFrontApp
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            
+
 
             app.UseRouting();
-          
-            app.MapRazorPages(); 
+
+            app.MapRazorPages();
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllerRoute(

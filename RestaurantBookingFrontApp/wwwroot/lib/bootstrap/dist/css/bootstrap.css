@@ -13883,7 +13883,7 @@ header {
 }
 
 .footer {
-    position:fixed;
+    position: fixed;
     bottom: 0;
     font-weight: 300;
     width: 100%;
@@ -13892,6 +13892,7 @@ header {
     text-align: center;
     color: white;
     font-family: 'Times New Roman';
+    margin-top: 150px;
 }
 
 

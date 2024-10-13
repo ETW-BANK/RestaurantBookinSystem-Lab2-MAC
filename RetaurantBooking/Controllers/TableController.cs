@@ -29,7 +29,7 @@ namespace RetaurantBooking.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllUsers()
+        public async Task<IActionResult> GetAllTables()
         {
             IEnumerable<TablesVM> tables = _tableService.GetAllTables();
 

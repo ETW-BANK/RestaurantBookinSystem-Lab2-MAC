@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Restaurant.Data.Access.Data;
@@ -11,6 +13,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.VisualBasic;
+using Newtonsoft.Json;
 
 namespace RestaurantServices.Services
 {
@@ -90,5 +95,61 @@ namespace RestaurantServices.Services
         {
             throw new NotImplementedException();
         }
+
+        public async Task<RoleManagmentVM> RoleManagment(string userId)
+        {
+
+            string RoleID = _dbContext.UserRoles.FirstOrDefault(u => u.UserId == userId).RoleId;
+
+            RoleManagmentVM RoleVM = new RoleManagmentVM()
+            {
+                ApplicationUser=_dbContext.ApplicationUsers.FirstOrDefault(u=>u.Id==userId),
+                RoleList=_dbContext.Roles.Select(i=>new SelectListItem
+                {
+
+                    Text = i.Name,  
+                    Value=i.Name
+                }),
+
+            };
+
+            RoleVM.ApplicationUser.Role = _dbContext.Roles.FirstOrDefault(u => u.Id == RoleID).Name;
+
+            return RoleVM;  
+
+         
+        }
+
+
+       
+
+           
+
+          
+        
+
+
+
+
+        public async Task LockUnlock(string userId)
+        {
+            var userFromDb = await _dbContext.ApplicationUsers.FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (userFromDb != null)
+            {
+                if (userFromDb.LockoutEnd != null && userFromDb.LockoutEnd > DateTime.Now)
+                {
+                
+                    userFromDb.LockoutEnd = DateTime.Now;
+                }
+                else
+                {
+                    userFromDb.LockoutEnd = DateTime.Now.AddYears(1000);
+                }
+
+                await _dbContext.SaveChangesAsync();
+            }
+        }
+
     }
 }

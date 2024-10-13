@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Restaurant.Utility;
 using RestaurantViewModels;
+using System.Text;
 
 namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
 {
@@ -39,5 +40,59 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
 
             return Json(new { data = new List<UserVm>(), error = "Unable to retrieve Tables from the server." });
         }
+        [HttpGet]
+        public async Task<IActionResult> RoleManagment(string userId)
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync($"RoleManagement/{userId}");
+
+                if (response.IsSuccessStatusCode)
+                {
+
+                    var data = await response.Content.ReadAsStringAsync();
+                    var roleVm = JsonConvert.DeserializeObject<RoleManagmentVM>(data);
+
+
+                    return View(roleVm);
+                }
+                else
+                {
+                    TempData["Error"] = "Unable to retrieve role management data.";
+                    return View(new RoleManagmentVM());
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "An error occurred: " + ex.Message;
+                return View(new RoleManagmentVM());
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> LockUnlock([FromBody]string id)
+        {
+            var content = new StringContent(JsonConvert.SerializeObject(id), Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostAsync($"LockUser?id={id}", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+
+                TempData["success"] = "User has been successfully locked/unlocked.";
+                return Ok();
+              
+            }
+            else
+            {
+                TempData["Error"] = "User has NOT been successfully locked/unlocked.";
+
+                return BadRequest();
+            }
+        }
+
+
+
     }
   }

@@ -25,7 +25,7 @@ namespace RestaurantBookingApp.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllTables()
         {
-            var response = await _httpClient.GetAsync("GetAllTable");
+            var response = await _httpClient.GetAsync("GetAllTables");
 
             if (response.IsSuccessStatusCode)
             {

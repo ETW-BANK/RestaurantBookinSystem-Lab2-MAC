@@ -28,5 +28,33 @@ namespace RetaurantBooking.Controllers
 
             return Ok(users);
         }
+        [HttpPost]
+        public async Task<IActionResult> LockUser([FromBody]string id)
+        {
+          
+            await _userService.LockUnlock(id);
+       
+           
+            return Ok();
+        }
+
+        [HttpGet("{userId}")] // 'userId' corresponds to the route parameter
+        public async Task<IActionResult> RoleManagement(string userId)
+        {
+            try
+            {
+                
+                RoleManagmentVM roleVm = await _userService.RoleManagment(userId);
+
+              
+                return Ok(roleVm);
+            }
+            catch (Exception ex)
+            {
+                
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
     }
 }

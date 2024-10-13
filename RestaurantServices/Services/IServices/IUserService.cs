@@ -21,5 +21,9 @@ namespace RestaurantServices.Services.IServices
         void CreateUser(UserVm user);
 
         void DeleteUser(int id);
+
+        Task<RoleManagmentVM> RoleManagment(string userId);
+
+        Task LockUnlock(string userId); 
     }
 }

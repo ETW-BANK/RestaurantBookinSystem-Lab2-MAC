@@ -24,13 +24,14 @@ namespace RestaurantServices.Services
       
         private IUnitOfWork _unitOfWork;
        private readonly RestaurantDbContext _dbContext;
-   
-      
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public UserService(RestaurantDbContext dbContext,IUnitOfWork unitOfWork)
+
+        public UserService(RestaurantDbContext dbContext,IUnitOfWork unitOfWork,UserManager<IdentityUser> userManager)
         {
             _unitOfWork = unitOfWork;
-          _dbContext= dbContext;    
+          _dbContext= dbContext;  
+            _userManager= userManager;
          
        
           
@@ -53,8 +54,9 @@ namespace RestaurantServices.Services
             List<ApplicationUser> users = await _dbContext.ApplicationUsers.ToListAsync();
             List<IdentityUserRole<string>> userRoles = await _dbContext.UserRoles.ToListAsync();
             List<IdentityRole> roles = await _dbContext.Roles.ToListAsync();
+             
 
-            List<UserVm> listOfUsers = new List<UserVm>();
+        List<UserVm> listOfUsers = new List<UserVm>();
 
             foreach (var user in users)
             {
@@ -103,10 +105,10 @@ namespace RestaurantServices.Services
                 throw new Exception("User role not found.");
             }
 
-            string oldRole = _dbContext.Roles.FirstOrDefault(u => u.Id == currentRoleId)?.Name;
+            string oldRole = _dbContext.Roles.FirstOrDefault(u => u.Id == currentRoleId).Name;
 
 
-            if (roles.ApplicationUser.Role != oldRole)
+            if (!(roles.ApplicationUser.Role == oldRole))
             {
 
                 ApplicationUser applicationUser = _dbContext.ApplicationUsers.FirstOrDefault(u => u.Id == roles.ApplicationUser.Id);
@@ -130,7 +132,8 @@ namespace RestaurantServices.Services
                 if (userRole != null)
                 {
                     userRole.RoleId = newRoleId;
-                    _dbContext.UserRoles.Update(userRole);
+                   
+                  
                 }
                 else
                 {
@@ -140,7 +143,8 @@ namespace RestaurantServices.Services
 
 
                 _dbContext.SaveChangesAsync();
-
+                _userManager.RemoveFromRoleAsync(applicationUser, oldRole).GetAwaiter().GetResult();
+                _userManager.AddToRoleAsync(applicationUser, roles.ApplicationUser.Role).GetAwaiter().GetResult();
             }
         }
 

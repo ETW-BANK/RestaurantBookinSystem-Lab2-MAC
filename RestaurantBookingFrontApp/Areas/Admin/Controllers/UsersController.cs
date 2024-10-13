@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Newtonsoft.Json;
 using Restaurant.Utility;
 using RestaurantViewModels;
@@ -21,7 +22,11 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index() => View();
+        public IActionResult Index()
+        {
+            
+            return View();
+        }
 
 
         [HttpGet]
@@ -40,35 +45,7 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
 
             return Json(new { data = new List<UserVm>(), error = "Unable to retrieve Tables from the server." });
         }
-        //[HttpGet]
-        //public async Task<IActionResult> RoleManagment(string userId)
-        //{
-        //    try
-        //    {
-        //        var response = await _httpClient.GetAsync($"RoleManagement/{userId}");
-
-        //        if (response.IsSuccessStatusCode)
-        //        {
-
-        //            var data = await response.Content.ReadAsStringAsync();
-        //            var roleVm = JsonConvert.DeserializeObject<RoleManagmentVM>(data);
-
-
-        //            return View(roleVm);
-        //        }
-        //        else
-        //        {
-        //            TempData["Error"] = "Unable to retrieve role management data.";
-        //            return View(new RoleManagmentVM());
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        TempData["Error"] = "An error occurred: " + ex.Message;
-        //        return View(new RoleManagmentVM());
-        //    }
-        //}
-        //GET Method to retrieve user role information
+      
        [HttpGet]
         public async Task<IActionResult> RoleManagment(string userId)
         {
@@ -79,23 +56,23 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
 
                 if (response.IsSuccessStatusCode)
                 {
-                    // Deserialize the response to RoleManagmentVM
+                   
                     var data = await response.Content.ReadAsStringAsync();
                     var roleVm = JsonConvert.DeserializeObject<RoleManagmentVM>(data);
 
-                    // Return the view with the role data
+                  
                     return View(roleVm);
                 }
                 else
                 {
-                    // Handle the case when the response is not successful
+                 
                     TempData["Error"] = "Unable to retrieve role management data.";
                     return View(new RoleManagmentVM());
                 }
             }
             catch (Exception ex)
             {
-                // Handle any exceptions that occur during the process
+               
                 TempData["Error"] = "An error occurred: " + ex.Message;
                 return View(new RoleManagmentVM());
             }
@@ -105,37 +82,20 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateRole(RoleManagmentVM roleVm)
         {
-            try
+            var content = new StringContent(JsonConvert.SerializeObject(roleVm), Encoding.UTF8, "application/json");
+            var response = await _httpClient.PutAsync("UpdateRole", content);
+
+            if (response.IsSuccessStatusCode)
             {
-              
-                var content = new StringContent(JsonConvert.SerializeObject(roleVm), Encoding.UTF8, "application/json");
-
-                var response = await _httpClient.PostAsync("RoleManagement/UpdateRole", content);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    
-                    TempData["Success"] = "User role updated successfully.";
-
-              
-                    return RedirectToAction(nameof(Index));
-                }
-                else
-                {
-                  
-                    TempData["Error"] = "Failed to update the role. Please try again.";
-                    return View("RoleManagment", roleVm);
-                }
+                TempData["success"] = "Role updated successfully";
+                return RedirectToAction("Index");
             }
-            catch (Exception ex)
+            else
             {
-               
-                TempData["Error"] = "An error occurred: " + ex.Message;
+                ModelState.AddModelError("", "Error updating role. Please try again.");
                 return View("RoleManagment", roleVm);
             }
         }
-
-
 
         [HttpPost]
         public async Task<IActionResult> LockUnlock([FromBody]string id)

@@ -16,11 +16,14 @@ namespace RetaurantBooking.Controllers
     {
         private readonly IUserService _userService;
         private readonly IUnitOfWork _unitOfWork;
+       
       
         public UserController(IUserService userService, IUnitOfWork unitOfWork)
         {
            _userService = userService;  
             _unitOfWork = unitOfWork;
+          
+           
          
         }
 
@@ -58,22 +61,17 @@ namespace RetaurantBooking.Controllers
                 return BadRequest(new { error = ex.Message });
             }
         }
-        [HttpPost]
-        public IActionResult UpdateRole(RoleManagmentVM roleVm)
+        [HttpPut("UpdateRole")]
+        public IActionResult UpdateRole([FromBody] RoleManagmentVM roleVm)
         {
             try
             {
-                
                 _userService.UpdateRole(roleVm);
-
-
-
-
                 return Ok();
             }
             catch (Exception ex)
             {
-                return BadRequest();
+                return BadRequest(new { error = ex.Message });
             }
         }
 

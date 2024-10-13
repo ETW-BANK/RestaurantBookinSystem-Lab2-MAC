@@ -23,13 +23,15 @@ namespace RestaurantServices.Services
     {
       
         private IUnitOfWork _unitOfWork;
-       private readonly RestaurantDbContext _dbContext; 
+       private readonly RestaurantDbContext _dbContext;
+   
       
 
-        public UserService(RestaurantDbContext dbContext,IUnitOfWork unitOfWork,RestaurantDbContext dbContext1 )
+        public UserService(RestaurantDbContext dbContext,IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
           _dbContext= dbContext;    
+         
        
           
         }
@@ -91,9 +93,55 @@ namespace RestaurantServices.Services
             throw new NotImplementedException();
         }
 
-        public void UpdateUser(UserVm user)
+        public void UpdateRole(RoleManagmentVM roles)
         {
-            throw new NotImplementedException();
+
+            string currentRoleId = _dbContext.UserRoles.FirstOrDefault(u => u.UserId == roles.ApplicationUser.Id)?.RoleId;
+
+            if (currentRoleId == null)
+            {
+                throw new Exception("User role not found.");
+            }
+
+            string oldRole = _dbContext.Roles.FirstOrDefault(u => u.Id == currentRoleId)?.Name;
+
+
+            if (roles.ApplicationUser.Role != oldRole)
+            {
+
+                ApplicationUser applicationUser = _dbContext.ApplicationUsers.FirstOrDefault(u => u.Id == roles.ApplicationUser.Id);
+
+                if (applicationUser == null)
+                {
+                    throw new Exception("Application user not found.");
+                }
+
+
+                string newRoleId = _dbContext.Roles.FirstOrDefault(r => r.Name == roles.ApplicationUser.Role)?.Id;
+
+                if (newRoleId == null)
+                {
+                    throw new Exception("New role not found.");
+                }
+
+
+                var userRole = _dbContext.UserRoles.FirstOrDefault(ur => ur.UserId == applicationUser.Id);
+
+                if (userRole != null)
+                {
+                    userRole.RoleId = newRoleId;
+                    _dbContext.UserRoles.Update(userRole);
+                }
+                else
+                {
+                    throw new Exception("User role association not found.");
+                }
+
+
+
+                _dbContext.SaveChangesAsync();
+
+            }
         }
 
         public async Task<RoleManagmentVM> RoleManagment(string userId)

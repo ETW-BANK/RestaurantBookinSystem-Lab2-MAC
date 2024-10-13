@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.Data.Access.Repository.IRepository;
 using Restaurant.Data.Access.Repository.Services;
@@ -15,10 +16,12 @@ namespace RetaurantBooking.Controllers
     {
         private readonly IUserService _userService;
         private readonly IUnitOfWork _unitOfWork;
+      
         public UserController(IUserService userService, IUnitOfWork unitOfWork)
         {
            _userService = userService;  
             _unitOfWork = unitOfWork;
+         
         }
 
         [HttpGet]
@@ -53,6 +56,24 @@ namespace RetaurantBooking.Controllers
             {
                 
                 return BadRequest(new { error = ex.Message });
+            }
+        }
+        [HttpPost]
+        public IActionResult UpdateRole(RoleManagmentVM roleVm)
+        {
+            try
+            {
+                
+                _userService.UpdateRole(roleVm);
+
+
+
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest();
             }
         }
 

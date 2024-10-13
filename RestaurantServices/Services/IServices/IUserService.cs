@@ -15,7 +15,7 @@ namespace RestaurantServices.Services.IServices
 
       UserVm GetById(int id);
 
-        void UpdateUser(UserVm user);
+        void UpdateRole(RoleManagmentVM roles);
 
 
         void CreateUser(UserVm user);

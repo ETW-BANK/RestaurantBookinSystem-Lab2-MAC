@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Restaurant.Data.Access.Data
 {
-   public class RestaurantDbContext:IdentityDbContext<IdentityUser>
+   public class RestaurantDbContext:IdentityDbContext
     {
       
         public DbSet<Tables> Table { get; set; }

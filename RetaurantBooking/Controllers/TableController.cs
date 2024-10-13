@@ -13,11 +13,11 @@ namespace RetaurantBooking.Controllers
     public class TableController : ControllerBase
     {
         private readonly ITableService _tableService;
-        private readonly IUnitOfWork _unitOfWork;   
-        public TableController(ITableService tableService,IUnitOfWork unitOfWork)
+       
+        public TableController(ITableService tableService)
         {
             _tableService = tableService;
-            _unitOfWork = unitOfWork;
+           
         }
 
         [HttpGet("{id}")]
@@ -59,9 +59,10 @@ namespace RetaurantBooking.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(TablesVM table)
+        public async Task<IActionResult> Update([FromBody]TablesVM table)
         {
-            _tableService.UpdateTable(table);
+          _tableService.UpdateTable(table);
+
      
 
             return Ok("Table Updated");    

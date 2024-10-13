@@ -76,27 +76,28 @@ namespace RestaurantBookingApp.Areas.Admin.Controllers
 
                 if (tableResponse != null)
                 {
-                    return View("Create", tableResponse);
+                    return View("Create", tableResponse); // Ensure "Create" view is used for both Create and Edit.
                 }
             }
 
             return View("Error");
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Edit(TablesVM table)
-        {
-            var content = new StringContent(JsonConvert.SerializeObject(table), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PutAsync("Update", content);
 
-            if (response.IsSuccessStatusCode)
-            {
-                TempData["success"] = "Table Info Updated successfully";
-                return RedirectToAction(nameof(Index));
-            }
+       [HttpPost]
+public async Task<IActionResult> Edit(TablesVM table)
+{
+    var content = new StringContent(JsonConvert.SerializeObject(table), Encoding.UTF8, "application/json");
+    var response = await _httpClient.PutAsync("Update", content);
 
-            return View("Create", table);
-        }
+    if (response.IsSuccessStatusCode)
+    {
+        TempData["success"] = "Table Info Updated successfully";
+        return RedirectToAction(nameof(Index));
+    }
+
+    return View("Create", table); // This should show the create form with the model data for correction.
+}
 
         [HttpGet]
         public async Task<IActionResult> Delete(int id)

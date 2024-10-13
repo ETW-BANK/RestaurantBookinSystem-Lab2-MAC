@@ -17,10 +17,13 @@ namespace Restaurant.Data.Access.Repository.Services
 
     {
         private IUnitOfWork _unitOfWork;
+       
+
 
         public TableService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
+      
         }
 
         public void CreateTable(TablesVM table)
@@ -100,7 +103,7 @@ namespace Restaurant.Data.Access.Repository.Services
          
             _unitOfWork.Repository<Tables>().Update(existingTable);
 
-            
+
             _unitOfWork.Save();
         }
 

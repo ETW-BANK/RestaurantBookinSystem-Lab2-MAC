@@ -1,7 +1,7 @@
 /* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 body {
-    background-image: url("/images/bg2.jpg");
+    background-image: url("/image/background.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     background-attachment: fixed;
@@ -10,11 +10,21 @@ body {
     flex-direction: column;
 }
 
+#ProductCard {
+    width: 250px;
+    padding: 10px;
+    border-color: #425F4B !important;
+}
+/* Smaller card image */
 .card-img-top {
     object-fit: cover;
-    height: 300px;
-    width: 100%;
-    border-radius: 15px;
+    height: 150px; /* Reduce the height */
+    width: 100%; /* Maintain the full width of the card */
+    border-radius: 10px; /* Adjust the border radius if needed */
+}
+
+#detail-btn {
+    width: 250px;
 }
 
 .img-equal {
@@ -40,6 +50,7 @@ a.navbar-brand {
     white-space: normal;
     text-align: center;
     word-break: break-all;
+    color: white;
 }
 
 
@@ -472,7 +483,9 @@ bg-success {
     }
 
 
-
+tr {
+    text-align: center !important;
+}
 
 
 .btn-outline-success {
@@ -574,9 +587,11 @@ bg-success {
     }
 
 
+
 .footer {
     border-top: 1px solid #ffffff;
-    position: absolute;
+    position: relative;
+    margin-top:230px;
     bottom: 0;
     left: 0;
     width: 100%;
@@ -584,4 +599,5 @@ bg-success {
     text-align: center;
     padding: 1rem 0;
     background-color: #333;
+    color: white;
 }

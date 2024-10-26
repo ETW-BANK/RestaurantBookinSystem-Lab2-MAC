@@ -8,6 +8,7 @@ body {
     width: 100%;
     display: flex;
     flex-direction: column;
+  padding-bottom: 50px;
 }
 
 #ProductCard {
@@ -18,9 +19,9 @@ body {
 /* Smaller card image */
 .card-img-top {
     object-fit: cover;
-    height: 150px; /* Reduce the height */
-    width: 100%; /* Maintain the full width of the card */
-    border-radius: 10px; /* Adjust the border radius if needed */
+    height: 150px; 
+    width: 100%; 
+    border-radius: 10px; 
 }
 
 #detail-btn {
@@ -51,6 +52,7 @@ a.navbar-brand {
     text-align: center;
     word-break: break-all;
     color: white;
+   
 }
 
 
@@ -59,6 +61,7 @@ a.navbar-brand {
     color: #fff;
     background-color: #1b6ec2;
     border-color: #1861ac;
+   
 }
 
 html {
@@ -131,7 +134,9 @@ bg-success {
 
 
 .card {
-    border-color: #425F4B !important;
+    background-color: #e5e5e5;
+  
+    
 }
 
 
@@ -590,8 +595,8 @@ tr {
 
 .footer {
     border-top: 1px solid #ffffff;
-    position: relative;
-    margin-top:230px;
+    position: absolute;
+   padding-top:30px;
     bottom: 0;
     left: 0;
     width: 100%;
@@ -600,4 +605,114 @@ tr {
     padding: 1rem 0;
     background-color: #333;
     color: white;
+}
+
+
+.title {
+    color: black;
+    font-weight: 800;
+    font-family: 'Times New Roman';
+    font-size: 18px;
+    margin-bottom: 50px;
+
+}
+
+/* Base button styling */
+button {
+    cursor: pointer;
+    outline: none;
+    background-color: orange;
+    color: darkblue;
+    font-family: 'Times New Roman', serif;
+    font-size: 18px;
+    font-weight: 800;
+    border: #FFF solid 2px;
+    border-radius: 24px;
+    padding: 10px 40px;
+    text-transform: uppercase;
+    transition: all 0.2s linear;
+}
+
+    button:hover {
+        background: #FFF;
+        color: #636B6F;
+        border-color: #636B6F;
+    }
+
+    button:first-of-type {
+        margin-right: 40px;
+    }
+
+/* Responsive button styling */
+@media (max-width: 768px) {
+    button {
+        font-size: 16px;
+        padding: 8px 32px;
+        border-radius: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    button {
+        font-size: 14px;
+        padding: 6px 24px;
+        border-radius: 16px;
+    }
+}
+
+/* Responsive container styling */
+.containers {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    background-color: rgba(128, 128, 128, 0.5);
+    box-sizing: border-box;
+    border-radius: 2%;
+    padding: 20px;
+    width: 100%; /* Adjust width for responsive design */
+    max-width: 80%; /* Maximum width for larger screens */
+}
+
+@media (max-width: 768px) {
+    .containers {
+        width: 100%;
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .containers {
+        width: 100%;
+        padding: 10px;
+    }
+}
+
+/* Responsive intro  */
+#intro {
+    color: darkgreen;
+    font-size: 36px;
+    font-family: 'Times New Roman', serif;
+    text-decoration: underline;
+    margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+    #intro {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 480px) {
+    #intro {
+        font-size: 14px;
+    }
+}
+
+.logo {
+    height: 50px; 
+    width: auto; 
+    margin-left:20px;
+    margin-right:50px;
 }

@@ -13,7 +13,7 @@ namespace RestaurantServices.Services.IServices
 
         Task<IEnumerable<UserVm>> GetAllUsers();
 
-      UserVm GetById(int id);
+     Task <UserVm> GetById(string id);
 
         void UpdateRole(RoleManagmentVM roles);
 
@@ -22,7 +22,7 @@ namespace RestaurantServices.Services.IServices
 
         void DeleteUser(int id);
 
-        Task<RoleManagmentVM> RoleManagment(string userId);
+        //Task<RoleManagmentVM> RoleManagment(RoleManagmentVM roleManagmentVM);
 
         Task LockUnlock(string userId); 
     }

@@ -30,10 +30,10 @@ function loadDataTable() {
                         return `
                             <div class="text-center">
                               <a onClick=LockUnlock('${data.id}') class="btn btn-danger text-white" style="cursor:pointer; width:100px">
-                                    <i class="bi bi-unlock-fill"></i> Lock
+                                    <i class="bi bi-lock-fill"></i> Lock
                                 </a>
                                
-                                <a href="Users/RoleManagment?userId=${data.id}" class="btn btn-danger text-white" style="cursor:pointer; width:150px">
+                                <a href="Users/UpdateRole?userId=${data.id}" class="btn btn-danger text-white" style="cursor:pointer; width:150px">
                                     <i class="bi bi-pencil-square"></i> Permission
                                 </a>
                             </div>
@@ -44,7 +44,7 @@ function loadDataTable() {
                                <a onClick=LockUnlock('${data.id}') class="btn btn-success text-white" style="cursor:pointer; width:100px">
                                     <i class="bi bi-unlock-fill"></i> Unlock
                                 </a>
-                                <a href="Users/RoleManagment?userId=${data.id}" class="btn btn-danger text-white" style="cursor:pointer; width:150px">
+                                <a href="Users/UpdateRole?userId=${data.id}" class="btn btn-danger text-white" style="cursor:pointer; width:150px">
                                     <i class="bi bi-pencil-square"></i> Permission
                                 </a>
                             </div>
@@ -60,15 +60,19 @@ function loadDataTable() {
 function LockUnlock(id) {
     $.ajax({
         type: "POST",
-        url: 'Users/LockUnlock',
-        data: JSON.stringify(id),
+        url: '/Users/LockUnlock', // Ensure the URL matches your controller route
+        data: JSON.stringify(id), // Wrap in an object for proper deserialization
         contentType: "application/json",
         success: function (data) {
             if (data.success) {
                 toastr.success(data.message);
                 dataTable.ajax.reload();
+            } else {
+                toastr.error(data.message || "An error occurred.");
             }
-
+        },
+        error: function () {
+            toastr.error("An error occurred while processing the request.");
         }
-    })
+    });
 }

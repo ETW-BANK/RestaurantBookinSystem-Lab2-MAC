@@ -80,42 +80,48 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> UpdateRole(RoleManagmentVM roleVm)
+        public async Task<IActionResult> UpdateRole([FromBody] RoleManagmentVM roleVm)
         {
+            if (roleVm == null || roleVm.ApplicationUser == null)
+            {
+                return BadRequest(new { success = false, message = "Invalid role data." });
+            }
+
             var content = new StringContent(JsonConvert.SerializeObject(roleVm), Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync("UpdateRole", content);
 
             if (response.IsSuccessStatusCode)
             {
                 TempData["success"] = "Role updated successfully";
-                return RedirectToAction("Index");
+                return Ok(new { success = true, message = "Role updated successfully." });
             }
             else
             {
-                ModelState.AddModelError("", "Error updating role. Please try again.");
-                return View("RoleManagment", roleVm);
+                TempData["error"] = "Error updating role.";
+                return BadRequest(new { success = false, message = "Error updating role. Please try again." });
             }
         }
 
         [HttpPost]
-        public async Task<IActionResult> LockUnlock([FromBody]string id)
+        public async Task<IActionResult> LockUnlock([FromBody] string id)
         {
-            var content = new StringContent(JsonConvert.SerializeObject(id), Encoding.UTF8, "application/json");
+            if (string.IsNullOrEmpty(id))
+            {
+                return BadRequest(new { success = false, message = "Invalid user ID." });
+            }
 
+            var content = new StringContent(JsonConvert.SerializeObject(id), Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync($"LockUser?id={id}", content);
 
             if (response.IsSuccessStatusCode)
             {
-
                 TempData["success"] = "User has been successfully locked/unlocked.";
-                return Ok();
-              
+                return Ok(new { success = true, message = "User has been locked/unlocked." });
             }
             else
             {
-                TempData["Error"] = "User has NOT been successfully locked/unlocked.";
-
-                return BadRequest();
+                TempData["error"] = "User could not be locked/unlocked.";
+                return BadRequest(new { success = false, message = "Failed to lock/unlock user." });
             }
         }
 

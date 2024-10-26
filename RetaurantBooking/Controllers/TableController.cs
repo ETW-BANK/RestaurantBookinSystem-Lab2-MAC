@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Restaurant.Data.Access.Repository.IRepository;
 using Restaurant.Data.Access.Repository.Services;
 using Restaurant.Data.Access.Repository.Services.IServices;
+using Restaurant.Models;
 using RestaurantViewModels;
 
 
@@ -23,7 +24,7 @@ namespace RetaurantBooking.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTable(int id)
         {
-            var result =  _tableService.GetById(id);
+            var result = _tableService.GetById(id);
 
            return Ok(result);
         }
@@ -59,7 +60,7 @@ namespace RetaurantBooking.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update([FromBody]TablesVM table)
+        public async Task<IActionResult> Update(TablesVM table)
         {
           _tableService.UpdateTable(table);
 

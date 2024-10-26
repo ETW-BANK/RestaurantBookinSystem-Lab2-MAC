@@ -8,7 +8,7 @@ using System.Text;
 namespace RestaurantBookingApp.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = StaticData.Role_Admin)]
+    //[Authorize(Roles = StaticData.Role_Admin)]
     public class TablesController : Controller
     {
         private readonly HttpClient _httpClient;
@@ -76,7 +76,7 @@ namespace RestaurantBookingApp.Areas.Admin.Controllers
 
                 if (tableResponse != null)
                 {
-                    return View("Create", tableResponse); // Ensure "Create" view is used for both Create and Edit.
+                    return View("Create", tableResponse); 
                 }
             }
 
@@ -96,7 +96,7 @@ public async Task<IActionResult> Edit(TablesVM table)
         return RedirectToAction(nameof(Index));
     }
 
-    return View("Create", table); // This should show the create form with the model data for correction.
+    return View("Create", table); 
 }
 
         [HttpGet]

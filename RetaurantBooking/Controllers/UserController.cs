@@ -44,7 +44,7 @@ namespace RetaurantBooking.Controllers
             return Ok();
         }
 
-        [HttpGet("{userId}")] // 'userId' corresponds to the route parameter
+        [HttpGet("{userId}")] 
         public async Task<IActionResult> RoleManagement(string userId)
         {
             try

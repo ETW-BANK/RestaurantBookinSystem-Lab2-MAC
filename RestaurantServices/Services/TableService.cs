@@ -87,7 +87,7 @@ namespace Restaurant.Data.Access.Repository.Services
 
         public void UpdateTable(TablesVM tableVM)
         {
-           
+            // Retrieve the existing table by ID
             var existingTable = _unitOfWork.Repository<Tables>().GetById(tableVM.Id);
 
             if (existingTable == null)
@@ -95,18 +95,17 @@ namespace Restaurant.Data.Access.Repository.Services
                 throw new Exception("Table not found");
             }
 
-            
+            // Update the properties of the existing table
             existingTable.TableNumber = tableVM.TableNumber;
             existingTable.NumberOfSeats = tableVM.NumberOfSeats;
             existingTable.IsAvailable = tableVM.IsAvailable;
 
-         
+            // Perform the update and save changes
             _unitOfWork.Repository<Tables>().Update(existingTable);
-
-
             _unitOfWork.Save();
         }
 
-       
+
+
     }
 }

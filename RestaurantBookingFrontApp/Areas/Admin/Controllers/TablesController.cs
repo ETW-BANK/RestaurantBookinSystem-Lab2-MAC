@@ -85,8 +85,8 @@ namespace RestaurantBookingApp.Areas.Admin.Controllers
 
 
        [HttpPost]
-public async Task<IActionResult> Edit(TablesVM table)
-{
+    public async Task<IActionResult> Edit(TablesVM table)
+    {
     var content = new StringContent(JsonConvert.SerializeObject(table), Encoding.UTF8, "application/json");
     var response = await _httpClient.PutAsync("Update", content);
 

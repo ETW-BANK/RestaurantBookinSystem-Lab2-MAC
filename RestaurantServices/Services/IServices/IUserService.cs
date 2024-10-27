@@ -22,7 +22,7 @@ namespace RestaurantServices.Services.IServices
 
         void DeleteUser(int id);
 
-        //Task<RoleManagmentVM> RoleManagment(RoleManagmentVM roleManagmentVM);
+        Task<RoleManagmentVM> RoleManagment(string userid);
 
         Task LockUnlock(string userId); 
     }

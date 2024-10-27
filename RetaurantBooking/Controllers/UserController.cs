@@ -14,6 +14,7 @@ using System.Web.Helpers;
 
 namespace RetaurantBooking.Controllers
 {
+    [Area("Admin")]
     [Route("api/[controller]/[Action]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -37,7 +38,7 @@ namespace RetaurantBooking.Controllers
 
         public async Task<IActionResult> GetSingleUser(string Id)
         {
-            var user= await _userService.GetById(Id); 
+            var user = await _userService.GetById(Id);
 
             if (user == null)
             {
@@ -55,6 +56,9 @@ namespace RetaurantBooking.Controllers
 
             return Ok(users);
         }
+
+
+        
 
 
       
@@ -81,19 +85,45 @@ namespace RetaurantBooking.Controllers
         }
 
 
-      
 
-        [HttpPut("UpdateRole")]
-        public IActionResult UpdateRole([FromBody] RoleManagmentVM roleVm)
+        [HttpGet]
+        public async Task<IActionResult> RoleManagment(string userId)
         {
             try
             {
-                _userService.UpdateRole(roleVm);
-                return Ok();
+                var userRoles = await _userService.RoleManagment(userId); 
+                if (userRoles == null)
+                {
+                    return NotFound(new { message = "User not found" });
+                }
+
+                return Ok(new { data = userRoles });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { error = ex.Message });
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateRole([FromBody] RoleManagmentVM roleManagmentVM)
+        {
+            if (roleManagmentVM == null || roleManagmentVM.ApplicationUser == null)
+            {
+                return BadRequest(new { success = false, message = "Invalid role management data." });
+            }
+
+            try
+            {
+                // Call the service to update the user's role
+               _userService.UpdateRole(roleManagmentVM);
+
+                return Ok(new { success = true, message = "User role updated successfully." });
+            }
+            catch (Exception ex)
+            {
+                // Return a bad request response with the error message
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
 

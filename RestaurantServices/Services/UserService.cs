@@ -24,14 +24,13 @@ namespace RestaurantServices.Services
     public class UserService : IUserService
     {
       
-        private IUnitOfWork _unitOfWork;
+   
        private readonly RestaurantDbContext _dbContext;
         private readonly UserManager<IdentityUser> _userManager;
 
 
-        public UserService(RestaurantDbContext dbContext,IUnitOfWork unitOfWork,UserManager<IdentityUser> userManager)
+        public UserService(RestaurantDbContext dbContext,UserManager<IdentityUser> userManager)
         {
-            _unitOfWork = unitOfWork;
           _dbContext= dbContext;  
             _userManager= userManager;
          
@@ -136,36 +135,6 @@ namespace RestaurantServices.Services
             return null;
         }
 
-        public void UpdateRole(RoleManagmentVM roles)
-        {
-            string currentRoleId = _dbContext.UserRoles.FirstOrDefault(u => u.UserId == roles.ApplicationUser.Id)?.RoleId;
-            string oldRole = _dbContext.Roles.FirstOrDefault(x => x.Id == currentRoleId)?.Name;
-
-            if (roles.ApplicationUser.Role != oldRole)
-            {
-                var applicationUser = _dbContext.ApplicationUsers.FirstOrDefault(u => u.Id == roles.ApplicationUser.Id);
-
-                if (applicationUser == null) throw new Exception("User not found.");
-
-                _userManager.RemoveFromRoleAsync(applicationUser, oldRole).GetAwaiter().GetResult();
-                _userManager.AddToRoleAsync(applicationUser, roles.ApplicationUser.Role).GetAwaiter().GetResult();
-
-                // Save changes to make sure role assignment is persisted
-                _dbContext.SaveChanges();
-            }
-        }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         public async Task LockUnlock(string userId)
@@ -187,6 +156,42 @@ namespace RestaurantServices.Services
             await _dbContext.SaveChangesAsync();
         }
 
+        public async  Task<RoleManagmentVM> RoleManagment(string userId)
+        {
+           string RoleID =  _dbContext.UserRoles.FirstOrDefault(x => x.UserId == userId).RoleId;
 
+            RoleManagmentVM RoleVM = new RoleManagmentVM()
+            {
+
+                ApplicationUser = _dbContext.ApplicationUsers.FirstOrDefault(u => u.Id == userId),
+
+                RoleList = _dbContext.Roles.Select(i => new SelectListItem
+                {
+                    Text = i.Name,
+                    Value = i.Name
+                }),
+            };
+
+            RoleVM.ApplicationUser.Role = _dbContext.Roles.FirstOrDefault(u => u.Id == RoleID).Name;
+          
+            return RoleVM;
+        }
+
+        public void UpdateRole(RoleManagmentVM roles)
+        {
+            string RoleID = _dbContext.UserRoles.FirstOrDefault(u => u.UserId == roles.ApplicationUser.Id).RoleId;
+
+            string oldRole= _dbContext.Roles.FirstOrDefault(u=>u.Id==RoleID).Name;
+
+            if(roles.ApplicationUser.Role == oldRole)
+            {
+                ApplicationUser applicationUser = _dbContext.ApplicationUsers.FirstOrDefault(u => u.Id == roles.ApplicationUser.Id);
+
+              _userManager.RemoveFromRoleAsync(applicationUser,oldRole).GetAwaiter().GetResult();
+            _userManager.AddToRoleAsync(applicationUser,roles.ApplicationUser.Role).GetAwaiter().GetResult();   
+
+                _dbContext.SaveChanges();   
+            }
+        }
     }
 }

@@ -15,110 +15,71 @@ namespace Restaurant.Data.Access.Repository
     {
         private readonly RestaurantDbContext _context;
 
-        internal DbSet<T> DbSet;
+        internal DbSet<T> dbset;
 
         public Repository(RestaurantDbContext context)
         {
             _context = context;
-            DbSet = _context.Set<T>();
+            this.dbset = _context.Set<T>();
+            _context.ApplicationUsers.Include(u => u.Role);
         }
-
         public void Add(T entity)
         {
-            DbSet.Add(entity);
+            dbset.Add(entity);
         }
 
-        public async Task<T> AddAsync(T entity)
+        public IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter, string? includeProperties = null)
         {
-            DbSet.Add(entity);
-
-            return entity;
-        }
-
-        public void Delete(T entity)
-        {
-            if (_context.Entry(entity).State == EntityState.Detached)
-            {
-                DbSet.Attach(entity);
-            }
-            DbSet.Remove(entity);
-        }
-
-        public async Task<T> DeleteAsync(T entity)
-        {
-            if (_context.Entry(entity).State == EntityState.Detached)
-            {
-                DbSet.Attach(entity);
-            }
-            DbSet.Remove(entity);
-            return entity;
-        }
-
-
-        private bool disposed = false;
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-
-        }
-
-        private void Dispose(bool disposing)
-        {
-            if (!this.disposed)
-            {
-                if (disposing)
-                {
-                    _context.Dispose();
-                }
-
-                this.disposed = true;
-            }
-        }
-
-        public IEnumerable<T> GetAll(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> OrderBy = null, string includeproperties = "")
-        {
-            IQueryable<T> query = DbSet;
+            IQueryable<T> query = dbset;
             if (filter != null)
             {
                 query = query.Where(filter);
             }
-            foreach (var includeProperty in includeproperties.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-            {
-                query = query.Include(includeProperty);
-            }
 
-            if (OrderBy != null)
+            if (!string.IsNullOrEmpty(includeProperties))
             {
-                return OrderBy(query).ToList();
+                foreach (var includeProp in includeProperties
+                    .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProp);
+                }
             }
-
             return query.ToList();
         }
 
-
-        public T GetById(object id)
+        public T GetFirstOrDefault(Expression<Func<T, bool>> filter, string? includeProperties = null, bool tracked = false)
         {
-            return DbSet.Find(id);
+            IQueryable<T> query;
+            if (tracked)
+            {
+                query = dbset;
+            }
+            else
+            {
+                query = dbset.AsNoTracking();
+
+            }
+            query = query.Where(filter);
+            if (!string.IsNullOrEmpty(includeProperties))
+            {
+                foreach (var includeProp in includeProperties
+                   .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProp);
+                }
+            }
+            return query.FirstOrDefault();
+
         }
-        public async Task<T> GetByIdAsync(object id)
+
+        public void Remove(T item)
         {
-            return await DbSet.FindAsync(id);
+            dbset.Remove(item);
         }
 
-        public void Update(T entity)
+        public void RemoveRange(IEnumerable<T> items)
         {
-            DbSet.Attach(entity);
-            _context.Entry(entity).State = EntityState.Modified;
-
-        }
-
-        public async Task<T> UpdateAsync(T entity)
-        {
-            DbSet.Attach(entity);
-            _context.Entry(entity).State = EntityState.Modified;
-
-            return entity;
+            dbset.RemoveRange(items);
         }
 
     }

@@ -26,82 +26,53 @@ namespace Restaurant.Data.Access.Repository.Services
       
         }
 
-        public void CreateTable(TablesVM table)
+        public void CreateTable(Tables table)
         {
-            var newTable = new Tables
-            {
-                TableNumber = table.TableNumber,
-                NumberOfSeats = table.NumberOfSeats,
-                IsAvailable = table.IsAvailable
-            };
-            _unitOfWork.Repository<Tables>().Add(newTable);
+            _unitOfWork.TableRepository.Add(table);
             _unitOfWork.Save();
         }
+
 
         public void DeleteTable(int id)
         {
-            var tables = _unitOfWork.Repository<Tables>().GetById(id);
+            var table = _unitOfWork.TableRepository.GetFirstOrDefault(t => t.Id == id);
+            if (table == null)
+            {
+                throw new Exception("Table not found");
+            }
 
-            _unitOfWork.Repository<Tables>().Delete(tables);
+            _unitOfWork.TableRepository.Remove(table);
             _unitOfWork.Save();
         }
 
-        public IEnumerable<TablesVM> GetAllTables()
+        public IEnumerable<Tables> GetAllTables()
         {
            
-            var tablesVMs = _unitOfWork.Repository<Tables>()
-                                       .GetAll()
-                                       .Select(t => new TablesVM
-                                       {
-                                           Id = t.Id,
-                                           TableNumber = t.TableNumber,
-                                           NumberOfSeats = t.NumberOfSeats,
-                                           IsAvailable = t.IsAvailable
-                                       }).ToList();
+            var tablelist=_unitOfWork.TableRepository.GetAll().ToList();    
 
-            return tablesVMs;
+            return tablelist;
         }
 
 
-        public TablesVM GetById(int id)
+        public Tables GetById(int id)
         {
-            var tables = _unitOfWork.Repository<Tables>().GetById(id);
-
-            if (tables == null)
-            {
-                
-                return null;
-            }
-
-          
-            var table = new TablesVM
-            {
-                Id= tables.Id,
-                TableNumber = tables.TableNumber,
-                NumberOfSeats = tables.NumberOfSeats,
-                IsAvailable = tables.IsAvailable
-            };
-
-            return table;
+            var table = _unitOfWork.TableRepository.GetFirstOrDefault(u => u.Id == id);
+            return table ?? throw new Exception("Table not found");
         }
 
-        public void UpdateTable(TablesVM tableVM)
+        public void UpdateTable(Tables tableVM)
         {
-            // Retrieve the existing table by ID
-            var existingTable = _unitOfWork.Repository<Tables>().GetById(tableVM.Id);
-
+            var existingTable = _unitOfWork.TableRepository.GetFirstOrDefault(u => u.Id == tableVM.Id);
             if (existingTable == null)
             {
                 throw new Exception("Table not found");
             }
 
-            // Update the properties of the existing table
             existingTable.TableNumber = tableVM.TableNumber;
             existingTable.NumberOfSeats = tableVM.NumberOfSeats;
             existingTable.IsAvailable = tableVM.IsAvailable;
 
-            // Perform the update and save changes
-            _unitOfWork.Repository<Tables>().Update(existingTable);
+            _unitOfWork.TableRepository.UpdateTable(existingTable);
             _unitOfWork.Save();
         }
 

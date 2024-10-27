@@ -9,18 +9,13 @@ namespace Restaurant.Data.Access.Repository.IRepository
 {
     public interface IRepository<T> where T : class
     {
-        IEnumerable<T> GetAll(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> OrderBy = null, string includeproperties = "");
-
-        T GetById(object id);
-        Task<T> GetByIdAsync(object id);
+        IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter = null, string? includeProperties = null);
+        T GetFirstOrDefault(Expression<Func<T, bool>> filter, string? includeProperties = null, bool tracked = false);
 
         void Add(T entity);
-        Task<T> AddAsync(T entity);
 
-        void Update(T entity);
-        Task<T> UpdateAsync(T entity);
+        void Remove(T item);
 
-        void Delete(T entity);
-        Task<T> DeleteAsync(T entity);
+        void RemoveRange(IEnumerable<T> items);
     }
 }

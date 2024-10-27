@@ -8,7 +8,8 @@ namespace Restaurant.Data.Access.Repository.IRepository
 {
     public interface IUnitOfWork
     {
-        IRepository<T> Repository<T>() where T : class;
+        ITableRepository TableRepository { get; }
+        IApplicationUserRepository ApplicationUserRepository { get; }
 
         void Save();
     }

@@ -28,7 +28,7 @@ namespace RetaurantBooking
                 .AddDefaultTokenProviders();
 
             builder.Services.AddControllers();
-            builder.Services.AddScoped<ITableService, TableService>();
+           
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IUserService, UserService>();

@@ -1,4 +1,5 @@
 ﻿
+using Restaurant.Models;
 using RestaurantViewModels;
 using System;
 using System.Collections.Generic;
@@ -10,14 +11,14 @@ namespace Restaurant.Data.Access.Repository.Services.IServices
 {
    public interface ITableService
     {
-        IEnumerable<TablesVM> GetAllTables();
+        IEnumerable<Tables> GetAllTables();
 
-        TablesVM GetById(int id);
+        Tables GetById(int id);
 
-        void UpdateTable(TablesVM table);
+        void UpdateTable(Tables table);
 
 
-        void CreateTable (TablesVM table);  
+        void CreateTable (Tables table);  
 
         void DeleteTable (int id);
 

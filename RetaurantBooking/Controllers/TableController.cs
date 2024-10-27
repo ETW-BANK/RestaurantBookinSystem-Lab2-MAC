@@ -13,71 +13,83 @@ namespace RetaurantBooking.Controllers
     [ApiController]
     public class TableController : ControllerBase
     {
-        private readonly ITableService _tableService;
+        private readonly IUnitOfWork _unitOfWork;   
        
-        public TableController(ITableService tableService)
+        public TableController(IUnitOfWork unitOfWork)
         {
-            _tableService = tableService;
+           _unitOfWork = unitOfWork;
            
         }
 
+      
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTable(int id)
         {
-            var result = _tableService.GetById(id);
-
-           return Ok(result);
+            var table = _unitOfWork.TableRepository.GetFirstOrDefault(x => x.Id == id);
+            if (table == null)
+            {
+                return NotFound("Table Not Found");
+            }
+            return Ok(table);
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllTables()
         {
-            IEnumerable<TablesVM> tables = _tableService.GetAllTables();
-
+            IEnumerable<Tables> tables = _unitOfWork.TableRepository.GetAll().ToList();
             return Ok(tables);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateNewTable(TablesVM table)
+        public async Task<IActionResult> CreateNewTable([FromBody] Tables table)
         {
-            _tableService.CreateTable(table);
-          
-            return Ok("Table Created Succesfully");
+            if (table == null)
+            {
+                return BadRequest("Invalid table data");
+            }
+
+            _unitOfWork.TableRepository.Add(table);
+            _unitOfWork.Save();
+            return Ok("Table Created Successfully");
         }
 
-        [HttpGet]
-
-        public IActionResult Update(int id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Update(int id)
         {
-            var table = _tableService.GetById(id);
+            var table = _unitOfWork.TableRepository.GetFirstOrDefault(x => x.Id == id);
             if (table == null)
             {
                 return NotFound("Table Not Found");
             }
-
             return Ok(table);
-
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(TablesVM table)
+        public async Task<IActionResult> Update([FromBody] Tables table)
         {
-          _tableService.UpdateTable(table);
+            if (table == null)
+            {
+                return BadRequest("Invalid table data");
+            }
 
-     
+            _unitOfWork.TableRepository.UpdateTable(table);
+            _unitOfWork.Save();
 
-            return Ok("Table Updated");    
+            return Ok("Table Updated Successfully");
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTable(int id)
         {
-         _tableService.DeleteTable(id);
-            if (id == 0)
+            var tableToDelete = _unitOfWork.TableRepository.GetFirstOrDefault(x => x.Id == id);
+            if (tableToDelete == null)
             {
                 return NotFound("Table Not Found");
-
             }
+
+            _unitOfWork.TableRepository.Remove(tableToDelete);
+            _unitOfWork.Save();
+
             return Ok("Table Deleted Successfully");
         }
     }

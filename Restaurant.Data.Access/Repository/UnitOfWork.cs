@@ -8,42 +8,25 @@ using System.Threading.Tasks;
 
 namespace Restaurant.Data.Access.Repository
 {
-    public class UnitOfWork : IUnitOfWork, IDisposable
+    public class UnitOfWork : IUnitOfWork
     {
 
         private readonly RestaurantDbContext _context;
 
+        public IApplicationUserRepository ApplicationUserRepository { get; private set; }
+        public ITableRepository TableRepository { get; private set; }
         public UnitOfWork(RestaurantDbContext context)
         {
             _context = context;
+            TableRepository=new TableRepository(context);
+            ApplicationUserRepository = new ApplicationUserRepository(context);
         }
 
-        private bool disposed = false;
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+      
 
-        }
+       
 
-        private void Dispose(bool disposing)
-        {
-            if (!this.disposed)
-            {
-                if (disposing)
-                {
-                    _context.Dispose();
-                }
-
-                this.disposed = true;
-            }
-        }
-
-        public IRepository<T> Repository<T>() where T : class
-        {
-            IRepository<T> repo = new Repository<T>(_context);
-            return repo;
-        }
+       
 
         public void Save()
         {

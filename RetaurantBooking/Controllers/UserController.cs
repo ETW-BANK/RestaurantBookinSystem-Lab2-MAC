@@ -22,13 +22,15 @@ namespace RetaurantBooking.Controllers
         private readonly IUserService _userService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly RestaurantDbContext _dbContext;    
+        private readonly UserManager<IdentityUser> _userManager;
        
       
-        public UserController(IUserService userService, IUnitOfWork unitOfWork,RestaurantDbContext dbcontext)
+        public UserController(IUserService userService, UserManager<IdentityUser> userManager, IUnitOfWork unitOfWork,RestaurantDbContext dbcontext)
         {
            _userService = userService;  
             _unitOfWork = unitOfWork;
             _dbContext = dbcontext;
+            _userManager = userManager;
           
            
          
@@ -106,26 +108,20 @@ namespace RetaurantBooking.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateRole([FromBody] RoleManagmentVM roleManagmentVM)
+        public async  Task<IActionResult> RoleManagment(RoleManagmentVM roleManagmentVM)
         {
-            if (roleManagmentVM == null || roleManagmentVM.ApplicationUser == null)
-            {
-                return BadRequest(new { success = false, message = "Invalid role management data." });
-            }
+           var newrole=_userService.RoleManagment(roleManagmentVM.ApplicationUser.Id);
 
-            try
+            if (newrole == null)
             {
-                // Call the service to update the user's role
-               _userService.UpdateRole(roleManagmentVM);
-
-                return Ok(new { success = true, message = "User role updated successfully." });
+                return BadRequest();
             }
-            catch (Exception ex)
+            else
             {
-                // Return a bad request response with the error message
-                return BadRequest(new { success = false, message = ex.Message });
+              _userService.UpdateUserRole(roleManagmentVM);
+
+                return Ok();
             }
         }
-
     }
 }

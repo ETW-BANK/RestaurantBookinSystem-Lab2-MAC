@@ -177,21 +177,26 @@ namespace RestaurantServices.Services
             return RoleVM;
         }
 
-        public void UpdateRole(RoleManagmentVM roles)
+        public async Task UpdateUserRole(RoleManagmentVM roleManagmentVM)
         {
-            string RoleID = _dbContext.UserRoles.FirstOrDefault(u => u.UserId == roles.ApplicationUser.Id).RoleId;
+            // Get the current role
+            string RoleID = _dbContext.UserRoles.FirstOrDefault(u => u.UserId == roleManagmentVM.ApplicationUser.Id)?.RoleId;
+            string oldRole = _dbContext.Roles.FirstOrDefault(u => u.Id == RoleID)?.Name;
 
-            string oldRole= _dbContext.Roles.FirstOrDefault(u=>u.Id==RoleID).Name;
-
-            if(roles.ApplicationUser.Role == oldRole)
+            if (oldRole != roleManagmentVM.ApplicationUser.Role)
             {
-                ApplicationUser applicationUser = _dbContext.ApplicationUsers.FirstOrDefault(u => u.Id == roles.ApplicationUser.Id);
+                ApplicationUser applicationUser = _dbContext.ApplicationUsers.FirstOrDefault(u => u.Id == roleManagmentVM.ApplicationUser.Id);
 
-              _userManager.RemoveFromRoleAsync(applicationUser,oldRole).GetAwaiter().GetResult();
-            _userManager.AddToRoleAsync(applicationUser,roles.ApplicationUser.Role).GetAwaiter().GetResult();   
-
-                _dbContext.SaveChanges();   
+                if (applicationUser != null)
+                {
+                    _userManager.RemoveFromRoleAsync(applicationUser, oldRole).GetAwaiter().GetResult();
+                   _userManager.AddToRoleAsync(applicationUser, roleManagmentVM.ApplicationUser.Role).GetAwaiter().GetResult();
+                }
             }
         }
+
+
+
+
     }
 }

@@ -54,64 +54,78 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
                 {
                     var data = await response.Content.ReadAsStringAsync();
 
-                   
+
                     var result = JsonConvert.DeserializeObject<dynamic>(data);
 
-                   
+
                     var roleVm = result?.data.ToObject<RoleManagmentVM>();
 
                     if (roleVm != null)
                     {
-                        
+
                         ViewBag.PageTitle = "Role Management";
-                        return View(roleVm); 
+                        return View(roleVm);
                     }
                 }
 
-               
+
                 TempData["Error"] = "Unable to retrieve role management data.";
-                return RedirectToAction("Index"); 
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 TempData["Error"] = ex.Message;
-                return RedirectToAction("Index"); 
+                return RedirectToAction("Index");
             }
         }
-
 
 
 
         [HttpPost]
         public async Task<IActionResult> RoleManagement(RoleManagmentVM roleVm)
         {
-            var content = new StringContent(JsonConvert.SerializeObject(roleVm), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync("UpdateRole", content);
-
-            if (response.IsSuccessStatusCode)
+            // Validate the input model
+            if (roleVm == null || roleVm.ApplicationUser == null || roleVm.RoleList == null || !roleVm.RoleList.Any())
             {
-                TempData["success"] = "Role updated successfully.";
-                return RedirectToAction("Index");
+                TempData["error"] = "Invalid role management data.";
+                return Json(new { success = false, userId = roleVm?.ApplicationUser?.Id });
             }
 
-            TempData["error"] = "Error updating role.";
-            return BadRequest(new { success = false, message = "Error updating role." });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> LockUnlock(string userId)
-        {
-            var content = new StringContent(JsonConvert.SerializeObject(userId), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync("lock-unlock", content);
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                TempData["success"] = "User has been successfully locked/unlocked.";
-                return Ok(new { success = true, message = "User has been locked/unlocked." });
-            }
+                // Log the incoming payload for debugging
+                var jsonPayload = JsonConvert.SerializeObject(roleVm);
+                Console.WriteLine(jsonPayload); // Debug log
 
-            TempData["error"] = "User could not be locked/unlocked.";
-            return BadRequest(new { success = false, message = "Failed to lock/unlock user." });
+                // Create the request content
+                var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+
+                // Make the POST request to update the role
+                var response = await _httpClient.PostAsync("RoleManagement", content); // Ensure the URL matches the API route
+
+                // Check the response for success
+                if (response.IsSuccessStatusCode)
+                {
+                    TempData["success"] = "User role updated successfully.";
+                    return Json(new { success = true, message = "User role updated successfully." });
+                }
+
+                // Log and handle the error response
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                TempData["error"] = $"Error updating role: {errorMessage}";
+                return Json(new { success = false, userId = roleVm.ApplicationUser.Id, message = errorMessage });
+            }
+            catch (Exception ex)
+            {
+                // Capture and log exceptions
+                TempData["error"] = $"Exception occurred: {ex.Message}";
+                return Json(new { success = false, userId = roleVm.ApplicationUser.Id, message = ex.Message });
+            }
         }
+
+
+
+
     }
 }
+

@@ -15,7 +15,7 @@ namespace RestaurantServices.Services.IServices
 
      Task <UserVm> GetById(string id);
 
-        void UpdateRole(RoleManagmentVM roles);
+        Task UpdateUserRole(RoleManagmentVM roles);
 
 
         void CreateUser(UserVm user);

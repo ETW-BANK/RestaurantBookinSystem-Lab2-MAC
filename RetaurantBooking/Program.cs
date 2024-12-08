@@ -8,6 +8,7 @@ using Restaurant.Data.Access.Repository.Services.IServices;
 using Restaurant.Models;
 using RestaurantServices.Services;
 using RestaurantServices.Services.IServices;
+using ServiceRegisterExtension;
 
 namespace RetaurantBooking
 {
@@ -31,7 +32,16 @@ namespace RetaurantBooking
            
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            //builder.Services.AddScoped<IServicesRegisterExtension, ServiceRegisterExtension.ServiceRegisterExtension>();
+
+            //var serviceProvider = builder.Services.BuildServiceProvider();
+            //var serviceRegisterExtension = serviceProvider.GetRequiredService<IServicesRegisterExtension>();
+            //serviceRegisterExtension.RegisterServices(builder.Services);
+
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<ITableService, TableService>();
+          //builder.Services.AddScoped<IBookingService, BookingService>();
+
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();

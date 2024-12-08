@@ -8,8 +8,8 @@ namespace RestaurantViewModels
 {
     public class ResponseModel
     {
-        public bool success { get; set; } // Assuming you might have this in your response
-        public string message { get; set; } // Assuming you might have this in your response
+        public bool success { get; set; } 
+        public string message { get; set; } 
         public Data data { get; set; }
 
         public class Data
@@ -27,7 +27,7 @@ namespace RestaurantViewModels
             public string postalCode { get; set; }
             public string role { get; set; }
             public string id { get; set; }
-            // Include other properties as needed
+         
         }
 
         public class RoleList

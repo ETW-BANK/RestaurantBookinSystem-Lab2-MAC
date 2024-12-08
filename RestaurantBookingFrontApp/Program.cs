@@ -24,13 +24,11 @@ namespace RestaurantBookingFrontApp
           
             builder.Services.AddScoped<IEmailSender, EmailSender>();
             builder.Services.AddHttpClient();
-            // Add services to the container.
-            builder.Services.AddScoped<ITableService, TableService>();
+           
         
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            builder.Services.AddScoped<IUserService, UserService>();
+     
 
-            builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
 

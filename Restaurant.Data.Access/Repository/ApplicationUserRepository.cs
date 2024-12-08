@@ -19,9 +19,6 @@ namespace Restaurant.Data.Access.Repository
             _db = db;
         }
 
-        public void UpdateUser(ApplicationUser applicationUser)
-        {
-          _db.ApplicationUsers.Update(applicationUser);
-        }
+     
     }
 }

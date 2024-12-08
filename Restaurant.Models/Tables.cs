@@ -19,7 +19,7 @@ namespace Restaurant.Models
         [Required]
         public bool IsAvailable { get; set; }
 
-
+       
 
     }
 }

@@ -10,7 +10,7 @@ namespace Restaurant.Data.Access.Repository.IRepository
     {
         ITableRepository TableRepository { get; }
         IApplicationUserRepository ApplicationUserRepository { get; }
-
+   
         void Save();
     }
 }

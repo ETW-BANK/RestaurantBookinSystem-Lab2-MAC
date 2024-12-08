@@ -13,12 +13,7 @@ namespace RestaurantViewModels
         public ApplicationUser ApplicationUser { get; set; }    
         public IEnumerable<SelectListItem> RoleList { get; set; }
 
-        public class ApplicationUserVM
-        {
-            public string Id { get; set; }
-            public string Name { get; set; }
-          
-        }
+       
 
     }
 }

@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.Data.Access.Repository.IRepository;
-using Restaurant.Data.Access.Repository.Services;
 using Restaurant.Data.Access.Repository.Services.IServices;
 using Restaurant.Models;
-using RestaurantViewModels;
+
 
 
 namespace RetaurantBooking.Controllers
@@ -13,11 +12,12 @@ namespace RetaurantBooking.Controllers
     [ApiController]
     public class TableController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;   
-       
-        public TableController(IUnitOfWork unitOfWork)
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly ITableService _tableservice;
+        public TableController(IUnitOfWork unitOfWork,ITableService tableService)
         {
            _unitOfWork = unitOfWork;
+            _tableservice = tableService;   
            
         }
 
@@ -36,7 +36,7 @@ namespace RetaurantBooking.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllTables()
         {
-            IEnumerable<Tables> tables = _unitOfWork.TableRepository.GetAll().ToList();
+            IEnumerable<Tables> tables = _tableservice.GetAllTables();
             return Ok(tables);
         }
 

@@ -1,16 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+﻿
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Restaurant.Data.Access.Data;
 using Restaurant.Data.Access.Repository.IRepository;
-using Restaurant.Data.Access.Repository.Services;
-using Restaurant.Data.Access.Repository.Services.IServices;
 using Restaurant.Models;
 using RestaurantServices.Services.IServices;
-using RestaurantViewModels;
-using System.Text.Json.Serialization;
-using System.Web.Helpers;
 
 namespace RetaurantBooking.Controllers
 {
@@ -21,50 +13,49 @@ namespace RetaurantBooking.Controllers
     {
       
         private readonly IUnitOfWork _unitOfWork;
-        private readonly RoleManager<IdentityUser> _roleManager;
-        private readonly UserManager<IdentityUser> _userManager;    
-     
-       
-      
-        public UserController( UserManager<IdentityUser> userManager, IUnitOfWork unitOfWork, RoleManager<IdentityUser> roleManager)
+        private readonly IUserService _userservice;
+        public UserController(  IUnitOfWork unitOfWork,IUserService userService)
         {
           
-            _userManager = userManager;
-            _roleManager = roleManager;
             _unitOfWork = unitOfWork;
-          
-           
-         
+            _userservice = userService; 
+       
         }
 
-        //[HttpGet]
+        [HttpGet]
 
-        //public async Task<IActionResult> GetSingleUser(string Id)
-        //{
-        //    var user = await _unitOfWork.TableRepository.GetFirstOrDefault();
+        public async Task<IActionResult> GetSingleUser(string Id)
+        {
+            var user =  _unitOfWork.ApplicationUserRepository.GetFirstOrDefault(u => u.Id == Id);
 
-        //    if (user == null)
-        //    {
-        //        return BadRequest("User not found");
+            if (user == null)
+            {
+                return BadRequest("User not found");
 
-        //    }
+            }
 
-        //    return Ok(user);
-        //}
-
-        //[HttpGet]
-        //public async Task<IActionResult> GetAllUsers()
-        //{
-        //    IEnumerable<UserVm> users = await _unitOfWork..GetAllUsers();
-
-        //    return Ok(users);
-        //}
-
-
-        
-
-
+            return Ok(user);
+        }
       
+        [HttpGet]
+        public  async Task<IActionResult> GetAllUsers()
+        {
+           IEnumerable<ApplicationUser> userlist= await _userservice.GetAllUsers();
+           
+
+            if (userlist==null )
+            {
+                return NotFound("No users found.");
+            }
+
+            return Ok(userlist);
+        } 
+
+
+
+
+
+
         //[HttpPost]
         //public async Task<IActionResult> LockUser([FromBody] string id)
         //{

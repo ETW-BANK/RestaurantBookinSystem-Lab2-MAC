@@ -11,19 +11,8 @@ namespace RestaurantServices.Services.IServices
   public interface IUserService
     {
 
-        Task<IEnumerable<UserVm>> GetAllUsers();
+        Task<IEnumerable<ApplicationUser>> GetAllUsers();
 
-     Task <UserVm> GetById(string id);
-
-        Task UpdateUserRole(RoleManagmentVM roles);
-
-
-        void CreateUser(UserVm user);
-
-        void DeleteUser(int id);
-
-        Task<RoleManagmentVM> RoleManagment(string userid);
-
-        Task LockUnlock(string userId); 
+      
     }
 }

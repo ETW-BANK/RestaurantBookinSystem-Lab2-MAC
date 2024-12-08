@@ -3,13 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Restaurant.Data.Access.Repository.IRepository;
 using Restaurant.Data.Access.Repository.Services.IServices;
 using Restaurant.Models;
-using RestaurantViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Restaurant.Data.Access.Repository.Services
 {

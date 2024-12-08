@@ -32,15 +32,15 @@ namespace RetaurantBooking
            
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            //builder.Services.AddScoped<IServicesRegisterExtension, ServiceRegisterExtension.ServiceRegisterExtension>();
+            builder.Services.AddScoped<IServicesRegisterExtension, ServiceRegisterExtension.ServiceRegisterExtension>();
 
-            //var serviceProvider = builder.Services.BuildServiceProvider();
-            //var serviceRegisterExtension = serviceProvider.GetRequiredService<IServicesRegisterExtension>();
-            //serviceRegisterExtension.RegisterServices(builder.Services);
+            var serviceProvider = builder.Services.BuildServiceProvider();
+            var serviceRegisterExtension = serviceProvider.GetRequiredService<IServicesRegisterExtension>();
+            serviceRegisterExtension.RegisterServices(builder.Services);
 
-            builder.Services.AddScoped<IUserService, UserService>();
-            builder.Services.AddScoped<ITableService, TableService>();
-          //builder.Services.AddScoped<IBookingService, BookingService>();
+            //  builder.Services.AddScoped<IUserService, UserService>();
+            //  builder.Services.AddScoped<ITableService, TableService>();
+            ////builder.Services.AddScoped<IBookingService, BookingService>();
 
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -28,9 +28,10 @@ namespace Restaurant.Data.Access.Repository
             dbset.Add(entity);
         }
 
-        public IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter, string? includeProperties = null)
+        public IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter = null, string? includeProperties = null)
         {
             IQueryable<T> query = dbset;
+
             if (filter != null)
             {
                 query = query.Where(filter);
@@ -38,14 +39,15 @@ namespace Restaurant.Data.Access.Repository
 
             if (!string.IsNullOrEmpty(includeProperties))
             {
-                foreach (var includeProp in includeProperties
-                    .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                foreach (var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
                 {
-                    query = query.Include(includeProp);
+                    query = query.Include(includeProp); 
                 }
             }
-            return query.ToList();
+
+            return query.ToList();  
         }
+
 
         public T GetFirstOrDefault(Expression<Func<T, bool>> filter, string? includeProperties = null, bool tracked = false)
         {

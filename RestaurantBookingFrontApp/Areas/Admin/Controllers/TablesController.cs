@@ -8,7 +8,7 @@ using System.Text;
 namespace RestaurantBookingApp.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    //[Authorize(Roles = StaticData.Role_Admin)]
+    [Authorize(Roles = StaticData.Role_Admin)]
     public class TablesController : Controller
     {
         private readonly HttpClient _httpClient;

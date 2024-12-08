@@ -45,8 +45,23 @@ namespace RetaurantBooking.Controllers
             }
             catch (Exception ex)
             {
-                // Log the exception (optional)
+               
                 return StatusCode(500, "Internal server error: " + ex.Message);
+            }
+
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetBookings()
+        {
+            try
+            {
+                var bookings = await _bookingService.GetBookingsAsync();
+                return Ok(bookings);    
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
     }

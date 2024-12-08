@@ -20,7 +20,7 @@ namespace Restaurant.Models
         public TimeOnly BookingTime { get; set; }   
 
         public int NumberOfGuests { get; set; }
-        public string ApplicationUserId { get; set; }   
+        public string ApplicationUserId { get; set; }
         [ForeignKey("ApplictionUserId")]
         [ValidateNever]
         public ApplicationUser ApplicationUser { get; set; }

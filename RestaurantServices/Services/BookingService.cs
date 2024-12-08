@@ -31,10 +31,10 @@ namespace RestaurantServices.Services
         public async Task<IEnumerable<BookingVM>> GetBookingsAsync()
         {
             var bookings = _unitOfWork.BookingRepository
-                .GetAll(includeProperties: "ApplicationUser,Tables") // Ensure this is correct
+                .GetAll(includeProperties: "ApplicationUser,Tables") 
                 .ToList();
 
-            // Check the bookings list to see if ApplicationUser data is being included
+
             var bookingsList = bookings.Select(b => new BookingVM
             {
                 BookingId = b.Id,
@@ -46,8 +46,17 @@ namespace RestaurantServices.Services
                 Userid = b.ApplicationUserId,
                 Name = b.ApplicationUser?.Name ?? "No User",  // Default value for debugging
                 Email = b.ApplicationUser?.Email ?? "No Email",  // Default value for debugging
-                UserName = b.ApplicationUser?.PhoneNumber ?? "No Phone"  // Default value for debugging
+                UserName = b.ApplicationUser?.PhoneNumber ?? "No Phone",
+
+                User = _unitOfWork.ApplicationUserRepository.GetFirstOrDefault(x => x.Id == b.ApplicationUserId)
+
+
+
+
+
             }).ToList();
+
+          
 
             // Debug or log the bookingsList to check values
             return bookingsList;

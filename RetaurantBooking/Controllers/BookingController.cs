@@ -34,7 +34,7 @@ namespace RetaurantBooking.Controllers
             {
                 var userId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-                userId = "79a5bd70-eb51-414b-902f-59998367a2ff";
+                userId = "d50472d8-50e2-4382-a2fe-d1287fddac6c";
                 if (userId == null)
                 {
                     return Unauthorized("User is not authenticated.");

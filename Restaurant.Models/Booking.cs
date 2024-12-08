@@ -12,23 +12,18 @@ namespace Restaurant.Models
    public class Booking
     {
         [Key]
+        public int Id { get; set; }
 
-        public int Id { get; set; } 
-
-        public DateOnly BookingDate { get; set; }   
-
-        public TimeOnly BookingTime { get; set; }   
-
+        public DateOnly BookingDate { get; set; }
+        public TimeOnly BookingTime { get; set; }
         public int NumberOfGuests { get; set; }
-        public string ApplicationUserId { get; set; }
-        [ForeignKey("ApplictionUserId")]
-        [ValidateNever]
-        public ApplicationUser ApplicationUser { get; set; }
 
+        // Foreign key and navigation property
         public int TableId { get; set; }
-        [ForeignKey("TableId")]
-
-        [ValidateNever]
         public Tables Tables { get; set; }
+
+        // User information
+        public string ApplicationUserId { get; set; }
+        public ApplicationUser ApplicationUser { get; set; }
     }
 }

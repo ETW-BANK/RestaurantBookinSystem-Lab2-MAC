@@ -239,9 +239,6 @@ namespace Restaurant.Data.Access.Migrations
 
                     b.Property<string>("ApplicationUserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ApplictionUserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateOnly>("BookingDate")
@@ -256,11 +253,14 @@ namespace Restaurant.Data.Access.Migrations
                     b.Property<int>("TableId")
                         .HasColumnType("int");
 
+                    b.Property<int>("TablesId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplictionUserId");
+                    b.HasIndex("ApplicationUserId");
 
-                    b.HasIndex("TableId");
+                    b.HasIndex("TablesId");
 
                     b.ToTable("Bookings");
                 });
@@ -365,11 +365,13 @@ namespace Restaurant.Data.Access.Migrations
                 {
                     b.HasOne("Restaurant.Models.ApplicationUser", "ApplicationUser")
                         .WithMany()
-                        .HasForeignKey("ApplictionUserId");
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Restaurant.Models.Tables", "Tables")
                         .WithMany()
-                        .HasForeignKey("TableId")
+                        .HasForeignKey("TablesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

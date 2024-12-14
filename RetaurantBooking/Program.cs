@@ -3,11 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Restaurant.Data.Access.Data;
 using Restaurant.Data.Access.Repository;
 using Restaurant.Data.Access.Repository.IRepository;
-using Restaurant.Data.Access.Repository.Services;
-using Restaurant.Data.Access.Repository.Services.IServices;
-using Restaurant.Models;
-using RestaurantServices.Services;
-using RestaurantServices.Services.IServices;
 using ServiceRegisterExtension;
 
 namespace RetaurantBooking

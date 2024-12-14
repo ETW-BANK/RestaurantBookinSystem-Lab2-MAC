@@ -40,5 +40,7 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
             return Json(new { data = new List<BookingVM>(), error = "Unable to retrieve users from the server." });
         }
 
+
+
     }
 }

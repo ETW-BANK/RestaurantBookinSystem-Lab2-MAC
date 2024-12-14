@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.Data.Access.Repository.IRepository;
 using Restaurant.Data.Access.Repository.Services.IServices;
+using Restaurant.Utility;
 using RestaurantServices.Services.IServices;
 using RestaurantViewModels;
 using System.Security.Claims;
@@ -21,8 +23,11 @@ namespace RetaurantBooking.Controllers
             _bookingService = bookingService;
         }
 
+        //[Area("Customer")]
+        //[Authorize(Roles = StaticData.Role_Customer)]
         [HttpPost]
-        
+
+
         public IActionResult Create([FromBody] BookingVM bookingVm)
         {
             if (!ModelState.IsValid)
@@ -32,24 +37,18 @@ namespace RetaurantBooking.Controllers
 
             try
             {
-                var userId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var userId = "b39380bc-b560-40f9-90d8-fceb3b6b19d8"; 
 
-                userId = "d50472d8-50e2-4382-a2fe-d1287fddac6c";
-                if (userId == null)
-                {
-                    return Unauthorized("User is not authenticated.");
-                }
-
+                // Proceed with booking creation
                 _bookingService.CreateBooking(bookingVm, userId);
                 return Ok("Booking created successfully.");
             }
             catch (Exception ex)
             {
-               
                 return StatusCode(500, "Internal server error: " + ex.Message);
             }
-
         }
+
 
         [HttpGet]
         public async Task<IActionResult> GetBookings()

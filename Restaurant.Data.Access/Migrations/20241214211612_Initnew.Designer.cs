@@ -12,8 +12,8 @@ using Restaurant.Data.Access.Data;
 namespace Restaurant.Data.Access.Migrations
 {
     [DbContext(typeof(RestaurantDbContext))]
-    [Migration("20241208062839_Init")]
-    partial class Init
+    [Migration("20241214211612_Initnew")]
+    partial class Initnew
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -251,9 +251,6 @@ namespace Restaurant.Data.Access.Migrations
                         .HasColumnType("time");
 
                     b.Property<int>("NumberOfGuests")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TableId")
                         .HasColumnType("int");
 
                     b.Property<int>("TablesId")

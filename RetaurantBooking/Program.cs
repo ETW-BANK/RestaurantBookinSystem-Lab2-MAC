@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Restaurant.Data.Access.Data;
 using Restaurant.Data.Access.Repository;
 using Restaurant.Data.Access.Repository.IRepository;
+
 using ServiceRegisterExtension;
 
 namespace RetaurantBooking
@@ -24,7 +25,7 @@ namespace RetaurantBooking
                 .AddDefaultTokenProviders();
 
             builder.Services.AddControllers();
-           
+          
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IServicesRegisterExtension, ServiceRegisterExtension.ServiceRegisterExtension>();

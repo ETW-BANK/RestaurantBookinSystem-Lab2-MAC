@@ -2,14 +2,16 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Newtonsoft.Json;
+using Restaurant.Models;
 using Restaurant.Utility;
 using RestaurantViewModels;
 using System.Text;
 
 namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
 {
+
     [Area("Admin")]
-    [Authorize(Roles = StaticData.Role_Admin)]
+    [Route("Admin/[controller]/[action]")]
     public class UsersController : Controller
     {
         private readonly HttpClient _httpClient;
@@ -27,23 +29,22 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllUsers()
+        public async Task<IActionResult> GetAllUser()
         {
             var response = await _httpClient.GetAsync("GetAllUsers");
-
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-                var serviceResponse = JsonConvert.DeserializeObject<List<UserVm>>(data);
-
-                return Json(new { data = serviceResponse });
+                var serviceResponse = JsonConvert.DeserializeObject<ApiResponse<List<UserVm>>>(data);
+                return Json(new { data = serviceResponse?.Data });
             }
 
             return Json(new { data = new List<UserVm>(), error = "Unable to retrieve users from the server." });
         }
+    
 
 
-        [HttpGet]
+    [HttpGet]
         public async Task<IActionResult> RoleManagement(string userId)
         {
             try
@@ -128,4 +129,3 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
 
     }
 }
-

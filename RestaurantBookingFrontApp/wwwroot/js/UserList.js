@@ -7,32 +7,31 @@ $(document).ready(function () {
 function loadDataTable() {
     dataTable = $('#tblData').DataTable({
         "ajax": {
-            "url": 'Users/GetAllUsers',  
+            "url": 'Users/GetAllUser',  // Ensure this matches your Admin controller route
             "type": "GET",
             "datatype": "json",
-            "dataSrc": "" 
+            "dataSrc": "data"  // Map data from the 'data' key in the response
         },
         "columns": [
-            { "data": 'name', "width": "10%" },
-            { "data": 'email', "width": "15%" },
+            { "data": 'name', "width": "15%" },
+            { "data": 'email', "width": "20%" },
             { "data": 'streetAddress', "width": "15%" },
             { "data": 'city', "width": "10%" },
-            { "data": 'state', "width": "10%" },
-            { "data": 'postalCode', "width": "7%" },
-            { "data": 'phoneNumber', "width": "15%" },
-            { "data": 'role', "width": "8%" },
+           
+            { "data": 'postalCode', "width": "10%" },
+            { "data": 'phoneNumber', "width": "10%" },
+            { "data": 'role', "width": "10%" }
             {
-                data: { id: "id" },
+                "data": 'id',
                 "render": function (data) {
                     return `
                         <div class="text-center">
-                            <a href="Users/RoleManagement?userId=${data.id}" class="btn btn-danger text-white" style="cursor:pointer; width:150px">
-                                <i class="bi bi-pencil-square"></i> Permission
+                            <a href="Users/RoleManagement?userId=${data}" class="btn btn-danger text-white" style="width:100px">
+                                Permission
                             </a>
-                        </div>
-                    `;
+                        </div>`;
                 },
-                "width": "25%"
+                "width": "15%"
             }
         ]
     });

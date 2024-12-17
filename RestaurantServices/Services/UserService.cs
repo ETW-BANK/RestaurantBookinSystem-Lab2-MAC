@@ -4,6 +4,7 @@ using Restaurant.Data.Access.Repository;
 using Restaurant.Data.Access.Repository.IRepository;
 using Restaurant.Models;
 using RestaurantServices.Services.IServices;
+using RestaurantViewModels;
 
 
 namespace RestaurantServices.Services
@@ -13,40 +14,44 @@ namespace RestaurantServices.Services
 
 
         private IUnitOfWork _unitOfWork;
-        private RestaurantDbContext _dbContext; 
-        public UserService( IUnitOfWork unitOfWork,RestaurantDbContext dbContext)
-            {
-               
-                _unitOfWork = unitOfWork;   
-                _dbContext = dbContext;
-            }
-
-        public async Task<IEnumerable<ApplicationUser>> GetAllUsers()
+        private RestaurantDbContext _dbContext;
+        public UserService(IUnitOfWork unitOfWork, RestaurantDbContext dbContext)
         {
-           
-           IEnumerable<ApplicationUser> usersList = _unitOfWork.ApplicationUserRepository.GetAll().ToList();
 
-            
-            var userRoles = _dbContext.UserRoles.ToList(); 
-            var roles = _dbContext.Roles.ToList();         
-
-            
-            foreach (var user in usersList)
-            {
-                var userRole = userRoles.FirstOrDefault(ur => ur.UserId == user.Id);
-                if (userRole != null)
-                {
-                    var role = roles.FirstOrDefault(r => r.Id == userRole.RoleId);
-                    if (role != null)
-                    {
-                        user.Role = role.Name; 
-                    }
-                }
-            }
-
-            return usersList;
+            _unitOfWork = unitOfWork;
+            _dbContext = dbContext;
         }
 
-    }
+        public async Task<List<UserVm>> GetAllUsers()
+        {
+            // Fetch all users
+            var usersList = _unitOfWork.ApplicationUserRepository.GetAll().ToList();
 
+            // Fetch roles and user-role relationships
+            var userRoles = _dbContext.UserRoles.ToList();
+            var roles = _dbContext.Roles.ToList();
+
+            // Map ApplicationUser to UserVm and assign roles
+            var userVmList = usersList.Select(user =>
+            {
+                var userRole = userRoles.FirstOrDefault(ur => ur.UserId == user.Id);
+                var role = userRole != null ? roles.FirstOrDefault(r => r.Id == userRole.RoleId)?.Name : null;
+
+                return new UserVm
+                {
+                    Id = user.Id,
+                    Name = user.Name,
+                    Email = user.Email,
+                    StreetAddress = user.StreetAddress,
+                    City = user.City,
+                    State = user.State,
+                    PostalCode = user.PostalCode,
+                    PhoneNumber = user.PhoneNumber,
+                    Role = role
+                };
+            }).ToList();
+
+            return userVmList;
+        }
+    }
 }

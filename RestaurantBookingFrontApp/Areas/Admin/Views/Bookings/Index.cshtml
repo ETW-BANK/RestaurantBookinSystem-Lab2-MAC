@@ -8,7 +8,7 @@
     <div class="card-header bg-secondary bg-gradient mt-0 py-3">
         <div class="row">
             <div class="col-12 text-center">
-                <h2 class="text-white py-2">Bookings List</h2>
+                <h2 class="text-white py-2">Booking List</h2>
             </div>
         </div>
     </div>
@@ -17,7 +17,7 @@
             <div class="col-6">
             </div>
             <div class="col-6 text-end">
-                <a asp-controller="Bookings" asp-area="Admin" asp-action="Create" class="btn btn-primary">
+                <a asp-controller="Tables" asp-area="Admin" asp-action="Create" class="btn btn-primary">
                     <i class="bi bi-plus-circle"></i> Create New Table
                 </a>
             </div>
@@ -26,13 +26,12 @@
         <table id="tblData" class="table table-bordered table-striped text-center" width="100%">
             <thead>
                 <tr>
-                    <th>Booking ID</th>
-                    <th>Booking Date</th>
-                    <th>Booking Time</th>
-                    <th>Number of Guests</th>
+                    <th>Booking Id</th>
                     <th>Table Number</th>
-                    <th>User ID</th>
-                    <th>User Name</th>
+                    <th>NumberofGuests</th>
+                    <th>User Id</th>
+                    <th>Name</th>
+                    <th>Phone</th>
                     <th>Email</th>
                     <th>Action</th>
 
@@ -44,6 +43,5 @@
 </div>
 
 @section Scripts {
-    <script src="~/js/BookingList.js"></script>
+    <script src="~/js/Booklist.js"></script>
 }
-

@@ -250,6 +250,9 @@ namespace Restaurant.Data.Access.Migrations
                     b.Property<int>("NumberOfGuests")
                         .HasColumnType("int");
 
+                    b.Property<int>("TableId")
+                        .HasColumnType("int");
+
                     b.Property<int>("TablesId")
                         .HasColumnType("int");
 

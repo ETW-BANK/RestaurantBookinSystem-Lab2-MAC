@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RestaurantViewModels", "Res
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RestaurantBookingFrontApp", "RestaurantBookingFrontApp\RestaurantBookingFrontApp.csproj", "{82F7EF3E-0D37-4D78-AB57-3428DFCB2560}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceRegisterExtension", "ServiceRegisterExtension\ServiceRegisterExtension.csproj", "{8490A286-F32D-4E8B-A615-81522DDED66B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceRegisterExtension", "ServiceRegisterExtension\ServiceRegisterExtension.csproj", "{8490A286-F32D-4E8B-A615-81522DDED66B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

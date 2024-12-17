@@ -11,8 +11,8 @@ namespace RestaurantServices.Services.IServices
   public interface IUserService
     {
 
-        Task<IEnumerable<ApplicationUser>> GetAllUsers();
+        Task<List<UserVm>> GetAllUsers();
 
-      
+
     }
 }

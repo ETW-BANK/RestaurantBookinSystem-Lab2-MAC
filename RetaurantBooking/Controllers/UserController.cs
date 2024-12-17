@@ -6,8 +6,8 @@ using RestaurantServices.Services.IServices;
 
 namespace RetaurantBooking.Controllers
 {
+    [Route("api/[controller]/[Action]")]
     [ApiController]
-    [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -17,8 +17,8 @@ namespace RetaurantBooking.Controllers
             _userService = userService;
         }
 
-        [HttpGet("GetAllUsers")]
-        public async Task<IActionResult> GetAllUsers()
+        [HttpGet]
+        public async Task<IActionResult> GetUsers()
         {
             var users = await _userService.GetAllUsers();
             if (users == null || !users.Any())

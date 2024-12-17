@@ -11,7 +11,7 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
 {
 
     [Area("Admin")]
-    [Route("Admin/[controller]/[action]")]
+    [Authorize(Roles = StaticData.Role_Admin)]
     public class UsersController : Controller
     {
         private readonly HttpClient _httpClient;
@@ -23,28 +23,39 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
-        {
-            return View();
-        }
+        public IActionResult Index() => View();
 
         [HttpGet]
         public async Task<IActionResult> GetAllUser()
         {
-            var response = await _httpClient.GetAsync("GetAllUsers");
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var data = await response.Content.ReadAsStringAsync();
-                var serviceResponse = JsonConvert.DeserializeObject<ApiResponse<List<UserVm>>>(data);
-                return Json(new { data = serviceResponse?.Data });
+                var response = await _httpClient.GetAsync("GetUsers"); 
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var data = await response.Content.ReadAsStringAsync();
+
+                   
+                    var serviceResponse = JsonConvert.DeserializeObject<ApiResponse<List<UserVm>>>(data);
+
+                 
+                    return Json(new { data = serviceResponse.Data });
+                }
+
+                return StatusCode((int)response.StatusCode, "Failed to fetch users from the API.");
             }
-
-            return Json(new { data = new List<UserVm>(), error = "Unable to retrieve users from the server." });
+            catch (Exception ex)
+            {
+               
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
-    
 
 
-    [HttpGet]
+
+
+        [HttpGet]
         public async Task<IActionResult> RoleManagement(string userId)
         {
             try

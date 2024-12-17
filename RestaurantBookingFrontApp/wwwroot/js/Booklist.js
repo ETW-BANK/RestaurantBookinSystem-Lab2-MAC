@@ -12,6 +12,8 @@ function loadDataTable() {
         },
         "columns": [
             { "data": 'bookingId', "width": "20%" },
+            { "data": 'bookingDate', "width": "20%" },
+            { "data": 'bookingTime', "width": "20%" },
             { "data": 'tableNumber', "width": "20%" },
             { "data": 'numberOfGuests', "width": "20%" },
             { "data": 'applicationUserId', "width": "20%" },

@@ -1,27 +1,38 @@
-﻿$(document).ready(function () {
+﻿
+$(document).ready(function () {
+    loadDataTable();
+});
+
+function loadDataTable() {
     $('#tblData').DataTable({
         "ajax": {
-            "url": 'Users/GetAllUser', // API endpoint
+            "url": 'Users/GetAllUser',
             "type": "GET",
             "datatype": "json",
-            "dataSrc": "data" // Map to the "data" property in the response
+            "dataSrc": "data" // Ensure this matches the API response
         },
         "columns": [
-            { "data": "id", "width": "10%" }, // Maps to "id"
-            { "data": "name", "width": "15%" }, // Maps to "name"
-            { "data": "email", "width": "20%" }, // Maps to "email"
-            { "data": "streetAddress", "width": "20%" }, // Maps to "streetAddress"
-            { "data": "city", "width": "10%" }, // Maps to "city"
-            { "data": "postalCode", "width": "10%" }, // Maps to "postalCode"
-            { "data": "phoneNumber", "width": "15%" }, // Maps to "phoneNumber"
-            { "data": "role", "width": "10%" } // Maps to "role"
-        ],
-        "processing": true, // Display processing indicator
-        "paging": true, // Enable pagination
-        "responsive": true, // Make table responsive
-        "language": {
-            "emptyTable": "No data available in table", // Message for empty table
-            "processing": "Processing..." // Message while loading data
-        }
+            { "data": "id", "width": "20%" },
+            { "data": "name", "width": "20%" },
+            { "data": "streetAddress", "width": "20%" },
+            { "data": "city", "width": "20%" },
+            { "data": "postalCode", "width": "20%" },
+            { "data": "phoneNumber", "width": "20%" },
+            { "data": "role", "width": "20%" },
+            {
+                "data": "id",
+                "render": function (data, type, row) {
+                    return '<div class="w-75 btn-group" role="group">' +
+                        '<a href="Tables/Edit?id=' + row.id + '" class="btn btn-primary mx-2">' +
+                        '<i class="bi bi-pencil-square"></i> Edit' +
+                        '</a>' +
+                        '<a href="Tables/Delete?id=' + row.id + '" class="btn btn-danger mx-2">' +
+                        '<i class="bi bi-trash-fill"></i> Delete' +
+                        '</a>' +
+                        '</div>';
+                },
+                "width": "15%"
+            }
+        ]
     });
-});
+}

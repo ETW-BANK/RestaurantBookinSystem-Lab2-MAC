@@ -16,6 +16,7 @@ namespace RetaurantBooking.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IBookingService _bookingService;
+
       
         public BookingController(IUnitOfWork unitOfWork,IBookingService bookingService)
         {
@@ -24,11 +25,9 @@ namespace RetaurantBooking.Controllers
         
         }
 
+        [HttpPost]
         //[Area("Customer")]
         //[Authorize(Roles = StaticData.Role_Customer)]
-        [HttpPost]
-
-
         public IActionResult Create([FromBody] BookingVM bookingVm)
         {
             if (!ModelState.IsValid)
@@ -38,7 +37,26 @@ namespace RetaurantBooking.Controllers
 
             try
             {
-              var userId= "d1abb8f5-68d3-4632-895c-dc09b1489ccb";
+            
+                var claimsIdentity = User?.Identity as ClaimsIdentity;
+
+
+
+                if (claimsIdentity == null || !User.Identity.IsAuthenticated)
+                {
+
+                    return Unauthorized("User is not authenticated.");
+                }
+
+                // Fetch the user ID from claims
+                var userIdClaim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+                if (userIdClaim == null)
+                {
+                    return Unauthorized("User ID claim is missing.");
+                }
+
+                var userId = userIdClaim.Value;
 
                 // Proceed with booking creation
                 _bookingService.CreateBooking(bookingVm, userId);
@@ -46,9 +64,14 @@ namespace RetaurantBooking.Controllers
             }
             catch (Exception ex)
             {
+                // Log the exception details for debugging
+                Console.WriteLine($"Error in Create: {ex.Message}");
                 return StatusCode(500, "Internal server error: " + ex.Message);
             }
         }
+
+
+
 
 
         [HttpGet]

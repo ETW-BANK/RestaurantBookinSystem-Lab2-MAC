@@ -41,20 +41,37 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
             return Json(new { data = new List<BookingVM>(), error = "Unable to retrieve users from the server." });
         }
 
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View(); // Render the Create view
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create(BookingVM booking)
         {
+            // Validate the model
+            if (!ModelState.IsValid)
+            {
+                TempData["error"] = "Invalid booking details.";
+                return View(booking);
+            }
+
+            // Send the booking data to the API
             var content = new StringContent(JsonConvert.SerializeObject(booking), Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync("Create", content);
 
             if (response.IsSuccessStatusCode)
             {
-                TempData["success"] = "Booking Created successfully";
-                return RedirectToAction(nameof(Index));
+                TempData["success"] = "Booking created successfully.";
+                return RedirectToAction(nameof(Index)); // Redirect to Index after success
             }
 
-            return View(booking);
+            TempData["error"] = "Failed to create booking. Please try again.";
+            return View(booking); // Stay on the same page if there's an error
         }
-
     }
 }
+
+    
+

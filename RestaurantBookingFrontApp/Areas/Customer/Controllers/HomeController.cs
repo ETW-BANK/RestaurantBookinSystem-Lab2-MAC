@@ -1,11 +1,14 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Restaurant.Models;
 using Restaurant.Utility;
 using RestaurantBookingFrontApp.Models;
 using RestaurantServices.Services.IServices;
 using RestaurantViewModels;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace RestaurantBookingFrontApp.Areas.Customer.Controllers
@@ -16,7 +19,7 @@ namespace RestaurantBookingFrontApp.Areas.Customer.Controllers
 
         private readonly HttpClient _httpClient;
         private readonly ILogger<HomeController> _logger;
-     
+      
         public HomeController(ILogger<HomeController> logger, HttpClient httpClient)
         {
             _logger = logger;
@@ -27,7 +30,7 @@ namespace RestaurantBookingFrontApp.Areas.Customer.Controllers
 
         public IActionResult Index()
         {
-           
+            
             return View();
         }
 

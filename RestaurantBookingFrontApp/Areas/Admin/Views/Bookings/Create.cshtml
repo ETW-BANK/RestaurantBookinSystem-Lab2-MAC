@@ -1,65 +1,37 @@
 ﻿@model RestaurantViewModels.BookingVM
 
 <div class="card shadow border-0 my-4">
-    <div class="card-header bg-secondary bg-gradient mt-0 py-3">
-        <div class="row">
-            <div class="col-12 text-center">
-                <h2 class="text-white py-2"> @(Model.BookingId != 0 ? "Update" : "Create") Table</h2>
-            </div>
-        </div>
+    <div class="card-header bg-secondary text-white text-center">
+        <h2>Create Booking</h2>
     </div>
-    <div class="card-body p-4">
-        <form method="post" class="row">
-            <div class="row">
-                <input asp-for="BookingId" hidden />
-                <div class="col-10">
-                    <div class="border p-3">
-
-                        <div class="form-floating py-2 col-12">
-                            <input asp-for="applicationUserId" class="form-control border-0 shadow" />
-                            <label asp-for="applicationUserId" class="ms-2"></label>
-                            <span asp-validation-for="applicationUserId" class="text-danger"></span>
-                        </div>
-                        <div class="form-floating py-2 col-12">
-                            <input asp-for="BookingDate" class="form-control border-0 shadow" />
-                            <label asp-for="BookingDate" class="ms-2"></label>
-                            <span asp-validation-for="BookingDate" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-floating py-2 col-12">
-                            <input asp-for="BookingTime" class="form-control border-0 shadow" />
-                            <label asp-for="BookingTime" class="ms-2"></label>
-                            <span asp-validation-for="BookingTime" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-floating py-2 col-12">
-                            <input asp-for="NumberOfGuests" class="form-control border-0 shadow" />
-                            <label asp-for="NumberOfGuests" class="ms-2"></label>
-                            <span asp-validation-for="NumberOfGuests" class="text-danger"></span>
-                        </div>
-
-                        <div class="row pt-2">
-                            <div class="col-6 col-md-3">
-                                @if (Model.BookingId != 0)
-                                {
-                                    <button type="submit" class="btn btn-primary form-control">Update</button>
-                                }
-                                else
-                                {
-                                    <button type="submit" class="btn btn-primary form-control">Create</button>
-                                }
-                            </div>
-
-                            <div class="col-6 col-md-3">
-                                <a asp-controller="Bookings" asp-action="Index" class="btn btn-outline-primary border form-control">Back To List</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <div class="card-body">
+        <form asp-action="Create" method="post">
+            <div class="form-group mb-3">
+                <label asp-for="BookingDate"></label>
+                <input asp-for="BookingDate" class="form-control" type="date" />
+                <span asp-validation-for="BookingDate" class="text-danger"></span>
             </div>
+            <div class="form-group mb-3">
+                <label asp-for="BookingTime"></label>
+                <input asp-for="BookingTime" class="form-control" type="time" />
+                <span asp-validation-for="BookingTime" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="NumberOfGuests"></label>
+                <input asp-for="NumberOfGuests" class="form-control" type="number" />
+                <span asp-validation-for="NumberOfGuests" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="TableId"></label>
+                <input asp-for="TableId" class="form-control" type="number" />
+                <span asp-validation-for="TableId" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Create Booking</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
         </form>
     </div>
 </div>
+
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

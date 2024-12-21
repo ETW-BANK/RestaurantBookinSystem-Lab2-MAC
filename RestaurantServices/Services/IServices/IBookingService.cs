@@ -9,5 +9,7 @@ namespace RestaurantServices.Services.IServices
         void CreateBooking(BookingVM booking, string userId);
 
         Task<IEnumerable<BookingVM>> GetBookingsAsync();
+
+        
     }
 }

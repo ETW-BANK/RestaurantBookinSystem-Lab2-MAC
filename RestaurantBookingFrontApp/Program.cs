@@ -27,8 +27,8 @@ namespace RestaurantBookingFrontApp
            
         
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-     
 
+          
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
 

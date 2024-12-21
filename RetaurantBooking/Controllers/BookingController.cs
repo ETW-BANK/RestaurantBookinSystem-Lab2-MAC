@@ -16,11 +16,12 @@ namespace RetaurantBooking.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IBookingService _bookingService;
-
+      
         public BookingController(IUnitOfWork unitOfWork,IBookingService bookingService)
         {
             _unitOfWork = unitOfWork;
             _bookingService = bookingService;
+        
         }
 
         //[Area("Customer")]
@@ -37,7 +38,7 @@ namespace RetaurantBooking.Controllers
 
             try
             {
-                var userId = "b39380bc-b560-40f9-90d8-fceb3b6b19d8"; 
+              var userId= "d1abb8f5-68d3-4632-895c-dc09b1489ccb";
 
                 // Proceed with booking creation
                 _bookingService.CreateBooking(bookingVm, userId);

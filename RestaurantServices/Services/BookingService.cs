@@ -1,27 +1,33 @@
-﻿using Restaurant.Data.Access.Repository.IRepository;
+﻿using Microsoft.AspNetCore.Http;
+using Restaurant.Data.Access.Repository.IRepository;
 using Restaurant.Models;
 using RestaurantServices.Services.IServices;
 using RestaurantViewModels;
+using System.Security.Claims;
 
 namespace RestaurantServices.Services
 {
     public class BookingService : IBookingService
     {
         private readonly IUnitOfWork _unitOfWork;
+      
 
         public BookingService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
+   
         }
+
+        
         public void CreateBooking(BookingVM bookingVm, string userId)
         {
-            // Parse the booking time from the string to TimeOnly
             TimeOnly bookingTime;
             if (!TimeOnly.TryParse(bookingVm.BookingTime, out bookingTime))
             {
                 throw new ArgumentException("Invalid booking time format.");
             }
 
+           
 
             var user = _unitOfWork.ApplicationUserRepository.GetFirstOrDefault(x => x.Id == userId);
             if (user == null)

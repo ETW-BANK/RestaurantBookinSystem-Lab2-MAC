@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Restaurant.Utility;
 using RestaurantViewModels;
+using System.Text;
 
 namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
 {
@@ -40,7 +41,20 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
             return Json(new { data = new List<BookingVM>(), error = "Unable to retrieve users from the server." });
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Create(BookingVM booking)
+        {
+            var content = new StringContent(JsonConvert.SerializeObject(booking), Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync("Create", content);
 
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["success"] = "Booking Created successfully";
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(booking);
+        }
 
     }
 }

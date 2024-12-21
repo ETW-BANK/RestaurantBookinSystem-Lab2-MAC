@@ -13,6 +13,6 @@ namespace RestaurantServices.Services.IServices
 
         Task<List<UserVm>> GetAllUsers();
 
-
+     
     }
 }

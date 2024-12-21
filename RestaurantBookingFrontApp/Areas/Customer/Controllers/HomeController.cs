@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Restaurant.Utility;
 using RestaurantBookingFrontApp.Models;
+using RestaurantServices.Services.IServices;
 using RestaurantViewModels;
 using System.Diagnostics;
 using System.Text;
@@ -15,16 +16,18 @@ namespace RestaurantBookingFrontApp.Areas.Customer.Controllers
 
         private readonly HttpClient _httpClient;
         private readonly ILogger<HomeController> _logger;
-
+     
         public HomeController(ILogger<HomeController> logger, HttpClient httpClient)
         {
             _logger = logger;
             _httpClient = httpClient;
             _httpClient.BaseAddress = new Uri("https://localhost:7232/api/Booking/");
+     
         }
 
         public IActionResult Index()
         {
+           
             return View();
         }
 

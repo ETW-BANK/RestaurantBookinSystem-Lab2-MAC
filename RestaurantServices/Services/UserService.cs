@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Restaurant.Data.Access.Data;
 using Restaurant.Data.Access.Repository;
 using Restaurant.Data.Access.Repository.IRepository;
 using Restaurant.Models;
 using RestaurantServices.Services.IServices;
 using RestaurantViewModels;
+using System.Security.Claims;
 
 
 namespace RestaurantServices.Services
@@ -15,11 +17,13 @@ namespace RestaurantServices.Services
 
         private IUnitOfWork _unitOfWork;
         private RestaurantDbContext _dbContext;
+      
         public UserService(IUnitOfWork unitOfWork, RestaurantDbContext dbContext)
         {
 
             _unitOfWork = unitOfWork;
             _dbContext = dbContext;
+         
         }
 
         public async Task<List<UserVm>> GetAllUsers()
@@ -53,5 +57,7 @@ namespace RestaurantServices.Services
 
             return userVmList;
         }
+
+    
     }
 }

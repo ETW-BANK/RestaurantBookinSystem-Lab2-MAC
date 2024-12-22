@@ -1,37 +1,93 @@
 ﻿@model RestaurantViewModels.BookingVM
 
+@{
+    ViewData["Title"] = "Create Booking";
+}
+
 <div class="card shadow border-0 my-4">
-    <div class="card-header bg-secondary text-white text-center">
-        <h2>Create Booking</h2>
+    <div class="card-header bg-secondary bg-gradient mt-0 py-3">
+        <h3 class="text-white">Create a Booking</h3>
     </div>
-    <div class="card-body">
-        <form asp-action="Create" method="post">
-            <div class="form-group mb-3">
-                <label asp-for="BookingDate"></label>
-                <input asp-for="BookingDate" class="form-control" type="date" />
-                <span asp-validation-for="BookingDate" class="text-danger"></span>
+    <div class="card-body p-4">
+        <!-- Display validation errors -->
+        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+
+        <!-- Booking Form -->
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-12">
+                    <div class="border p-3">
+                        <!-- User ID (Readonly) -->
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="applicationUserId" hidden />
+                                  
+                        </div>
+
+                        <!-- Booking Date -->
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="BookingDate" class="form-control border-0 shadow" type="date" />
+                            <label asp-for="BookingDate" class="ms-2">Booking Date</label>
+                            <span asp-validation-for="BookingDate" class="text-danger"></span>
+                        </div>
+
+                        <!-- Booking Time -->
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="BookingTime" class="form-control border-0 shadow" type="time" />
+                            <label asp-for="BookingTime" class="ms-2">Booking Time</label>
+                            <span asp-validation-for="BookingTime" class="text-danger"></span>
+                        </div>
+
+                        <!-- Number of Guests -->
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="NumberOfGuests" class="form-control border-0 shadow" type="number" min="1" max="20" />
+                            <label asp-for="NumberOfGuests" class="ms-2">Number of Guests</label>
+                            <span asp-validation-for="NumberOfGuests" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="Phone" class="form-control border-0 shadow" type="text" />
+                            <label asp-for="Phone" class="ms-2">Phone</label>
+                            <span asp-validation-for="Phone" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="Name" class="form-control border-0 shadow" type="text"  />
+                            <label asp-for="Name" class="ms-2">Name</label>
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="Email" class="form-control border-0 shadow" type="email"  />
+                            <label asp-for="Email" class="ms-2">Email</label>
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="TableNumber" class="form-control border-0 shadow" type="number" min="1" max="20" />
+                            <label asp-for="TableNumber" class="ms-2">Table Number</label>
+                            <span asp-validation-for="TableNumber" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="TableId" class="form-control border-0 shadow" type="number"  />
+                            <label asp-for="TableId" class="ms-2">Table Id<table>
+    <tr>
+        <td></td>
+    </tr>
+</table></label>
+                            <span asp-validation-for="TableId" class="text-danger"></span>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="row mt-4">
+                            <div class="col-6 col-md-3">
+                                <button type="submit" class="btn btn-primary form-control">Submit</button>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary border form-control">Back to Home</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group mb-3">
-                <label asp-for="BookingTime"></label>
-                <input asp-for="BookingTime" class="form-control" type="time" />
-                <span asp-validation-for="BookingTime" class="text-danger"></span>
-            </div>
-            <div class="form-group mb-3">
-                <label asp-for="NumberOfGuests"></label>
-                <input asp-for="NumberOfGuests" class="form-control" type="number" />
-                <span asp-validation-for="NumberOfGuests" class="text-danger"></span>
-            </div>
-            <div class="form-group mb-3">
-                <label asp-for="TableId"></label>
-                <input asp-for="TableId" class="form-control" type="number" />
-                <span asp-validation-for="TableId" class="text-danger"></span>
-            </div>
-            <button type="submit" class="btn btn-primary">Create Booking</button>
-            <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
         </form>
     </div>
 </div>
-
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

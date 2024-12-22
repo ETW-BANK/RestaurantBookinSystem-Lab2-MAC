@@ -6,7 +6,7 @@ namespace RestaurantServices.Services.IServices
 {
     public interface IBookingService
     {
-        void CreateBooking(BookingVM booking, string userId);
+        void CreateBooking(Booking booking,string userId);
 
         Task<IEnumerable<BookingVM>> GetBookingsAsync();
 

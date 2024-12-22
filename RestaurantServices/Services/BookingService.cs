@@ -18,59 +18,43 @@ namespace RestaurantServices.Services
    
         }
 
-        
-        public void CreateBooking(BookingVM bookingVm, string userId)
+
+        public void CreateBooking(Booking booking, string userId)
         {
-            TimeOnly bookingTime;
-            if (!TimeOnly.TryParse(bookingVm.BookingTime, out bookingTime))
-            {
-                throw new ArgumentException("Invalid booking time format.");
-            }
-
-           
-
             var user = _unitOfWork.ApplicationUserRepository.GetFirstOrDefault(x => x.Id == userId);
             if (user == null)
             {
-                throw new ArgumentException("Invalid UserId.");
+                throw new ArgumentException("User not found.");
             }
 
-
             var availableTables = _unitOfWork.TableRepository
-                .GetAll(x => x.IsAvailable && x.NumberOfSeats >= bookingVm.NumberOfGuests)
+                .GetAll(x => x.IsAvailable && x.NumberOfSeats >= booking.NumberOfGuests)
                 .OrderBy(x => x.NumberOfSeats)
                 .ToList();
-
 
             if (availableTables.Count == 0)
             {
                 throw new ArgumentException("No available table found for the number of guests.");
             }
 
-
             var selectedTable = availableTables.First();
-
-
             selectedTable.IsAvailable = false;
             _unitOfWork.TableRepository.UpdateTable(selectedTable);
             _unitOfWork.Save();
 
-
             var newBooking = new Booking
             {
-                BookingDate = bookingVm.BookingDate,
-                BookingTime = bookingTime,
-                NumberOfGuests = bookingVm.NumberOfGuests,
+                BookingDate = booking.BookingDate,
+                BookingTime = booking.BookingTime,
+                NumberOfGuests = booking.NumberOfGuests,
                 ApplicationUserId = userId,
-                Tables = selectedTable,
+                TableId = selectedTable.Id,
             };
-
 
             _unitOfWork.BookingRepository.Add(newBooking);
             _unitOfWork.Save();
-
-            Console.WriteLine($"Table number {selectedTable.TableNumber} has been successfully booked for {bookingVm.NumberOfGuests} guests.");
         }
+
 
 
 

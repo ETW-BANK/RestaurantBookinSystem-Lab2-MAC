@@ -12,6 +12,7 @@ namespace RestaurantViewModels
 {
     public class BookingVM
     {
+        [Key]
         public int BookingId { get; set; }
 
         [Required]

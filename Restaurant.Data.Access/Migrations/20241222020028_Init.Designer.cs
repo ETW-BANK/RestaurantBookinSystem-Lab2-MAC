@@ -12,7 +12,7 @@ using Restaurant.Data.Access.Data;
 namespace Restaurant.Data.Access.Migrations
 {
     [DbContext(typeof(RestaurantDbContext))]
-    [Migration("20241217101009_Init")]
+    [Migration("20241222020028_Init")]
     partial class Init
     {
         /// <inheritdoc />

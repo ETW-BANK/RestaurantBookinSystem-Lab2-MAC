@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.Data.Access.Repository.IRepository;
 using Restaurant.Data.Access.Repository.Services.IServices;
+using Restaurant.Models;
 using Restaurant.Utility;
 using RestaurantServices.Services.IServices;
 using RestaurantViewModels;
@@ -25,10 +26,11 @@ namespace RetaurantBooking.Controllers
         
         }
 
+
+
         [HttpPost]
-        //[Area("Customer")]
-        //[Authorize(Roles = StaticData.Role_Customer)]
-        public IActionResult Create([FromBody] BookingVM bookingVm)
+        [Authorize]
+        public IActionResult Create([FromBody] Booking bookingVm)
         {
             if (!ModelState.IsValid)
             {
@@ -37,26 +39,20 @@ namespace RetaurantBooking.Controllers
 
             try
             {
-            
-                var claimsIdentity = User?.Identity as ClaimsIdentity;
-
-
-
-                if (claimsIdentity == null || !User.Identity.IsAuthenticated)
+                // Check if the user is authenticated
+                if (!User.Identity.IsAuthenticated)
                 {
-
                     return Unauthorized("User is not authenticated.");
                 }
 
                 // Fetch the user ID from claims
-                var userIdClaim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+                var claimsIdentity = (ClaimsIdentity)User.Identity;
+                var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-                if (userIdClaim == null)
+                if (string.IsNullOrEmpty(userId))
                 {
                     return Unauthorized("User ID claim is missing.");
                 }
-
-                var userId = userIdClaim.Value;
 
                 // Proceed with booking creation
                 _bookingService.CreateBooking(bookingVm, userId);
@@ -69,6 +65,7 @@ namespace RetaurantBooking.Controllers
                 return StatusCode(500, "Internal server error: " + ex.Message);
             }
         }
+
 
 
 

@@ -30,16 +30,16 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
         {
             try
             {
-                var response = await _httpClient.GetAsync("GetUsers"); 
+                var response = await _httpClient.GetAsync("GetUsers");
 
                 if (response.IsSuccessStatusCode)
                 {
                     var data = await response.Content.ReadAsStringAsync();
 
-                   
+
                     var serviceResponse = JsonConvert.DeserializeObject<ApiResponse<List<UserVm>>>(data);
 
-                 
+
                     return Json(new { data = serviceResponse.Data });
                 }
 
@@ -47,7 +47,7 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
-               
+
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }

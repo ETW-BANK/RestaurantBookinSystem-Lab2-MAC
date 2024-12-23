@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Restaurant.Data.Access.Data;
 using Restaurant.Data.Access.Repository;
 using Restaurant.Data.Access.Repository.IRepository;
@@ -17,13 +18,13 @@ namespace RestaurantServices.Services
 
         private IUnitOfWork _unitOfWork;
         private RestaurantDbContext _dbContext;
-      
+
         public UserService(IUnitOfWork unitOfWork, RestaurantDbContext dbContext)
         {
 
             _unitOfWork = unitOfWork;
             _dbContext = dbContext;
-         
+
         }
 
         public async Task<List<UserVm>> GetAllUsers()
@@ -58,6 +59,25 @@ namespace RestaurantServices.Services
             return userVmList;
         }
 
-    
+        public async Task<UserDetailsVM> GetUserDetails(string userId)
+        {
+            var user = await _dbContext.ApplicationUsers
+                                       .Where(u => u.Id == userId)
+                                       .FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                return null; // Return null if the user is not found
+            }
+
+            // Mapping user data to UserDetailsVM
+            return new UserDetailsVM
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Phone = user.PhoneNumber,
+                Email = user.Email
+            };
+        }
     }
 }

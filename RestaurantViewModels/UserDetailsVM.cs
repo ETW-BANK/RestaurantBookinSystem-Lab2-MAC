@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RestaurantViewModels
+namespace Restaurant.Models
 {
-   public class UserDetailsVM
+    public class UserDetailsVM
     {
+        public string Id { get; set; }
         public string Name { get; set; }
         public string Phone { get; set; }
         public string Email { get; set; }

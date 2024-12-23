@@ -1,13 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.Data.Access.Repository.IRepository;
-using Restaurant.Data.Access.Repository.Services.IServices;
-using Restaurant.Models;
-using Restaurant.Utility;
 using RestaurantServices.Services.IServices;
 using RestaurantViewModels;
-using System.Security.Claims;
 
 namespace RetaurantBooking.Controllers
 {
@@ -18,57 +13,27 @@ namespace RetaurantBooking.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IBookingService _bookingService;
 
-      
-        public BookingController(IUnitOfWork unitOfWork,IBookingService bookingService)
+
+        public BookingController(IUnitOfWork unitOfWork, IBookingService bookingService)
         {
             _unitOfWork = unitOfWork;
             _bookingService = bookingService;
-        
+
         }
 
-
-
         [HttpPost]
-        [Authorize]
-        public IActionResult Create([FromBody] Booking bookingVm)
+        //[Authorize]
+        public async Task<IActionResult> Create([FromBody] BookingVM bookingVM)
         {
-            if (!ModelState.IsValid)
+            if (bookingVM == null)
             {
                 return BadRequest("Invalid booking details.");
             }
 
-            try
-            {
-                // Check if the user is authenticated
-                if (!User.Identity.IsAuthenticated)
-                {
-                    return Unauthorized("User is not authenticated.");
-                }
+            _bookingService.CreateBooking(bookingVM);
 
-                // Fetch the user ID from claims
-                var claimsIdentity = (ClaimsIdentity)User.Identity;
-                var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-                if (string.IsNullOrEmpty(userId))
-                {
-                    return Unauthorized("User ID claim is missing.");
-                }
-
-                // Proceed with booking creation
-                _bookingService.CreateBooking(bookingVm, userId);
-                return Ok("Booking created successfully.");
-            }
-            catch (Exception ex)
-            {
-                // Log the exception details for debugging
-                Console.WriteLine($"Error in Create: {ex.Message}");
-                return StatusCode(500, "Internal server error: " + ex.Message);
-            }
+            return Ok(new { message = "Booking created successfully." });
         }
-
-
-
-
 
 
         [HttpGet]
@@ -77,7 +42,7 @@ namespace RetaurantBooking.Controllers
             try
             {
                 var bookings = await _bookingService.GetBookingsAsync();
-                return Ok(bookings);    
+                return Ok(bookings);
             }
             catch (Exception ex)
             {

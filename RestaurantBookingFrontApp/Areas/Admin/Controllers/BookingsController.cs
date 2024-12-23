@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Restaurant.Models;
 using Restaurant.Utility;
 using RestaurantViewModels;
 using System.Security.Claims;
@@ -18,6 +19,7 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
         {
             _httpClient = httpClient;
             _httpClient.BaseAddress = new Uri("https://localhost:7232/api/Booking/");
+
         }
 
         [HttpGet]
@@ -41,33 +43,55 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
 
             return Json(new { data = new List<BookingVM>(), error = "Unable to retrieve users from the server." });
         }
-
-        [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            // Pass the userId to the view using ViewBag or BookingVM
-            ViewBag.UserId = userId;
-
-            return View(); // Render the Create view
-        }
-        [HttpPost]
-        public async Task<IActionResult> Create(BookingVM booking)
-        {
-            // Retrieve user ID from claims
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             if (string.IsNullOrEmpty(userId))
             {
-                TempData["error"] = "User is not authenticated.";
-                return RedirectToAction(nameof(Index));
+                TempData["error"] = "Unable to fetch user details. Please log in again.";
+                return RedirectToAction("Index");
             }
 
-            // Include user ID in the booking details
-            booking.applicationUserId = userId;
+
+            var apiUrl = $"https://localhost:7232/api/User/GetUserDetails/details/{userId}";
+
+            var response = await _httpClient.GetAsync(apiUrl);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                TempData["error"] = "Failed to fetch user details.";
+                return RedirectToAction("Index");
+            }
+
+            var userDetailsJson = await response.Content.ReadAsStringAsync();
+            var userDetails = JsonConvert.DeserializeObject<UserDetailsVM>(userDetailsJson);
+
+            if (userDetails == null)
+            {
+                TempData["error"] = "User details not found.";
+                return RedirectToAction("Index");
+            }
+
+            //var bookingVM = new BookingVM
+            //{
+            //    applicationUserId = userId,
+            //    Name = userDetails.Name,
+            //    Phone = userDetails.Phone,
+            //    Email = userDetails.Email
+            //};
+
+            return View(/*bookingVM*/);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(BookingVM booking)
+        {
+            // Log the booking details (payload)
+            var bookingJson = JsonConvert.SerializeObject(booking);
+            Console.WriteLine("Sending Booking Payload: " + bookingJson);
 
             if (!ModelState.IsValid)
             {
@@ -75,8 +99,27 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
                 return View(booking);
             }
 
+            // Retrieve user ID from claims
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                TempData["error"] = "Unable to fetch user details. Please log in again.";
+                return RedirectToAction(nameof(Index));
+            }
+
+
+            //booking.applicationUserId = userId;
+
             var content = new StringContent(JsonConvert.SerializeObject(booking), Encoding.UTF8, "application/json");
+
+
             var response = await _httpClient.PostAsync("Create", content);
+
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            Console.WriteLine("Response Content: " + responseContent);
 
             if (response.IsSuccessStatusCode)
             {
@@ -87,9 +130,7 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
             TempData["error"] = "Failed to create booking. Please try again.";
             return View(booking);
         }
-
     }
 }
 
-    
 

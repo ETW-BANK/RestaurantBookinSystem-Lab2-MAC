@@ -184,10 +184,9 @@ namespace Restaurant.Data.Access.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     BookingDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    BookingTime = table.Column<TimeOnly>(type: "time", nullable: false),
+                    BookingTime = table.Column<TimeSpan>(type: "time", nullable: false),
                     NumberOfGuests = table.Column<int>(type: "int", nullable: false),
                     TableId = table.Column<int>(type: "int", nullable: false),
-                    TablesId = table.Column<int>(type: "int", nullable: false),
                     ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
@@ -200,11 +199,11 @@ namespace Restaurant.Data.Access.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Bookings_Table_TablesId",
-                        column: x => x.TablesId,
+                        name: "FK_Bookings_Table_TableId",
+                        column: x => x.TableId,
                         principalTable: "Table",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -252,9 +251,9 @@ namespace Restaurant.Data.Access.Migrations
                 column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Bookings_TablesId",
+                name: "IX_Bookings_TableId",
                 table: "Bookings",
-                column: "TablesId");
+                column: "TableId");
         }
 
         /// <inheritdoc />

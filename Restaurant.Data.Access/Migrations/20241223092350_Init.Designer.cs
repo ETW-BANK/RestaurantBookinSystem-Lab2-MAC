@@ -12,7 +12,7 @@ using Restaurant.Data.Access.Data;
 namespace Restaurant.Data.Access.Migrations
 {
     [DbContext(typeof(RestaurantDbContext))]
-    [Migration("20241222020028_Init")]
+    [Migration("20241223092350_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -247,7 +247,7 @@ namespace Restaurant.Data.Access.Migrations
                     b.Property<DateOnly>("BookingDate")
                         .HasColumnType("date");
 
-                    b.Property<TimeOnly>("BookingTime")
+                    b.Property<TimeSpan>("BookingTime")
                         .HasColumnType("time");
 
                     b.Property<int>("NumberOfGuests")
@@ -256,14 +256,11 @@ namespace Restaurant.Data.Access.Migrations
                     b.Property<int>("TableId")
                         .HasColumnType("int");
 
-                    b.Property<int>("TablesId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ApplicationUserId");
 
-                    b.HasIndex("TablesId");
+                    b.HasIndex("TableId");
 
                     b.ToTable("Bookings");
                 });
@@ -374,8 +371,8 @@ namespace Restaurant.Data.Access.Migrations
 
                     b.HasOne("Restaurant.Models.Tables", "Tables")
                         .WithMany()
-                        .HasForeignKey("TablesId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("TableId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("ApplicationUser");

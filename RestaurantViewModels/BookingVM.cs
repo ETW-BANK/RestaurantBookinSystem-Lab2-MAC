@@ -12,28 +12,12 @@ namespace RestaurantViewModels
 {
     public class BookingVM
     {
-        [Key]
         public int BookingId { get; set; }
-
-        [Required]
         public DateOnly BookingDate { get; set; }
-
-        [Required]
         public string BookingTime { get; set; }
-
-        [Required]
-        [Range(1, 20, ErrorMessage = "Number of guests must be between 1 and 20.")]
         public int NumberOfGuests { get; set; }
-
-        [Required]
-        public int TableId { get; set; }
-
-        public int TableNumber { get; set; }  
-        public string applicationUserId { get; set; }
-       
-        public string Name { get; set; } 
-        public string Phone { get; set; }  
-        public string Email { get; set; }  
+        public int TableId { get; set; } // Ensure this maps to an existing table
+        public string ApplicationUserId { get; set; }
 
 
     }

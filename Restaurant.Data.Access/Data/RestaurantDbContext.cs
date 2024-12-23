@@ -1,24 +1,39 @@
 ﻿
-
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Restaurant.Models;
-
 
 namespace Restaurant.Data.Access.Data
 {
-   public class RestaurantDbContext:IdentityDbContext
+    public class RestaurantDbContext : IdentityDbContext
     {
-      
         public DbSet<Tables> Table { get; set; }
-       public DbSet<ApplicationUser> ApplicationUsers { get; set; }
-
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<Booking> Bookings { get; set; }
-        public RestaurantDbContext(DbContextOptions<RestaurantDbContext> options):base(options) 
+
+        public RestaurantDbContext(DbContextOptions<RestaurantDbContext> options) : base(options)
         {
-            
         }
-       
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // Configure Booking-Table relationship
+            modelBuilder.Entity<Booking>()
+                .HasOne(b => b.Tables)
+                .WithMany()
+                .HasForeignKey(b => b.TableId)
+                .OnDelete(DeleteBehavior.Restrict); // Prevent cascading delete if a table is removed
+
+            // Configure Booking-User relationship
+            modelBuilder.Entity<Booking>()
+                .HasOne(b => b.ApplicationUser)
+                .WithMany()
+                .HasForeignKey(b => b.ApplicationUserId);
+        }
 
     }
-}
+    }
+

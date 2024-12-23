@@ -21,20 +21,20 @@ namespace RestaurantServices.Services
 
         public void CreateBooking(BookingVM bookingVM)
         {
-            // Validate booking time
+          
             if (!TimeSpan.TryParse(bookingVM.BookingTime, out var bookingTime))
             {
                 throw new ArgumentException("Invalid booking time format.");
             }
 
-            // Fetch the table from the database
+           
             var table = _unitOfWork.TableRepository.GetFirstOrDefault(t => t.Id == bookingVM.TableId);
             if (table == null)
             {
                 throw new ArgumentException($"Table with ID {bookingVM.TableId} does not exist.");
             }
 
-            // Create the domain model
+           
             var booking = new Booking
             {
                 BookingDate = bookingVM.BookingDate,

@@ -43,21 +43,28 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
 
             return Json(new { data = new List<BookingVM>(), error = "Unable to retrieve users from the server." });
         }
+        [HttpGet]
         public async Task<IActionResult> Create()
         {
+            var claimsIdentity = User?.Identity as ClaimsIdentity;
 
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (string.IsNullOrEmpty(userId))
+            if (claimsIdentity == null || !User.Identity.IsAuthenticated)
             {
-                TempData["error"] = "Unable to fetch user details. Please log in again.";
+                TempData["error"] = "User is not authenticated.";
                 return RedirectToAction("Index");
             }
 
+            var userIdClaim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
 
-            var apiUrl = $"https://localhost:7232/api/User/GetUserDetails/details/{userId}";
+            if (userIdClaim == null)
+            {
+                TempData["error"] = "User ID claim is missing.";
+                return RedirectToAction("Index");
+            }
 
+            var userId = userIdClaim.Value;
+
+            var apiUrl = $"https://localhost:7232/api/User/GetSingleUser/GetSingleUser/{userId}";
             var response = await _httpClient.GetAsync(apiUrl);
 
             if (!response.IsSuccessStatusCode)
@@ -67,29 +74,29 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
             }
 
             var userDetailsJson = await response.Content.ReadAsStringAsync();
-            var userDetails = JsonConvert.DeserializeObject<UserDetailsVM>(userDetailsJson);
+            var userDetails = JsonConvert.DeserializeObject<BookingVM>(userDetailsJson);
 
             if (userDetails == null)
             {
                 TempData["error"] = "User details not found.";
                 return RedirectToAction("Index");
             }
+           
+            var bookingVm = new BookingVM
+            {
+                ApplicationUserId = userId,
+                Name = userDetails.Name,
+                Email = userDetails.Email,
+                Phone = userDetails.Phone,
+            };
 
-            //var bookingVM = new BookingVM
-            //{
-            //    applicationUserId = userId,
-            //    Name = userDetails.Name,
-            //    Phone = userDetails.Phone,
-            //    Email = userDetails.Email
-            //};
-
-            return View(/*bookingVM*/);
+            return View(bookingVm);
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(BookingVM booking)
         {
-            // Log the booking details (payload)
+            
             var bookingJson = JsonConvert.SerializeObject(booking);
             Console.WriteLine("Sending Booking Payload: " + bookingJson);
 
@@ -99,7 +106,6 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
                 return View(booking);
             }
 
-            // Retrieve user ID from claims
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -109,14 +115,9 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-
-            //booking.applicationUserId = userId;
-
             var content = new StringContent(JsonConvert.SerializeObject(booking), Encoding.UTF8, "application/json");
 
-
             var response = await _httpClient.PostAsync("Create", content);
-
 
             var responseContent = await response.Content.ReadAsStringAsync();
             Console.WriteLine("Response Content: " + responseContent);

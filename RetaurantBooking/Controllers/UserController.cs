@@ -17,29 +17,28 @@ namespace RetaurantBooking.Controllers
             _userService = userService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetUsers()
-        {
-            var users = await _userService.GetAllUsers();
-            if (users == null || !users.Any())
-            {
-                return NotFound(new { message = "No users found." });
-            }
-
-            return Ok(new { data = users });
-        }
-
         [HttpGet("GetSingleUser/{id}")]
         public IActionResult GetSingleUser(string id)
         {
-            var user = _userService.GetAllUsers().Result.FirstOrDefault(u => u.Id == id);
+            var user = _userService.GetAllUsers()
+                .Result
+                .FirstOrDefault(u => u.Id == id);
 
             if (user == null)
             {
                 return NotFound(new { message = "User not found." });
             }
 
-            return Ok(user);
+            // Serialize and return complete user details
+            var userDetails = new
+            {
+                user.Id,
+                user.Name,
+                user.Email,
+              
+            };
+
+            return Ok(userDetails);
         }
     }
 

@@ -74,9 +74,7 @@ namespace RestaurantServices.Services
             return new UserDetailsVM
             {
                 Id = user.Id,
-                Name = user.Name,
-                Phone = user.PhoneNumber,
-                Email = user.Email
+               
             };
         }
     }

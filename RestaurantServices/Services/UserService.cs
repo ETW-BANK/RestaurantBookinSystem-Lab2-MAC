@@ -1,24 +1,16 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿
 using Restaurant.Data.Access.Data;
-using Restaurant.Data.Access.Repository;
 using Restaurant.Data.Access.Repository.IRepository;
-using Restaurant.Models;
 using RestaurantServices.Services.IServices;
 using RestaurantViewModels;
-using System.Security.Claims;
-
 
 namespace RestaurantServices.Services
 {
     public class UserService : IUserService
     {
 
-
         private IUnitOfWork _unitOfWork;
         private RestaurantDbContext _dbContext;
-
         public UserService(IUnitOfWork unitOfWork, RestaurantDbContext dbContext)
         {
 
@@ -29,14 +21,11 @@ namespace RestaurantServices.Services
 
         public async Task<List<UserVm>> GetAllUsers()
         {
-            // Fetch all users
+           
             var usersList = _unitOfWork.ApplicationUserRepository.GetAll().ToList();
-
-            // Fetch roles and user-role relationships
             var userRoles = _dbContext.UserRoles.ToList();
             var roles = _dbContext.Roles.ToList();
-
-            // Map ApplicationUser to UserVm and assign roles
+            
             var userVmList = usersList.Select(user =>
             {
                 var userRole = userRoles.FirstOrDefault(ur => ur.UserId == user.Id);
@@ -59,23 +48,5 @@ namespace RestaurantServices.Services
             return userVmList;
         }
 
-        public async Task<UserDetailsVM> GetUserDetails(string userId)
-        {
-            var user = await _dbContext.ApplicationUsers
-                                       .Where(u => u.Id == userId)
-                                       .FirstOrDefaultAsync();
-
-            if (user == null)
-            {
-                return null; // Return null if the user is not found
-            }
-
-            // Mapping user data to UserDetailsVM
-            return new UserDetailsVM
-            {
-                Id = user.Id,
-               
-            };
-        }
+          }
     }
-}

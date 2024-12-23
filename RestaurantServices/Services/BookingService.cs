@@ -43,7 +43,7 @@ namespace RestaurantServices.Services
                 ApplicationUserId = bookingVM.ApplicationUserId,
                 TableId = bookingVM.TableId,
 
-            }
+            };
             _unitOfWork.BookingRepository.Add(booking);
             _unitOfWork.Save();
         }

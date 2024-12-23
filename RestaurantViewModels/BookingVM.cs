@@ -18,8 +18,11 @@ namespace RestaurantViewModels
         public int NumberOfGuests { get; set; }
         public int TableId { get; set; } // Ensure this maps to an existing table
         public string ApplicationUserId { get; set; }
+        public int TableNumber { get; set; }    
+        public string? Name { get; set; }
+        public string? Phone {  get; set; }
 
-
+        public string? Email { get; set; }   
     }
 }
 

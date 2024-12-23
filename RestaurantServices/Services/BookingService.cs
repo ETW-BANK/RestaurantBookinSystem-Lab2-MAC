@@ -42,6 +42,7 @@ namespace RestaurantServices.Services
                 NumberOfGuests = bookingVM.NumberOfGuests,
                 ApplicationUserId = bookingVM.ApplicationUserId,
                 TableId = bookingVM.TableId,
+                
 
             };
             _unitOfWork.BookingRepository.Add(booking);
@@ -66,7 +67,11 @@ namespace RestaurantServices.Services
                 BookingTime = b.BookingTime.ToString(@"hh\:mm"),  
                 NumberOfGuests = b.NumberOfGuests,
                 TableId = b.Tables.Id,
+                TableNumber=b.Tables.TableNumber,
                 ApplicationUserId= b.ApplicationUserId,
+                Name=b.ApplicationUser.Name,
+                Email=b.ApplicationUser.Email,  
+                Phone=b.ApplicationUser.PhoneNumber,
                
                 
             }).ToList();

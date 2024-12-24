@@ -19,6 +19,38 @@ namespace RestaurantServices.Services
         }
 
 
+        //public void CreateBooking(BookingVM bookingVM)
+        //{
+
+        //    if (!TimeSpan.TryParse(bookingVM.BookingTime, out var bookingTime))
+        //    {
+        //        throw new ArgumentException("Invalid booking time format.");
+        //    }
+
+
+        //    var table = _unitOfWork.TableRepository.GetFirstOrDefault(t => t.Id == bookingVM.TableId);
+        //    if (table == null)
+        //    {
+        //        throw new ArgumentException($"Table with ID {bookingVM.TableId} does not exist.");
+        //    }
+
+
+        //    var booking = new Booking
+        //    {
+        //        BookingDate = bookingVM.BookingDate,
+        //        BookingTime = bookingTime,
+        //        NumberOfGuests = bookingVM.NumberOfGuests,
+        //        ApplicationUserId = bookingVM.ApplicationUserId,
+        //        TableId = bookingVM.TableId,
+
+
+        //    };
+        //    table.IsAvailable = false;
+        //    _unitOfWork.BookingRepository.Add(booking);
+        //    _unitOfWork.Save();
+        //}
+
+
         public void CreateBooking(BookingVM bookingVM)
         {
           
@@ -27,27 +59,44 @@ namespace RestaurantServices.Services
                 throw new ArgumentException("Invalid booking time format.");
             }
 
-           
-            var table = _unitOfWork.TableRepository.GetFirstOrDefault(t => t.Id == bookingVM.TableId);
-            if (table == null)
+            
+            var availableTable = _unitOfWork.TableRepository.GetFirstOrDefault(t => t.IsAvailable && t.NumberOfSeats >= bookingVM.NumberOfGuests);
+            if (availableTable == null)
             {
-                throw new ArgumentException($"Table with ID {bookingVM.TableId} does not exist.");
+                throw new InvalidOperationException("No available tables that match the number of guests.");
             }
 
-           
+        
+            if (bookingVM.NumberOfGuests <= 0)
+            {
+                throw new ArgumentException("Number of guests must be greater than zero.");
+            }
+
+            if (bookingVM.NumberOfGuests > availableTable.NumberOfSeats)
+            {
+                throw new ArgumentException("Number of guests exceeds the seating capacity of the selected table.");
+            }
+
+            
             var booking = new Booking
             {
                 BookingDate = bookingVM.BookingDate,
                 BookingTime = bookingTime,
                 NumberOfGuests = bookingVM.NumberOfGuests,
                 ApplicationUserId = bookingVM.ApplicationUserId,
-                TableId = bookingVM.TableId,
-                
+                TableId = availableTable.Id,
 
             };
+
+           
+            availableTable.IsAvailable = false;
+
+            _unitOfWork.TableRepository.UpdateTable(availableTable);  
             _unitOfWork.BookingRepository.Add(booking);
             _unitOfWork.Save();
         }
+
+
 
 
         public async Task<IEnumerable<BookingVM>> GetBookingsAsync()

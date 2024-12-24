@@ -34,9 +34,7 @@ namespace RetaurantBooking
             var serviceRegisterExtension = serviceProvider.GetRequiredService<IServicesRegisterExtension>();
             serviceRegisterExtension.RegisterServices(builder.Services);
 
-            //  builder.Services.AddScoped<IUserService, UserService>();
-            //  builder.Services.AddScoped<ITableService, TableService>();
-            ////builder.Services.AddScoped<IBookingService, BookingService>();
+           
 
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -6,7 +6,7 @@
 
 <div class="card shadow border-0 my-4">
     <div class="card-header bg-secondary bg-gradient mt-0 py-3">
-        <h3 class="text-white">Create a Booking</h3>
+        <h3 class="text-white">Reserve Your Table</h3>
     </div>
     <div class="card-body p-4">
         <!-- Display validation errors -->
@@ -25,7 +25,7 @@
 
                         <!-- Booking Date -->
                         <div class="form-floating py-2 col-12">
-                            <input asp-for="BookingDate" class="form-control border-0 shadow" type="date" />
+                            <input asp-for="BookingDate" class="form-control border-0 shadow" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
                             <label asp-for="BookingDate" class="ms-2">Booking Date</label>
                             <span asp-validation-for="BookingDate" class="text-danger"></span>
                         </div>

@@ -3,13 +3,9 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Restaurant.Data.Access.Data;
 using Restaurant.Data.Access.Repository.IRepository;
-using Restaurant.Data.Access.Repository.Services.IServices;
-using Restaurant.Data.Access.Repository.Services;
 using Restaurant.Data.Access.Repository;
 using Restaurant.Utility;
-using RestaurantServices.Services.IServices;
-using RestaurantServices.Services;
-using Restaurant.Models;
+
 namespace RestaurantBookingFrontApp
 {
     public class Program

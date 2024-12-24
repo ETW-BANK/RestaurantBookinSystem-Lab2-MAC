@@ -11,7 +11,7 @@ namespace Restaurant.Data.Access.Repository.Services.IServices
 
         Tables GetById(int id);
 
-        void UpdateTable(Tables table);
+        void UpdateTable(TablesVM table);
 
 
         void CreateTable (TablesVM table);  

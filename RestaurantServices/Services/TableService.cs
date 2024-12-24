@@ -1,5 +1,6 @@
 ﻿
 
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Restaurant.Data.Access.Repository.IRepository;
 using Restaurant.Data.Access.Repository.Services.IServices;
 using Restaurant.Models;
@@ -77,21 +78,24 @@ namespace Restaurant.Data.Access.Repository.Services
             return table ?? throw new Exception("Table not found");
         }
 
-        public void UpdateTable(Tables tableVM)
+        public void UpdateTable(TablesVM tableVM)
         {
+           
             var existingTable = _unitOfWork.TableRepository.GetFirstOrDefault(u => u.Id == tableVM.Id);
+
             if (existingTable == null)
             {
                 throw new Exception("Table not found");
             }
 
-            existingTable.TableNumber = tableVM.TableNumber;
+           existingTable.TableNumber=tableVM.TableNumber;   
             existingTable.NumberOfSeats = tableVM.NumberOfSeats;
             existingTable.IsAvailable = tableVM.IsAvailable;
 
             _unitOfWork.TableRepository.UpdateTable(existingTable);
             _unitOfWork.Save();
         }
+
 
 
 

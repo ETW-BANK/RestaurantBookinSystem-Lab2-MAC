@@ -22,7 +22,7 @@ namespace RetaurantBooking.Controllers
            
         }
 
-      
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTable(int id)
         {
@@ -50,34 +50,27 @@ namespace RetaurantBooking.Controllers
             }
 
            _tableservice.CreateTable(table);
-            _unitOfWork.Save();
+          
             return Ok("Table Created Successfully");
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Update(int id)
-        {
-            var table = _unitOfWork.TableRepository.GetFirstOrDefault(x => x.Id == id);
-            if (table == null)
-            {
-                return NotFound("Table Not Found");
-            }
-            return Ok(table);
-        }
 
         [HttpPut]
-        public async Task<IActionResult> Update([FromBody] Tables table)
+        public async Task<IActionResult> Update([FromBody] TablesVM tableVM)
         {
-            if (table == null)
+            if (tableVM == null)
             {
                 return BadRequest("Invalid table data");
             }
 
-            _unitOfWork.TableRepository.UpdateTable(table);
-            _unitOfWork.Save();
-
+            if (tableVM== null)
+            {
+                return NotFound("Table not found");
+            }
+            _tableservice.UpdateTable(tableVM);
             return Ok("Table Updated Successfully");
         }
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTable(int id)
@@ -89,8 +82,7 @@ namespace RetaurantBooking.Controllers
             }
 
             _unitOfWork.TableRepository.Remove(tableToDelete);
-            _unitOfWork.Save();
-
+          
             return Ok("Table Deleted Successfully");
         }
     }

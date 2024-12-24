@@ -9,17 +9,22 @@
         <h3 class="text-white">Reserve Your Table</h3>
     </div>
     <div class="card-body p-4">
-       
-        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+        <div class="row">
+            <!-- Left Partition: Picture -->
+            <div class="col-md-6">
+                <div class="d-flex justify-content-center align-items-center h-100">
+                    <img src="/image/bg-hero.jpg" alt="Table Reservation" class="img-fluid rounded shadow" />
+                </div>
+            </div>
 
-        <form asp-action="Create" method="post" enctype="multipart/form-data">
-            <div class="row">
-                <div class="col-12">
-                    <div class="border p-3">
-                       
+            <!-- Right Partition: Form -->
+            <div class="col-md-6">
+                <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+
+                <form asp-action="Create" method="post">
+                    <div class="border p-3 shadow-sm bg-light">
                         <div class="form-floating py-2 col-12">
                             <input asp-for="ApplicationUserId" hidden />
-
                         </div>
 
                         <div class="form-floating py-2 col-12">
@@ -41,17 +46,17 @@
                         </div>
 
                         <div class="row mt-4">
-                            <div class="col-6 col-md-3">
+                            <div class="col-6 col-md-4">
                                 <button type="submit" class="btn btn-primary form-control">Submit</button>
                             </div>
-                            <div class="col-6 col-md-3">
+                            <div class="col-6 col-md-4">
                                 <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary border form-control">Back to Home</a>
                             </div>
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 

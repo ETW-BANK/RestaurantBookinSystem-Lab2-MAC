@@ -6,30 +6,33 @@
 
 <div class="card shadow border-0 my-4">
     <div class="card-header bg-secondary bg-gradient mt-0 py-3">
-        <h3 class="text-white">Create a Booking</h3>
+        <h3 class="text-white">Reserve Your Table</h3>
     </div>
     <div class="card-body p-4">
-        
-        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+        <div class="row">
+            <!-- Left Partition: Picture -->
+            <div class="col-md-6">
+                <div class="d-flex justify-content-center align-items-center h-100">
+                    <img src="/image/bg-hero.jpg" alt="Table Reservation" class="img-fluid rounded shadow" />
+                </div>
+            </div>
 
-       
-        <form asp-action="Create" method="post" >
-            <div class="row">
-                <div class="col-12">
-                    <div class="border p-3">
-                       
+            <!-- Right Partition: Form -->
+            <div class="col-md-6">
+                <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+
+                <form asp-action="Create" method="post">
+                    <div class="border p-3 shadow-sm bg-light">
                         <div class="form-floating py-2 col-12">
                             <input asp-for="ApplicationUserId" hidden />
-                                  
                         </div>
 
                         <div class="form-floating py-2 col-12">
-                            <input asp-for="BookingDate" class="form-control border-0 shadow" type="date" />
+                            <input asp-for="BookingDate" class="form-control border-0 shadow" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
                             <label asp-for="BookingDate" class="ms-2">Booking Date</label>
                             <span asp-validation-for="BookingDate" class="text-danger"></span>
                         </div>
 
-                       
                         <div class="form-floating py-2 col-12">
                             <input asp-for="BookingTime" class="form-control border-0 shadow" type="time" />
                             <label asp-for="BookingTime" class="ms-2">Booking Time</label>
@@ -41,19 +44,19 @@
                             <label asp-for="NumberOfGuests" class="ms-2">Number of Guests</label>
                             <span asp-validation-for="NumberOfGuests" class="text-danger"></span>
                         </div>
-                  
+
                         <div class="row mt-4">
-                            <div class="col-6 col-md-3">
+                            <div class="col-6 col-md-4">
                                 <button type="submit" class="btn btn-primary form-control">Submit</button>
                             </div>
-                            <div class="col-6 col-md-3">
+                            <div class="col-6 col-md-4">
                                 <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary border form-control">Back to Home</a>
                             </div>
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 

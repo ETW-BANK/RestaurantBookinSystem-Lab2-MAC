@@ -10,9 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] -Restaurant Booking</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  @*   <link rel="stylesheet" href="~/Traditional_Cloth_Shop_App.styles.css" asp-append-version="true" /> *@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
 
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -36,9 +34,14 @@
                             <li class="nav-item" id="navbar-text">
                                 <a class="nav-link text-light " asp-area="Customer" asp-controller="Home" asp-action="Index">Home</a>
                             </li>
+                              @if (User.IsInRole(StaticData.Role_Customer))
+                            {
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="Customer" asp-controller="" asp-action="">My Bookings</a>
+                        </li>
 
-
-                            <li class="nav-item">
+                            }
+                        <li class="nav-item">
                                 <a class="nav-link text-light" asp-area="Customer" asp-controller="Home" asp-action="Privacy">Privacy</a>
                             </li>
                        
@@ -62,12 +65,7 @@
                                     <li class="nav-item">
                                         <a class="dropdown-item " asp-area="Admin" asp-controller="Bookings" asp-action="Index">Bookings</a>
                                     </li>
-                                       @*  <li class="nav-item">
-                                            <a class="dropdown-item " asp-area="Admin" asp-controller="Menus" asp-action="Index">Menu</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="dropdown-item " asp-area="Admin" asp-controller="Bookings" asp-action="Index">Bookings</a>
-                                        </li> *@
+                                       
 
                                     </ul>
 

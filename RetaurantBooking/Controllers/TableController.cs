@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.Data.Access.Repository.IRepository;
 using Restaurant.Data.Access.Repository.Services.IServices;
 using Restaurant.Models;
+using RestaurantViewModels;
 
 
 
@@ -41,14 +42,14 @@ namespace RetaurantBooking.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateNewTable([FromBody] Tables table)
+        public async Task<IActionResult> CreateNewTable([FromBody] TablesVM table)
         {
             if (table == null)
             {
                 return BadRequest("Invalid table data");
             }
 
-            _unitOfWork.TableRepository.Add(table);
+           _tableservice.CreateTable(table);
             _unitOfWork.Save();
             return Ok("Table Created Successfully");
         }

@@ -1,11 +1,7 @@
 ﻿
 using Restaurant.Models;
 using RestaurantViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Restaurant.Data.Access.Repository.Services.IServices
 {
@@ -18,7 +14,7 @@ namespace Restaurant.Data.Access.Repository.Services.IServices
         void UpdateTable(Tables table);
 
 
-        void CreateTable (Tables table);  
+        void CreateTable (TablesVM table);  
 
         void DeleteTable (int id);
 

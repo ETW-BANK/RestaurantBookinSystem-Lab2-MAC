@@ -1,8 +1,9 @@
 ﻿
-using Microsoft.AspNetCore.Mvc;
+
 using Restaurant.Data.Access.Repository.IRepository;
 using Restaurant.Data.Access.Repository.Services.IServices;
 using Restaurant.Models;
+using RestaurantViewModels;
 
 namespace Restaurant.Data.Access.Repository.Services
 {
@@ -10,8 +11,8 @@ namespace Restaurant.Data.Access.Repository.Services
 
     {
         private IUnitOfWork _unitOfWork;
-       
 
+        private readonly Random _random = new Random();
 
         public TableService(IUnitOfWork unitOfWork)
         {
@@ -19,11 +20,34 @@ namespace Restaurant.Data.Access.Repository.Services
       
         }
 
-        public void CreateTable(Tables table)
+
+
+        public void CreateTable(TablesVM tableVM)
         {
+        
+            int tableNumber;
+            do
+            {
+                tableNumber = _random.Next(1, 30);
+            }
+            while (_unitOfWork.TableRepository.GetFirstOrDefault(t => t.TableNumber == tableNumber) != null);
+
+            
+            var table = new Tables
+            {
+                TableNumber = tableNumber,
+                NumberOfSeats = tableVM.NumberOfSeats,
+                IsAvailable = true 
+            };
+
+          
             _unitOfWork.TableRepository.Add(table);
             _unitOfWork.Save();
         }
+
+
+
+
 
 
         public void DeleteTable(int id)

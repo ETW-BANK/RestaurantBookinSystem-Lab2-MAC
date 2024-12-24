@@ -10,6 +10,8 @@ namespace RestaurantServices.Services.IServices
 
         Task<IEnumerable<BookingVM>> GetBookingsAsync();
 
-        
+        Booking DeleteBooking(Booking booking);
+
+        Booking GetSinle(int bookingId); 
     }
 }

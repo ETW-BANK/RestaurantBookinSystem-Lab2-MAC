@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.AspNetCore.Http.HttpResults;
 using Restaurant.Data.Access.Repository.IRepository;
 using Restaurant.Models;
 using RestaurantServices.Services.IServices;
@@ -13,7 +14,6 @@ namespace RestaurantServices.Services
         public BookingService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-
 
         }
 
@@ -95,7 +95,53 @@ namespace RestaurantServices.Services
             return bookingsList;
         }
 
+        public Booking GetSinle(int bookingId)
+        {
+            var booking = _unitOfWork.BookingRepository.GetFirstOrDefault(x => x.Id == bookingId, includeProperties: "ApplicationUser,Tables");
 
+            if (booking == null)
+            {
+                throw new Exception("Booking not found.");
+            }
+            var existingbooking = new BookingVM
+            {
+                BookingId = bookingId,
+                BookingDate = booking.BookingDate,
+                BookingTime = booking.BookingTime.ToString(@"hh\:mm"),
+                NumberOfGuests = booking.NumberOfGuests,
+                TableNumber = booking.Tables.TableNumber,
+                ApplicationUserId = booking.ApplicationUserId,
+                Name = booking.ApplicationUser.Name,
+                Email = booking.ApplicationUser.Email,
+                Phone = booking.ApplicationUser.PhoneNumber,
+            };
+
+            return booking;
+
+        }
+
+        public Booking DeleteBooking(Booking booking)
+        {
+            booking = _unitOfWork.BookingRepository.GetFirstOrDefault(x => x.Id == booking.Id);
+
+            if (booking == null)
+            {
+                throw new Exception("Booking not found.");
+            }
+
+            var table = _unitOfWork.TableRepository.GetFirstOrDefault(x => x.Id == booking.TableId);
+
+            if (table != null)
+            {
+                table.IsAvailable = true;
+                _unitOfWork.TableRepository.UpdateTable(table);
+            }
+
+            _unitOfWork.BookingRepository.Remove(booking);
+            _unitOfWork.Save();
+
+            return booking;
+        }
 
 
     }

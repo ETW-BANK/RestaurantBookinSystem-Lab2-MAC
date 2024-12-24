@@ -22,8 +22,8 @@ namespace Restaurant.Data.Access.Data
             modelBuilder.Entity<Booking>()
                 .HasOne(b => b.Tables)
                 .WithMany()
-                .HasForeignKey(b => b.TableId)
-                .OnDelete(DeleteBehavior.Restrict); 
+                .HasForeignKey(b => b.TableId);
+               
 
             modelBuilder.Entity<Booking>()
                 .HasOne(b => b.ApplicationUser)

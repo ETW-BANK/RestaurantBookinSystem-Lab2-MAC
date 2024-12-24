@@ -1,7 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Restaurant.Models;
 
 namespace Restaurant.Data.Access.Data
@@ -20,14 +19,12 @@ namespace Restaurant.Data.Access.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configure Booking-Table relationship
             modelBuilder.Entity<Booking>()
                 .HasOne(b => b.Tables)
                 .WithMany()
                 .HasForeignKey(b => b.TableId)
-                .OnDelete(DeleteBehavior.Restrict); // Prevent cascading delete if a table is removed
+                .OnDelete(DeleteBehavior.Restrict); 
 
-            // Configure Booking-User relationship
             modelBuilder.Entity<Booking>()
                 .HasOne(b => b.ApplicationUser)
                 .WithMany()

@@ -9,7 +9,7 @@ function loadDataTable() {
             "url": 'Users/GetAllUser',
             "type": "GET",
             "datatype": "json",
-            "dataSrc": "data" // Ensure this matches the API response
+            "dataSrc": "data" 
         },
         "columns": [
             { "data": "id", "width": "20%" },

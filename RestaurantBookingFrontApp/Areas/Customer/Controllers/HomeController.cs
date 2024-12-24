@@ -9,11 +9,13 @@ using RestaurantServices.Services.IServices;
 using RestaurantViewModels;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Security.Claims;
 using System.Text;
 
 namespace RestaurantBookingFrontApp.Areas.Customer.Controllers
 {
     [Area("Customer")]
+    
     public class HomeController : Controller
     {
 
@@ -35,30 +37,96 @@ namespace RestaurantBookingFrontApp.Areas.Customer.Controllers
         }
 
 
-
-        //[Authorize(Roles = StaticData.Role_Customer)]
-        [HttpPost]
-        public async Task<IActionResult> CreateBookings([FromForm] BookingVM bookingVm)
+       
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> Create()
         {
-            try
-            {
-                var jsonData = JsonConvert.SerializeObject(bookingVm);
-                var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-                var response = await _httpClient.PostAsync("Create", content);
+            var claimsIdentity = User?.Identity as ClaimsIdentity;
 
-                if (response.IsSuccessStatusCode)
-                {
-                    return RedirectToAction("BookingConfirmation", "Home");
-                }
-
-                TempData["Error"] = "Unable to create booking.";
-                return RedirectToAction("Index", "Home");
-            }
-            catch (Exception ex)
+            if (claimsIdentity == null || !User.Identity.IsAuthenticated)
             {
-                TempData["Error"] = "An error occurred: " + ex.Message;
-                return RedirectToAction("Index", "Home");
+                TempData["error"] = "User is not authenticated.";
+                return RedirectToAction("Index");
             }
+
+            var userIdClaim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (userIdClaim == null)
+            {
+                TempData["error"] = "User ID claim is missing.";
+                return RedirectToAction("Index");
+            }
+
+            var userId = userIdClaim.Value;
+
+            var apiUrl = $"https://localhost:7232/api/User/GetSingleUser/GetSingleUser/{userId}";
+            var response = await _httpClient.GetAsync(apiUrl);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                TempData["error"] = "Failed to fetch user details.";
+                return RedirectToAction("Index");
+            }
+
+            var userDetailsJson = await response.Content.ReadAsStringAsync();
+            var userDetails = JsonConvert.DeserializeObject<BookingVM>(userDetailsJson);
+
+            if (userDetails == null)
+            {
+                TempData["error"] = "User details not found.";
+                return RedirectToAction("Index");
+            }
+
+            var bookingVm = new BookingVM
+            {
+                ApplicationUserId = userId,
+                Name = userDetails.Name,
+                Email = userDetails.Email,
+                Phone = userDetails.Phone,
+            };
+
+            return View(bookingVm);
+        }
+
+        [HttpPost]
+
+        public async Task<IActionResult> Create(BookingVM booking)
+        {
+
+            var bookingJson = JsonConvert.SerializeObject(booking);
+            Console.WriteLine("Sending Booking Payload: " + bookingJson);
+
+            if (!ModelState.IsValid)
+            {
+                TempData["error"] = "Invalid booking details.";
+                return View(booking);
+            }
+
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                TempData["error"] = "Unable to fetch user details. Please log in again.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var content = new StringContent(JsonConvert.SerializeObject(booking), Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostAsync("Create", content);
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            Console.WriteLine("Response Content: " + responseContent);
+
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["success"] = "Booking created successfully.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            TempData["error"] = "Failed to create booking. Please try again.";
+            return View(booking);
         }
 
 

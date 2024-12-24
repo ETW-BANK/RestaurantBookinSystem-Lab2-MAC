@@ -1,6 +1,5 @@
 ﻿
 using Microsoft.AspNetCore.Mvc;
-using RestaurantServices.Services;
 using RestaurantServices.Services.IServices;
 
 namespace RetaurantBooking.Controllers
@@ -28,7 +27,6 @@ namespace RetaurantBooking.Controllers
                 return NotFound(new { message = "User not found." });
             }
 
-
             var userDetails = new
             {
                 user.Id,
@@ -39,7 +37,6 @@ namespace RetaurantBooking.Controllers
 
             return Ok(userDetails);
         }
-
 
         [HttpGet]
         public async Task<IActionResult> GetUsers()
@@ -52,9 +49,6 @@ namespace RetaurantBooking.Controllers
 
             return Ok(new { data = users });
         }
-
-
-
 
         //[HttpPost]
         //public async Task<IActionResult> LockUser([FromBody] string id)

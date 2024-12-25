@@ -129,11 +129,7 @@ namespace RestaurantBookingFrontApp.Areas.Identity.Pages.Account
 
         public async Task OnGetAsync(string returnUrl = null)
         {
-            if (!_roleManager.RoleExistsAsync(StaticData.Role_Customer).GetAwaiter().GetResult())
-            {
-                _roleManager.CreateAsync(new IdentityRole(StaticData.Role_Customer)).GetAwaiter().GetResult();
-                _roleManager.CreateAsync(new IdentityRole(StaticData.Role_Admin)).GetAwaiter().GetResult();
-            }
+           
 
             Input = new()
             {
@@ -158,7 +154,7 @@ namespace RestaurantBookingFrontApp.Areas.Identity.Pages.Account
                 {
                     UserName = Input.Email,
                     Email = Input.Email,
-                    Name = Input.Name,  // Custom property
+                    Name = Input.Name,  
                     StreetAddress = Input.StreetAddress,
                     City = Input.City,
                     State = Input.State,

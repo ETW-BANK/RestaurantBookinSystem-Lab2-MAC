@@ -13,6 +13,7 @@ namespace Restaurant.Data.Access.Repository
           public IBookingRepository BookingRepository { get; private set; }
           public IBookingDetailRepository BookingDetailRepository { get; private set; }
          public   IBookingHeaderRepository BookingHeaderRepository { get; private set; }
+        public IMybookingsRepository MybookingsRepository { get; private set; } 
         public UnitOfWork(RestaurantDbContext context)
         {
             _context = context;
@@ -21,6 +22,7 @@ namespace Restaurant.Data.Access.Repository
             BookingRepository = new BookingRepository(context); 
             BookingDetailRepository = new BookingDetailRepository(context); 
             BookingHeaderRepository = new BookingHeaderRepository(context); 
+            MybookingsRepository = new MybookingsRepository(context);
            
         }
 

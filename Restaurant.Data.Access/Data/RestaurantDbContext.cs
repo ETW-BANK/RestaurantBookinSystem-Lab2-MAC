@@ -14,6 +14,7 @@ namespace Restaurant.Data.Access.Data
         public DbSet<BookingHeder> BookingHeders { get; set; }
 
         public DbSet<BookingDetail> BookingDetails { get; set; }
+        public DbSet<MyBookings> MyBookings { get; set; }
         public RestaurantDbContext(DbContextOptions<RestaurantDbContext> options) : base(options)
         {
         }

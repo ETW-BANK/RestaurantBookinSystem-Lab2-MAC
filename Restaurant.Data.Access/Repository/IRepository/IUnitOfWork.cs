@@ -10,6 +10,8 @@ namespace Restaurant.Data.Access.Repository.IRepository
 
         IBookingHeaderRepository BookingHeaderRepository { get; }
         IBookingDetailRepository BookingDetailRepository { get; }
+
+        IMybookingsRepository MybookingsRepository { get; }
         void Save();
     }
 }

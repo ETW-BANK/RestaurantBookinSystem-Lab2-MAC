@@ -1,8 +1,10 @@
 ﻿
 using Restaurant.Data.Access.Data;
 using Restaurant.Data.Access.Repository.IRepository;
+using Restaurant.Models;
 using RestaurantServices.Services.IServices;
 using RestaurantViewModels;
+using System.Security.Claims;
 
 namespace RestaurantServices.Services
 {
@@ -48,5 +50,29 @@ namespace RestaurantServices.Services
             return userVmList;
         }
 
-          }
+        public UserVm GetUser(string id)
+        {
+            var user = _unitOfWork.ApplicationUserRepository.GetFirstOrDefault(x=>x.Id== id);   
+
+            if(user == null)
+            {
+                throw new Exception("User Not Found");
+            }
+            
+            var userinfo = new UserVm
+            {
+                Id = user.Id,
+                Name = user.UserName,
+                PhoneNumber = user.PhoneNumber,
+                Email = user.Email,
+                StreetAddress= user.StreetAddress,  
+                City = user.City,
+                State = user.State,
+                PostalCode = user.PostalCode,
+
+            };
+
+            return userinfo;    
+        }
+    }
     }

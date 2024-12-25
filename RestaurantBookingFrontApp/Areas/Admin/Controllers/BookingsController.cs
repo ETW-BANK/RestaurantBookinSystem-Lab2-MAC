@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Restaurant.Models;
 using Restaurant.Utility;
 using RestaurantViewModels;
-using System.Security.Claims;
+
 using System.Text;
 
 namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
@@ -43,77 +42,12 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
 
             return Json(new { data = new List<BookingVM>(), error = "Unable to retrieve users from the server." });
         }
-        [HttpGet]
-        public async Task<IActionResult> Create()
-        {
-            var claimsIdentity = User?.Identity as ClaimsIdentity;
-
-            if (claimsIdentity == null || !User.Identity.IsAuthenticated)
-            {
-                TempData["error"] = "User is not authenticated.";
-                return RedirectToAction("Index");
-            }
-
-            var userIdClaim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-
-            if (userIdClaim == null)
-            {
-                TempData["error"] = "User ID claim is missing.";
-                return RedirectToAction("Index");
-            }
-
-            var userId = userIdClaim.Value;
-
-            var apiUrl = $"https://localhost:7232/api/User/GetSingleUser/GetSingleUser/{userId}";
-            var response = await _httpClient.GetAsync(apiUrl);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                TempData["error"] = "Failed to fetch user details.";
-                return RedirectToAction("Index");
-            }
-
-            var userDetailsJson = await response.Content.ReadAsStringAsync();
-            var userDetails = JsonConvert.DeserializeObject<BookingVM>(userDetailsJson);
-
-            if (userDetails == null)
-            {
-                TempData["error"] = "User details not found.";
-                return RedirectToAction("Index");
-            }
-           
-            var bookingVm = new BookingVM
-            {
-                ApplicationUserId = userId,
-                Name = userDetails.Name,
-                Email = userDetails.Email,
-                Phone = userDetails.Phone,
-            };
-
-            return View(bookingVm);
-        }
+      
 
         [HttpPost]
         public async Task<IActionResult> Create(BookingVM booking)
         {
             
-            var bookingJson = JsonConvert.SerializeObject(booking);
-            Console.WriteLine("Sending Booking Payload: " + bookingJson);
-
-            if (!ModelState.IsValid)
-            {
-                TempData["error"] = "Invalid booking details.";
-                return View(booking);
-            }
-
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (string.IsNullOrEmpty(userId))
-            {
-                TempData["error"] = "Unable to fetch user details. Please log in again.";
-                return RedirectToAction(nameof(Index));
-            }
 
             var content = new StringContent(JsonConvert.SerializeObject(booking), Encoding.UTF8, "application/json");
 
@@ -128,7 +62,7 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            TempData["error"] = "Failed to create booking. Please try again.";
+            TempData["error"] = "NO Table Available At This Time";
             return View(booking);
         }
     }

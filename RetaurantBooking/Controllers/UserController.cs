@@ -18,24 +18,17 @@ namespace RetaurantBooking.Controllers
         [HttpGet("GetSingleUser/{id}")]
         public IActionResult GetSingleUser(string id)
         {
-            var user = _userService.GetAllUsers()
-                .Result
-                .FirstOrDefault(u => u.Id == id);
+            var user = _userService.GetUser(id);
+               
 
             if (user == null)
             {
                 return NotFound(new { message = "User not found." });
             }
 
-            var userDetails = new
-            {
-                user.Id,
-                user.Name,
-                user.Email,
+           
 
-            };
-
-            return Ok(userDetails);
+            return Ok(user);
         }
 
         [HttpGet]

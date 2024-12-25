@@ -4,6 +4,7 @@ using Restaurant.Data.Access.Repository.IRepository;
 using Restaurant.Models;
 using RestaurantServices.Services.IServices;
 using RestaurantViewModels;
+using System.Security.Claims;
 
 namespace RetaurantBooking.Controllers
 {
@@ -26,6 +27,11 @@ namespace RetaurantBooking.Controllers
         //[Authorize]
         public async Task<IActionResult> Create([FromBody] BookingVM bookingVM)
         {
+
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+           
+
             if (bookingVM == null)
             {
                 return BadRequest("Invalid booking details.");

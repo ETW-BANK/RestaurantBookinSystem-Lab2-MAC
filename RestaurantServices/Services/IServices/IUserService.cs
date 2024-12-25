@@ -1,4 +1,5 @@
 ﻿
+using Restaurant.Models;
 using RestaurantViewModels;
 
 
@@ -10,7 +11,7 @@ namespace RestaurantServices.Services.IServices
 
         Task<List<UserVm>> GetAllUsers();
 
-       
+        UserVm GetUser(string id);
 
 
     }

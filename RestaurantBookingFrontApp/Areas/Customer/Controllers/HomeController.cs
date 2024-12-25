@@ -37,7 +37,7 @@ namespace RestaurantBookingFrontApp.Areas.Customer.Controllers
         }
 
 
-       
+
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> Create()
@@ -94,24 +94,6 @@ namespace RestaurantBookingFrontApp.Areas.Customer.Controllers
         public async Task<IActionResult> Create(BookingVM booking)
         {
 
-            var bookingJson = JsonConvert.SerializeObject(booking);
-            Console.WriteLine("Sending Booking Payload: " + bookingJson);
-
-            if (!ModelState.IsValid)
-            {
-                TempData["error"] = "Invalid booking details.";
-                return View(booking);
-            }
-
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (string.IsNullOrEmpty(userId))
-            {
-                TempData["error"] = "Unable to fetch user details. Please log in again.";
-                return RedirectToAction(nameof(Index));
-            }
-
             var content = new StringContent(JsonConvert.SerializeObject(booking), Encoding.UTF8, "application/json");
 
             var response = await _httpClient.PostAsync("Create", content);
@@ -125,7 +107,7 @@ namespace RestaurantBookingFrontApp.Areas.Customer.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            TempData["error"] = "Failed to create booking. Please try again.";
+            TempData["error"] = "NO Table Available At This Time";
             return View(booking);
         }
 

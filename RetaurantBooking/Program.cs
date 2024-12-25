@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Restaurant.Data.Access.Data;
+using Restaurant.Data.Access.DbInisializer;
 using Restaurant.Data.Access.Repository;
 using Restaurant.Data.Access.Repository.IRepository;
 
@@ -29,7 +30,7 @@ namespace RetaurantBooking
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IServicesRegisterExtension, ServiceRegisterExtension.ServiceRegisterExtension>();
-
+            builder.Services.AddScoped<IDbInitilizer, DbInitializer>();
             var serviceProvider = builder.Services.BuildServiceProvider();
             var serviceRegisterExtension = serviceProvider.GetRequiredService<IServicesRegisterExtension>();
             serviceRegisterExtension.RegisterServices(builder.Services);
@@ -54,10 +55,20 @@ namespace RetaurantBooking
 
             app.UseAuthentication(); // Make sure authentication middleware is added
             app.UseAuthorization();
-
+            SeedDatabase();
             app.MapControllers();
 
             app.Run();
+
+            void SeedDatabase()
+            {
+                using (var scope = app.Services.CreateScope())
+                {
+                    var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitilizer>();
+
+                    dbInitializer.Initialize();
+                }
+            }
         }
     }
 }

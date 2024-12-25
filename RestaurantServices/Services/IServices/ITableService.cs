@@ -16,7 +16,7 @@ namespace Restaurant.Data.Access.Repository.Services.IServices
 
         void CreateTable (TablesVM table);  
 
-        void DeleteTable (int id);
+        Tables DeleteTable (Tables table);
 
     }
 }

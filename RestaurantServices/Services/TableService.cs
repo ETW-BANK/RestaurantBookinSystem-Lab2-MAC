@@ -51,17 +51,17 @@ namespace Restaurant.Data.Access.Repository.Services
 
 
 
-        public void DeleteTable(int id)
-        {
-            var table = _unitOfWork.TableRepository.GetFirstOrDefault(t => t.Id == id);
-            if (table == null)
-            {
-                throw new Exception("Table not found");
-            }
+        //public void DeleteTable(int id)
+        //{
+        //    var table = _unitOfWork.TableRepository.GetFirstOrDefault(t => t.Id == id);
+        //    if (table == null)
+        //    {
+        //        throw new Exception("Table not found");
+        //    }
 
-            _unitOfWork.TableRepository.Remove(table);
-            _unitOfWork.Save();
-        }
+        //    _unitOfWork.TableRepository.Remove(table);
+        //    _unitOfWork.Save();
+        //}
 
         public IEnumerable<Tables> GetAllTables()
         {
@@ -88,8 +88,8 @@ namespace Restaurant.Data.Access.Repository.Services
                 throw new Exception("Table not found");
             }
 
-           existingTable.TableNumber=tableVM.TableNumber;   
-            existingTable.NumberOfSeats = tableVM.NumberOfSeats;
+           existingTable.TableNumber=tableVM.TableNumber;
+           existingTable.NumberOfSeats = tableVM.NumberOfSeats;
             existingTable.IsAvailable = tableVM.IsAvailable;
 
             _unitOfWork.TableRepository.UpdateTable(existingTable);
@@ -98,6 +98,19 @@ namespace Restaurant.Data.Access.Repository.Services
 
 
 
+        public Tables DeleteTable(Tables table)
+        {
+            table=_unitOfWork.TableRepository.GetFirstOrDefault(x=>x.Id == table.Id);
 
+            if(table == null)
+            {
+                throw new Exception("Table not found");
+            }
+            _unitOfWork.TableRepository.Remove(table);
+            _unitOfWork.Save();
+
+            return table;   
+
+        }
     }
 }

@@ -81,7 +81,7 @@ namespace RetaurantBooking.Controllers
                 return NotFound("Table Not Found");
             }
 
-            _unitOfWork.TableRepository.Remove(tableToDelete);
+           _tableservice.DeleteTable(tableToDelete);
           
             return Ok("Table Deleted Successfully");
         }

@@ -12,6 +12,7 @@ namespace RestaurantServices.Services.IServices
 
         Booking DeleteBooking(Booking booking);
 
-        Booking GetSinle(int bookingId); 
+        Booking GetSinle(int bookingId);
+        IEnumerable<MyBookingsVM> GetBookingsByUserId(string userId);
     }
 }

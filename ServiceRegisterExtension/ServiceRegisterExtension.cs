@@ -20,6 +20,7 @@ namespace ServiceRegisterExtension
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITableService, TableService>();
             services.AddScoped<IBookingService, BookingService>();
+       
         }
     }
 }

@@ -143,6 +143,29 @@ namespace RestaurantServices.Services
             return booking;
         }
 
+        public IEnumerable<MyBookingsVM> GetBookingsByUserId(string userId)
+        {
+            var bookings = _unitOfWork.BookingRepository.GetAll(x => x.ApplicationUserId == userId, includeProperties: "ApplicationUser,Tables");
 
+            if (bookings == null || !bookings.Any())
+            {
+                return null; 
+            }
+
+            // Map bookings to MyBookingsVM
+            return bookings.Select(b => new MyBookingsVM
+            {
+                BookingId = b.Id,
+                BookingDate = b.BookingDate,
+                BookingTime = b.BookingTime.ToString(@"hh\:mm"), 
+                NumberOfGuests = b.NumberOfGuests,
+                TableId = b.TableId,
+                ApplicationUserId=b.ApplicationUserId,
+                TableNumber = b.Tables?.TableNumber ?? 0, 
+                Name = b.ApplicationUser?.Name, 
+                Phone = b.ApplicationUser?.PhoneNumber,
+                Email = b.ApplicationUser?.Email 
+            }).ToList();
+        }
     }
 }

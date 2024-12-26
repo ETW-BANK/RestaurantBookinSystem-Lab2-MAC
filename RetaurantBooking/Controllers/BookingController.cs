@@ -84,5 +84,25 @@ namespace RetaurantBooking.Controllers
             return Ok("Booking deleted successfully.");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetBookingsByUserId([FromQuery] string userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                var claimsIdentity = (ClaimsIdentity)User.Identity;
+                userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            }
+
+           
+            var result = _bookingService.GetBookingsByUserId(userId);
+
+            if (result == null || !result.Any())
+            {
+                return NotFound($"No bookings found for user with ID {userId}.");
+            }
+
+            return Ok(result);
+        }
+
     }
 }

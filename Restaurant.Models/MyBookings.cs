@@ -12,7 +12,7 @@ namespace Restaurant.Models
     {
         public int Id { get; set; } 
 
-        public int TableId { get; set; }
+        public int BookingId { get; set; }   
         [ForeignKey("BookingId")]
         [ValidateNever] 
         public ICollection<Booking> Bookings { get; set; }

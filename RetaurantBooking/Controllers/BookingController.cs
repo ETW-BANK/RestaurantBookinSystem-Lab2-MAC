@@ -84,15 +84,10 @@ namespace RetaurantBooking.Controllers
             return Ok("Booking deleted successfully.");
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetBookingsByUserId([FromQuery] string userId)
-        {
-            if (string.IsNullOrEmpty(userId))
-            {
-                var claimsIdentity = (ClaimsIdentity)User.Identity;
-                userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            }
 
+        [HttpGet("GetBookingsByUserId/{userId}")]
+        public async Task<IActionResult> GetBookingsByUserId(string userId)
+        {
            
             var result = _bookingService.GetBookingsByUserId(userId);
 
@@ -103,6 +98,7 @@ namespace RetaurantBooking.Controllers
 
             return Ok(result);
         }
+
 
     }
 }

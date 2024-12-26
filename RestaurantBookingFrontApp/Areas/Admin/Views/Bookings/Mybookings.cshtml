@@ -1,0 +1,47 @@
+﻿@model IEnumerable<RestaurantViewModels.MyBookingsVM>
+
+@{
+    ViewData["Title"] = "My Bookings";
+}
+
+<div class="card shadow border-0 mt-4">
+    <div class="card-header bg-secondary bg-gradient mt-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">My Bookings</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Booking Date</th>
+                    <th>Booking Time</th>
+                    <th>Table Number</th>
+                    <th>Number of Guests</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    @foreach (var item in Model.OrderBy(b => b.BookingDate))
+                    {
+                        <tr>
+                            <td>@item.BookingDate.ToString("yyyy-MM-dd")</td>
+                            <td>@item.BookingTime</td>
+                            <td>@item.TableNumber</td>
+                            <td>@item.NumberOfGuests</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" class="text-center">No bookings found.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

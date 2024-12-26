@@ -152,7 +152,7 @@ namespace RestaurantServices.Services
                 return null; 
             }
 
-            // Map bookings to MyBookingsVM
+            
             return bookings.Select(b => new MyBookingsVM
             {
                 BookingId = b.Id,

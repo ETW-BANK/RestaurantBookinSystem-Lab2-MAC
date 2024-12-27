@@ -110,7 +110,41 @@ namespace RestaurantBookingFrontApp.Areas.Customer.Controllers
             TempData["error"] = "NO Table Available At This Time";
             return View(booking);
         }
+        [HttpGet]
+        public async Task<IActionResult> GetMYBookings()
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
+            if (string.IsNullOrEmpty(userId))
+            {
+                TempData["error"] = "User not logged in.";
+                return RedirectToAction("Login", "Account");
+            }
+
+            try
+            {
+                // Correct the URL
+                var response = await _httpClient.GetAsync($"GetBookingsByUserId/GetBookingsByUserId/{userId}");
+
+                var data = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var bookings = JsonConvert.DeserializeObject<List<MyBookingsVM>>(data);
+                    return View("Mybookings", bookings);
+                }
+
+
+                TempData["error"] = $"Unable to fetch bookings. Server returned: {response.StatusCode}. Response: {data}";
+            }
+            catch (Exception ex)
+            {
+                TempData["error"] = "An unexpected error occurred. Please try again.";
+            }
+
+            return View("Mybookings", new List<MyBookingsVM>());
+        }
 
         public IActionResult Privacy()
         {

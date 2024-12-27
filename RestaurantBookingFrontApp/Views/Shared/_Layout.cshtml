@@ -37,7 +37,7 @@
                               @if (User.IsInRole(StaticData.Role_Customer))
                             {
                         <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="Customer" asp-controller="" asp-action="">My Bookings</a>
+                                <a class="nav-link text-light" asp-area="Customer" asp-controller="Home" asp-action="GetMYBookings">My Bookings</a>
                         </li>
 
                             }

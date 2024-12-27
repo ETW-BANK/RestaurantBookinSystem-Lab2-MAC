@@ -1,14 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Restaurant.Models;
-using Restaurant.Utility;
 using RestaurantBookingFrontApp.Models;
-using RestaurantServices.Services.IServices;
 using RestaurantViewModels;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Text;
 

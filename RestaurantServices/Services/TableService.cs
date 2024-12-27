@@ -1,5 +1,4 @@
 ﻿
-
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Restaurant.Data.Access.Repository.IRepository;
 using Restaurant.Data.Access.Repository.Services.IServices;

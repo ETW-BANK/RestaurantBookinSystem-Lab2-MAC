@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.Data.Access.Repository.IRepository;
-using Restaurant.Models;
 using RestaurantServices.Services.IServices;
 using RestaurantViewModels;
 using System.Security.Claims;

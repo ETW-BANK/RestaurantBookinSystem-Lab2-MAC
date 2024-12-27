@@ -50,7 +50,7 @@ namespace Restaurant.Data.Access.DbInisializer
                     City = "Stockholm"
                 }, "@Admin12345").GetAwaiter().GetResult();
 
-                ApplicationUser user = _context.ApplicationUsers.FirstOrDefault(u => u.Email == "admin@40green.com");
+                ApplicationUser user = _context.ApplicationUsers.FirstOrDefault(u => u.Email == "admin@green.com");
                 _userManager.AddToRoleAsync(user, StaticData.Role_Admin).GetAwaiter().GetResult();
             }
 

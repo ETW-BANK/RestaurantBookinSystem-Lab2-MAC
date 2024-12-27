@@ -90,7 +90,7 @@ namespace RestaurantBookingFrontApp.Areas.Customer.Controllers
         }
 
         [HttpPost]
-
+        [Authorize]
         public async Task<IActionResult> Create(BookingVM booking)
         {
 
@@ -124,7 +124,7 @@ namespace RestaurantBookingFrontApp.Areas.Customer.Controllers
 
             try
             {
-                // Correct the URL
+                
                 var response = await _httpClient.GetAsync($"GetBookingsByUserId/GetBookingsByUserId/{userId}");
 
                 var data = await response.Content.ReadAsStringAsync();

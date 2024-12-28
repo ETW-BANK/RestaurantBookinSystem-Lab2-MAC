@@ -21,6 +21,7 @@
                     <th>Table Number</th>
                     <th>Number of Guests</th>
                     <th>Status</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -28,12 +29,21 @@
                 {
                     @foreach (var item in Model.OrderBy(b => b.BookingDate))
                     {
-                        <tr>
+                        <tr id="booking-row-@item.BookingId">
                             <td>@item.BookingDate.ToString("yyyy-MM-dd")</td>
                             <td>@item.BookingTime</td>
                             <td>@item.TableNumber</td>
                             <td>@item.NumberOfGuests</td>
                             <td>@item.BookingStatus</td>
+
+                            <td>
+                                <div class="w-75 btn-group" role="group">
+                                   
+                                    <a asp-controller="Bookings" asp-action="ConfirmCancelBooking" asp-route-bookingId="@item.BookingId" class="btn btn-danger mx-2">
+                                        <i class="bi bi-trash-fill"></i> Cancel
+                                    </a>
+                                </div>
+                            </td>
                         </tr>
                     }
                 }

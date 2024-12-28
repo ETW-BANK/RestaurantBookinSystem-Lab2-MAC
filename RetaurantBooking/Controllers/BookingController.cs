@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Restaurant.Data.Access.Repository.IRepository;
 using RestaurantServices.Services.IServices;
 using RestaurantViewModels;
+using System.Net.Http;
 using System.Security.Claims;
 
 namespace RetaurantBooking.Controllers
@@ -29,7 +30,7 @@ namespace RetaurantBooking.Controllers
 
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-           
+
 
             if (bookingVM == null)
             {
@@ -59,7 +60,7 @@ namespace RetaurantBooking.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetSingleBooking(int id)
         {
-            var booking= _unitOfWork.BookingRepository.GetFirstOrDefault(x => x.Id == id);
+            var booking = _unitOfWork.BookingRepository.GetFirstOrDefault(x => x.Id == id);
             if (booking == null)
             {
                 return NotFound("Booking Not Found");
@@ -83,11 +84,27 @@ namespace RetaurantBooking.Controllers
             return Ok("Booking deleted successfully.");
         }
 
+        [HttpPost("{bookingId}")]
+        public async Task<IActionResult> UpdateBooking(int bookingId)
+        {
+            var bookingToCancel = _unitOfWork.BookingRepository.GetFirstOrDefault(x => x.Id == bookingId);
+
+            if (bookingToCancel == null)
+            {
+                return NotFound("Booking not found.");
+            }
+
+            _bookingService.CancelBooking(bookingToCancel);
+
+            return Ok("Booking Cancelled successfully.");
+        }
+
+
 
         [HttpGet("GetBookingsByUserId/{userId}")]
         public async Task<IActionResult> GetBookingsByUserId(string userId)
         {
-           
+
             var result = _bookingService.GetBookingsByUserId(userId);
 
             if (result == null || !result.Any())
@@ -96,7 +113,10 @@ namespace RetaurantBooking.Controllers
             }
 
             return Ok(result);
-        }
+        } 
+
+
+      
 
 
     }

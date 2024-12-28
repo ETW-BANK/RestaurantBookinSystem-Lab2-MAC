@@ -14,5 +14,6 @@ namespace RestaurantServices.Services.IServices
 
         Booking GetSinle(int bookingId);
         IEnumerable<MyBookingsVM> GetBookingsByUserId(string userId);
+        Booking CancelBooking(Booking booking);
     }
 }

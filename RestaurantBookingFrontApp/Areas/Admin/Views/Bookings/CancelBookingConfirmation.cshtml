@@ -1,0 +1,47 @@
+﻿@model RestaurantViewModels.BookingVM
+
+@{
+    ViewData["Title"] = "Confirm Cancellation";
+}
+
+<div class="card shadow border-0 mt-4">
+    <div class="card-header bg-secondary bg-gradient mt-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Cancel Booking</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <form method="post" class="row" asp-action="CancelBooking" asp-route-bookingId="@Model.BookingId">
+            <input asp-for="BookingId" hidden />
+
+            <div class="border p-3">
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="BookingDate" disabled class="form-control border-0 shadow" />
+                    <label asp-for="BookingDate" class="ms-2"></label>
+                </div>
+
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="BookingTime" disabled class="form-control border-0 shadow" />
+                    <label asp-for="BookingTime" class="ms-2"></label>
+                </div>
+
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="NumberOfGuests" disabled class="form-control border-0 shadow" />
+                    <label asp-for="NumberOfGuests" class="ms-2"></label>
+                </div>
+
+                <div class="row pt-2">
+                    <div class="col-6 col-md-3">
+                        <button type="submit" class="btn btn-danger form-control">Cancel Booking</button>
+                    </div>
+
+                    <div class="col-6 col-md-3">
+                        <a asp-controller="Bookings" asp-action="GetMYBookings" class="btn btn-outline-primary border form-control">Back To List</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

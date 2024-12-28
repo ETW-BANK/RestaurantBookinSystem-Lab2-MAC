@@ -143,7 +143,28 @@ namespace RestaurantServices.Services
 
             return booking;
         }
+        public Booking CancelBooking(Booking booking)
+        {
+            booking = _unitOfWork.BookingRepository.GetFirstOrDefault(x => x.Id == booking.Id);
 
+            if (booking == null)
+            {
+                throw new Exception("Booking not found.");
+            }
+
+            var table = _unitOfWork.TableRepository.GetFirstOrDefault(x => x.Id == booking.TableId);
+
+            if (table != null)
+            {
+                table.IsAvailable = true;
+                _unitOfWork.TableRepository.UpdateTable(table);
+            }
+            booking.BookingStatus = BookingStatus.Cancelled;
+            _unitOfWork.BookingRepository.UpdateBooking(booking);
+            _unitOfWork.Save();
+
+            return booking;
+        }
         public IEnumerable<MyBookingsVM> GetBookingsByUserId(string userId)
         {
             var bookings = _unitOfWork.BookingRepository.GetAll(x => x.ApplicationUserId == userId, includeProperties: "ApplicationUser,Tables");

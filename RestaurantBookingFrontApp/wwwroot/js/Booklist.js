@@ -11,15 +11,16 @@ function loadDataTable() {
             "dataSrc": "data",
         },
         "columns": [
-            { "data": 'bookingId', "width": "20%" },
-            { "data": 'bookingDate', "width": "20%" },
-            { "data": 'bookingTime', "width": "20%" },
-            { "data": 'tableNumber', "width": "20%" },
-            { "data": 'numberOfGuests', "width": "20%" },
+            { "data": 'bookingId', "width": "5%" },
+            { "data": 'bookingDate', "width": "10%" },
+            { "data": 'bookingTime', "width": "5%" },
+            { "data": 'tableNumber', "width": "5%" },
+            { "data": 'numberOfGuests', "width": "5%" },
             { "data": 'applicationUserId', "width": "20%" },
-            { "data": 'name', "width": "20%" },
-            { "data": 'phone', "width": "20%" },
-            { "data": 'email', "width": "20%" },
+            { "data": 'name', "width": "10%" },
+            { "data": 'phone', "width": "10%" },
+            { "data": 'email', "width": "15%" },
+          
 
             {
                 "data": 'id',

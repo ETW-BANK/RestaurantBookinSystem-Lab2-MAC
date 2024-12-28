@@ -101,6 +101,48 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
 
             return View("Mybookings", new List<MyBookingsVM>());
         }
+        [HttpPost]
+        public async Task<IActionResult> CancelBooking(int bookingId)
+        {
+           
+                var content = new StringContent("{}", Encoding.UTF8, "application/json");
+                var response = await _httpClient.PostAsync($"UpdateBooking/{bookingId}", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    TempData["success"] = "Booking cancelled successfully.";
+                    return RedirectToAction(nameof(GetMYBookings)); 
+                }
+                else
+                {
+                  
+                    var errorDetails = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"Error: {response.StatusCode} - {errorDetails}");
+
+                   
+                    TempData["error"] = $"Failed to cancel booking. Server responded with: {response.StatusCode}";
+                    return RedirectToAction(nameof(GetMYBookings)); 
+                }
+            }
+     
+
+        [HttpGet]
+        public async Task<IActionResult> ConfirmCancelBooking(int bookingId)
+        {
+            var response = await _httpClient.GetAsync($"GetSingleBooking/{bookingId}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var data = await response.Content.ReadAsStringAsync();
+                var booking = JsonConvert.DeserializeObject<BookingVM>(data);
+
+                return View("CancelBookingConfirmation", booking);
+            }
+
+            TempData["error"] = "Booking not found.";
+            return RedirectToAction(nameof(GetMYBookings));
+        }
+
 
 
 

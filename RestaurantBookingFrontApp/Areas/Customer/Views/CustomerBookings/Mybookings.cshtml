@@ -10,7 +10,7 @@
     </div>
     <div class="card-body p-4">
         <div class="table-responsive">
-            <table class="table table-hover table-bordered table-striped text-center">
+            <table class="table table-hover table-bordered table-striped text-center" width="100%">
                 <thead class="table-dark">
                     <tr>
                         <th class="text-center small">Booking Date</th>
@@ -26,7 +26,7 @@
                     {
                         @foreach (var item in Model.OrderBy(b => b.BookingDate))
                         {
-                            <tr id="booking-row-@item.BookingId">
+                            <tr>
                                 <td>@item.BookingDate.ToString("yyyy-MM-dd")</td>
                                 <td>@item.BookingTime</td>
                                 <td>@item.TableNumber</td>
@@ -34,9 +34,21 @@
                                 <td>@item.BookingStatus</td>
                                 <td>
                                     <div class="w-75 btn-group" role="group">
-                                        <a asp-controller="Bookings" asp-action="ConfirmCancelBooking" asp-route-bookingId="@item.BookingId" class="btn btn-danger mx-2">
-                                            <i class="bi bi-trash-fill"></i> Cancel
-                                        </a>
+                                        @if (item.BookingStatus==BookingStatus.Active)
+                                        {
+                                            <a asp-controller="CustomerBookings"
+                                               asp-action="ConfirmCancelBooking"
+                                               asp-route-bookingId="@item.BookingId"
+                                               class="btn btn-danger mx-2">
+                                                <i class="bi bi-trash-fill"></i> Cancel
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-secondary mx-2" disabled>
+                                                <i class="bi bi-trash-fill"></i> Cancel
+                                            </button>
+                                        }
                                     </div>
                                 </td>
                             </tr>

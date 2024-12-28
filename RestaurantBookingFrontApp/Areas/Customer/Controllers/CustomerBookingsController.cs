@@ -3,47 +3,31 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Restaurant.Utility;
 using RestaurantViewModels;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
 
-namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
+namespace RestaurantBookingFrontApp.Areas.Customer.Controllers
 {
-    [Area("Admin")]
-    [Authorize(Roles = StaticData.Role_Admin)]
-    public class BookingsController : Controller
+    [Area("Customer")]
+    [Authorize(Roles = StaticData.Role_Customer)]
+    public class CustomerBookingsController : Controller
     {
         private readonly HttpClient _httpClient;
 
-        public BookingsController(HttpClient httpClient)
+        public CustomerBookingsController(HttpClient httpClient)
         {
             _httpClient = httpClient;
             _httpClient.BaseAddress = new Uri("https://localhost:7232/api/Booking/");
 
         }
 
+
         [HttpGet]
         public IActionResult Index()
         {
             return View();
         }
-
-        [HttpGet]
-        public async Task<IActionResult> GetAllBookings()
-        {
-            var response = await _httpClient.GetAsync("GetBookings");
-
-            if (response.IsSuccessStatusCode)
-            {
-                var data = await response.Content.ReadAsStringAsync();
-                var serviceResponse = JsonConvert.DeserializeObject<List<BookingVM>>(data);
-
-                return Json(new { data = serviceResponse });
-            }
-
-            return Json(new { data = new List<BookingVM>(), error = "Unable to retrieve users from the server." });
-        }
-
-
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> Create()
@@ -142,7 +126,7 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
                     return View("Mybookings", bookings);
                 }
 
-               
+
                 TempData["error"] = $"Unable to fetch bookings. Server returned: {response.StatusCode}. Response: {data}";
             }
             catch (Exception ex)
@@ -155,28 +139,28 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> CancelBooking(int bookingId)
         {
-           
-                var content = new StringContent("{}", Encoding.UTF8, "application/json");
-                var response = await _httpClient.PostAsync($"UpdateBooking/{bookingId}", content);
 
-                if (response.IsSuccessStatusCode)
-                {
-                    TempData["success"] = "Booking cancelled successfully.";
-                    return RedirectToAction(nameof(GetMYBookings)); 
-                }
-                else
-                {
-                  
-                    var errorDetails = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine($"Error: {response.StatusCode} - {errorDetails}");
+            var content = new StringContent("{}", Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync($"UpdateBooking/{bookingId}", content);
 
-                   
-                    TempData["error"] = $"Failed to cancel booking. Server responded with: {response.StatusCode}";
-                    return RedirectToAction(nameof(GetMYBookings)); 
-                }
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["success"] = "Booking cancelled successfully.";
+                return RedirectToAction(nameof(GetMYBookings));
             }
-          
-    
+            else
+            {
+
+                var errorDetails = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Error: {response.StatusCode} - {errorDetails}");
+
+
+                TempData["error"] = $"Failed to cancel booking. Server responded with: {response.StatusCode}";
+                return RedirectToAction(nameof(GetMYBookings));
+            }
+        }
+
+
 
         [HttpGet]
         public async Task<IActionResult> ConfirmCancelBooking(int bookingId)
@@ -195,11 +179,5 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
             return RedirectToAction(nameof(GetMYBookings));
         }
 
-
-
-
-
     }
 }
-
-

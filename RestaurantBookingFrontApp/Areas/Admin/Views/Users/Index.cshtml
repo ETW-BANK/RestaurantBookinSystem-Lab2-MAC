@@ -6,11 +6,7 @@
 
 <div class="card shadow border-0 my-4">
     <div class="card-header bg-secondary bg-gradient mt-0 py-3">
-        <div class="row">
-            <div class="col-12 text-center">
-                <h2 class="text-white py-2">User List</h2>
-            </div>
-        </div>
+        <h4 class="text-center text-white mb-0">User List</h4>
     </div>
     <div class="card-body p-4">
         <div class="row pb-3">
@@ -18,27 +14,28 @@
             </div>
             <div class="col-6 text-end">
                 <a asp-controller="Users" asp-area="Admin" asp-action="Create" class="btn btn-primary">
-                    <i class="bi bi-plus-circle"></i> Create New Booking
+                    <i class="bi bi-plus-circle"></i> Create New User
                 </a>
             </div>
         </div>
 
-        <table id="tblData" class="table table-bordered table-striped text-center" width="100%">
-            <thead>
-                <tr>
-                    <th>User Id</th>
-                    <th>Name</th>
-                    <th>Street Address</th>
-                    <th>City</th>
-                    <th>Postal Code</th>
-                    <th>Phone Number</th>
-                    <th>Role</th>
-                    <th>Action</th>
-
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+        <div class="table-responsive">
+            <table id="tblData" class="table table-hover table-bordered table-striped text-center" width="100%">
+                <thead class="table-dark">
+                    <tr>
+                        <th class="text-center small">User Id</th>
+                        <th class="text-center small">Name</th>
+                        <th class="text-center small">Street Address</th>
+                        <th class="text-center small">City</th>
+                        <th class="text-center small">Postal Code</th>
+                        <th class="text-center small">Phone Number</th>
+                        <th class="text-center small">Role</th>
+                        <th class="text-center small">Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
     </div>
 </div>
 

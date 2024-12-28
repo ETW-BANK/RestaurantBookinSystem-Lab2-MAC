@@ -6,11 +6,7 @@
 
 <div class="card shadow border-0 my-4">
     <div class="card-header bg-secondary bg-gradient mt-0 py-3">
-        <div class="row">
-            <div class="col-12 text-center">
-                <h2 class="text-white py-2">Tables List</h2>
-            </div>
-        </div>
+        <h4 class="text-center text-white mb-0">Tables List</h4>
     </div>
     <div class="card-body p-4">
         <div class="row pb-3">
@@ -23,18 +19,19 @@
             </div>
         </div>
 
-        <table id="tblData" class="table table-bordered table-striped text-center" width="100%">
-            <thead>
-                <tr>
-                    <th>Table Number</th>
-                    <th>Number Of Seats</th>
-                    <th>Is Available</th>
-                    <th>Action</th>
-                  
-                </tr>
-            </thead>
-            <tbody></tbody>  
-        </table>
+        <div class="table-responsive">
+            <table id="tblData" class="table table-hover table-bordered table-striped text-center" width="100%">
+                <thead class="table-dark">
+                    <tr>
+                        <th class="text-center small">Table Number</th>
+                        <th class="text-center small">Number Of Seats</th>
+                        <th class="text-center small">Is Available</th>
+                        <th class="text-center small">Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
     </div>
 </div>
 

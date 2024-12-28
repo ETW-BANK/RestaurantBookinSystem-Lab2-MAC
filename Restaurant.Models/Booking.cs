@@ -30,5 +30,13 @@ namespace Restaurant.Models
         public string ApplicationUserId { get; set; }
 
         public ApplicationUser ApplicationUser { get; set; }
+
+        public BookingStatus BookingStatus { get; set; }    
+    }
+
+    public enum BookingStatus
+    {
+        Active,
+        Cancelled,
     }
 }

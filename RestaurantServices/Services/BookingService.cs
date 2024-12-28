@@ -51,6 +51,7 @@ namespace RestaurantServices.Services
                 NumberOfGuests = bookingVM.NumberOfGuests,
                 ApplicationUserId = bookingVM.ApplicationUserId,
                 TableId = availableTable.Id,
+                BookingStatus = BookingStatus.Active,
 
             };
 
@@ -87,6 +88,7 @@ namespace RestaurantServices.Services
                 Name=b.ApplicationUser.Name,
                 Email=b.ApplicationUser.Email,  
                 Phone=b.ApplicationUser.PhoneNumber,
+                BookingStatus=b.BookingStatus,  
                
                 
             }).ToList();
@@ -163,7 +165,9 @@ namespace RestaurantServices.Services
                 TableNumber = b.Tables?.TableNumber ?? 0, 
                 Name = b.ApplicationUser?.Name, 
                 Phone = b.ApplicationUser?.PhoneNumber,
-                Email = b.ApplicationUser?.Email 
+                Email = b.ApplicationUser?.Email,
+                BookingStatus=b.BookingStatus 
+                
             }).ToList();
         }
     }

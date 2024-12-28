@@ -1,5 +1,7 @@
 ﻿
 
+using Restaurant.Models;
+
 namespace RestaurantViewModels
 {
     public class MyBookingsVM
@@ -15,5 +17,7 @@ namespace RestaurantViewModels
         public string? Name { get; set; }
         public string? Phone { get; set; }
         public string? Email { get; set; }
+
+        public BookingStatus BookingStatus { get; set; }
     }
 }

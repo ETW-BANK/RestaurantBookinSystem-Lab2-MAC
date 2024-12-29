@@ -3,13 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Restaurant.Utility;
 using RestaurantViewModels;
-using System.Security.Claims;
 using System.Text;
 
 namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = StaticData.Role_Admin)]
+    [Authorize(Roles = StaticData.Role_Admin)] 
     public class BookingsController : Controller
     {
         private readonly HttpClient _httpClient;
@@ -17,8 +16,7 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
         public BookingsController(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            _httpClient.BaseAddress = new Uri("https://localhost:7232/api/Booking/");
-
+            _httpClient.BaseAddress = new Uri("https://localhost:7232/api/Booking/");  
         }
 
         [HttpGet]
@@ -36,76 +34,26 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
             {
                 var data = await response.Content.ReadAsStringAsync();
                 var serviceResponse = JsonConvert.DeserializeObject<List<BookingVM>>(data);
-
                 return Json(new { data = serviceResponse });
             }
 
-            return Json(new { data = new List<BookingVM>(), error = "Unable to retrieve users from the server." });
+            return Json(new { data = new List<BookingVM>(), error = "Unable to retrieve bookings from the server." });
         }
 
-
+      
         [HttpGet]
-        [Authorize]
-        public async Task<IActionResult> Create()
+        public IActionResult Create()
         {
-            var claimsIdentity = User?.Identity as ClaimsIdentity;
-
-            if (claimsIdentity == null || !User.Identity.IsAuthenticated)
-            {
-                TempData["error"] = "User is not authenticated.";
-                return RedirectToAction("Index");
-            }
-
-            var userIdClaim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-
-            if (userIdClaim == null)
-            {
-                TempData["error"] = "User ID claim is missing.";
-                return RedirectToAction("Index");
-            }
-
-            var userId = userIdClaim.Value;
-
-            var apiUrl = $"https://localhost:7232/api/User/GetSingleUser/GetSingleUser/{userId}";
-            var response = await _httpClient.GetAsync(apiUrl);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                TempData["error"] = "Failed to fetch user details.";
-                return RedirectToAction("Index");
-            }
-
-            var userDetailsJson = await response.Content.ReadAsStringAsync();
-            var userDetails = JsonConvert.DeserializeObject<BookingVM>(userDetailsJson);
-
-            if (userDetails == null)
-            {
-                TempData["error"] = "User details not found.";
-                return RedirectToAction("Index");
-            }
-
-            var bookingVm = new BookingVM
-            {
-                ApplicationUserId = userId,
-                Name = userDetails.Name,
-                Email = userDetails.Email,
-                Phone = userDetails.Phone,
-            };
-
-            return View(bookingVm);
+            return View(new BookingVM());
         }
 
+       
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> Create(BookingVM booking)
         {
-
             var content = new StringContent(JsonConvert.SerializeObject(booking), Encoding.UTF8, "application/json");
 
             var response = await _httpClient.PostAsync("Create", content);
-
-            var responseContent = await response.Content.ReadAsStringAsync();
-            Console.WriteLine("Response Content: " + responseContent);
 
             if (response.IsSuccessStatusCode)
             {
@@ -113,70 +61,37 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            TempData["error"] = "NO Table Available At This Time";
+            TempData["error"] = "No table available at this time.";
             return View(booking);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetMYBookings()
-        {
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (string.IsNullOrEmpty(userId))
-            {
-                TempData["error"] = "User not logged in.";
-                return RedirectToAction("Login", "Account");
-            }
-
-            try
-            {
-                // Correct the URL
-                var response = await _httpClient.GetAsync($"GetBookingsByUserId/GetBookingsByUserId/{userId}");
-
-                var data = await response.Content.ReadAsStringAsync();
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var bookings = JsonConvert.DeserializeObject<List<MyBookingsVM>>(data);
-                    return View("Mybookings", bookings);
-                }
-
-               
-                TempData["error"] = $"Unable to fetch bookings. Server returned: {response.StatusCode}. Response: {data}";
-            }
-            catch (Exception ex)
-            {
-                TempData["error"] = "An unexpected error occurred. Please try again.";
-            }
-
-            return View("Mybookings", new List<MyBookingsVM>());
-        }
         [HttpPost]
         public async Task<IActionResult> CancelBooking(int bookingId)
         {
-           
-                var content = new StringContent("{}", Encoding.UTF8, "application/json");
-                var response = await _httpClient.PostAsync($"UpdateBooking/{bookingId}", content);
 
-                if (response.IsSuccessStatusCode)
-                {
-                    TempData["success"] = "Booking cancelled successfully.";
-                    return RedirectToAction(nameof(GetMYBookings)); 
-                }
-                else
-                {
-                  
-                    var errorDetails = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine($"Error: {response.StatusCode} - {errorDetails}");
+            var content = new StringContent("{}", Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync($"UpdateBooking/{bookingId}", content);
 
-                   
-                    TempData["error"] = $"Failed to cancel booking. Server responded with: {response.StatusCode}";
-                    return RedirectToAction(nameof(GetMYBookings)); 
-                }
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["success"] = "Booking cancelled successfully.";
+                return RedirectToAction("Index");
             }
-          
-    
+            else
+            {
+
+                var errorDetails = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Error: {response.StatusCode} - {errorDetails}");
+
+
+                TempData["error"] = $"Failed to cancel booking. Server responded with: {response.StatusCode}";
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
+
+
 
         [HttpGet]
         public async Task<IActionResult> ConfirmCancelBooking(int bookingId)
@@ -192,14 +107,8 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
             }
 
             TempData["error"] = "Booking not found.";
-            return RedirectToAction(nameof(GetMYBookings));
+            return RedirectToAction(nameof(Index));
         }
-
-
-
-
 
     }
 }
-
-

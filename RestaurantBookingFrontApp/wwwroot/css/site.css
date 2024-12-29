@@ -716,3 +716,7 @@ button {
     margin-left:20px;
     margin-right:50px;
 }
+.small-text {
+    font-size: 0.8rem; 
+    text-align:center;
+}

@@ -11836,5 +11836,8 @@ tr {
         display: none !important;
     }
 }
+.small-text {
+    font-size: 0.8rem; /* You can adjust this to any size you prefer */
+}
 
 /*# sourceMappingURL=bootstrap.css.map */

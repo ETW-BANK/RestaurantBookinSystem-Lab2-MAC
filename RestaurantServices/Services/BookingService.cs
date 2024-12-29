@@ -154,11 +154,17 @@ namespace RestaurantServices.Services
 
             var table = _unitOfWork.TableRepository.GetFirstOrDefault(x => x.Id == booking.TableId);
 
+
+            DateTime currentTime = DateTime.Now;
+
             if (table != null)
             {
                 table.IsAvailable = true;
                 _unitOfWork.TableRepository.UpdateTable(table);
             }
+          
+
+
             booking.BookingStatus = BookingStatus.Cancelled;
             _unitOfWork.BookingRepository.UpdateBooking(booking);
             _unitOfWork.Save();

@@ -9,7 +9,7 @@ function loadDataTable() {
             "type": "GET",
             "datatype": "json",
             "dataSrc": function (json) {
-               
+                
                 json.data.forEach(function (item) {
                     
                     if (item.bookingStatus === 0) {
@@ -36,6 +36,7 @@ function loadDataTable() {
                 "data": 'bookingStatus',  
                 "render": function (data, type, row) {
                     return `<span class="small-text">${data}</span>`;  
+                },
                 "width": "15%"
             },
             {

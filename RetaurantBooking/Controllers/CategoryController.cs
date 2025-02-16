@@ -29,7 +29,7 @@ namespace RetaurantBooking.Controllers
             return Ok(categories);
         }
         [HttpPost]
-        public async Task<IActionResult> CreateNewCategory([FromQuery] CategoryVM category)
+        public async Task<IActionResult> CreateNewCategory([FromBody] CategoryVM category)
         {
             if (category== null)
             {

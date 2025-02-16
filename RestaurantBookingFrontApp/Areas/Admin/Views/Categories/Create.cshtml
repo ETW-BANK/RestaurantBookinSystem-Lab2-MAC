@@ -12,47 +12,35 @@
     </div>
     <div class="card-body p-4">
 
-        <form method="post" class="row">
-
-
+        <form method="post" class="row" enctype="multipart/form-data">
+            <input asp-for="Id" hidden />
+           
 
 
             <div class="row">
 
-                <input asp-for="Id" hidden />
+
                 <div class="col-10">
 
                     <div class="border p-3 ">
 
-                        @if (Model.Id != 0)
-                        {
-                            <div class="form-floating py-2 col-12">
-                                <input asp-for="Name" readonly class="form-control border-0 shadow" />
-                                <label asp-for="Name" class="ms-2">Table Number</label>
-                                <span asp-validation-for="Name" class="text-danger"></span>
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="form-floating py-2 col-12">
-                                <input asp-for="Name" hidden class="form-control border-0 shadow" />
-
-                            </div>
-                        }
+                        @*  <div class="text-danger" asp-validation-summary="ModelOnly"></div> *@
                         <div class="form-floating py-2 col-12">
-                            <input asp-for="Name"  class="form-control border-0 shadow" />
-                            <label asp-for="Name" class="ms-2">Name</label>
+                            <input asp-for="Name" class="form-control border-0 shadow" />
+                            <label asp-for="Name" class="ms-2 "></label>
                             <span asp-validation-for="Name" class="text-danger"></span>
                         </div>
+
+
+
                         <div class="form-floating py-2 col-12">
-                            <input asp-for="Description" class="form-control border-0 shadow" type="text" />
-                            <label asp-for="Description" class="ms-2">Description</label>
+                            <input asp-for="Description" class="form-control border-0 shadow" />
+                            <label asp-for="Description" class="ms-2 "></label>
                             <span asp-validation-for="Description" class="text-danger"></span>
                         </div>
 
 
-
-
+                       
                         <div class="row pt-2">
                             <div class="col-6 col-md-3">
 
@@ -83,6 +71,7 @@
 
                 </div>
 
+                
 
             </div>
 
@@ -93,7 +82,12 @@
     </div>
 
 </div>
+
+
+
+
 @section Scripts {
+
 
     <partial name="_ValidationScriptsPartial" />
 }

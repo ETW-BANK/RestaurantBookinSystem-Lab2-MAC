@@ -47,6 +47,19 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CategoryVM category)
         {
+            if (category == null)
+            {
+                TempData["error"] = "Invalid category data!";
+                return View(category);
+            }
+
+            // Check if Name is null or empty
+            if (string.IsNullOrEmpty(category.Name))
+            {
+                TempData["error"] = "Category Name is required!";
+                return View(category);
+            }
+
             var content = new StringContent(JsonConvert.SerializeObject(category), Encoding.UTF8, "application/json");
 
             var response = await _httpClient.PostAsync("CreateNewCategory", content);
@@ -57,9 +70,11 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            
+            TempData["error"] = "Something went wrong!";
             return View(category);
         }
+
+
 
     }
 }

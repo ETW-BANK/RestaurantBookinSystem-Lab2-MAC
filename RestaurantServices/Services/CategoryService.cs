@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Restaurant.Data.Access.Repository.IRepository;
 using Restaurant.Models;
+using Restaurant.Utility;
 using RestaurantServices.Services.IServices;
 using RestaurantViewModels;
 using System;
@@ -19,18 +21,21 @@ namespace RestaurantServices.Services
         {
             _unitOfWork = unitOfWork; 
         }
-
-        public void CreateCategory(CategoryVM category)
+        public async Task CreateCategory(CategoryVM category)
         {
+           
+
             var newCategory = new Category
             {
                 Name = category.Name,
-                Description = category.Description
-            }; 
-            
+                Description = category.Description,
+                ImageUrl = category.ImageUrl
+            };
+
             _unitOfWork.CategoryRepository.Add(newCategory);
-            _unitOfWork.Save(); 
+            _unitOfWork.Save();
         }
+
 
         public Category DeleteCategory(Category category)
         {
@@ -77,7 +82,8 @@ namespace RestaurantServices.Services
 
            existingCategorye.Name = category.Name;
            existingCategorye.Description = category.Description;
-           
+            existingCategorye.ImageUrl = category.ImageUrl; 
+
 
             _unitOfWork.CategoryRepository.Update(existingCategorye);
             _unitOfWork.Save();

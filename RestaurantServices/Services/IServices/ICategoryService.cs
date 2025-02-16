@@ -1,4 +1,5 @@
-﻿using Restaurant.Models;
+﻿using Microsoft.AspNetCore.Http;
+using Restaurant.Models;
 using RestaurantViewModels;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace RestaurantServices.Services.IServices
         void UpdateCategory(CategoryVM category);
 
 
-        void CreateCategory(CategoryVM category);
+        Task CreateCategory(CategoryVM category);
 
         Category DeleteCategory(Category menu);
     }

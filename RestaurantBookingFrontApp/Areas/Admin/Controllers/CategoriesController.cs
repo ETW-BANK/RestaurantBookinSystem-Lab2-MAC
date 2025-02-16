@@ -62,7 +62,7 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
 
             var content = new StringContent(JsonConvert.SerializeObject(category), Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync("CreateNewCategory", content);
+            var response = await _httpClient.PostAsync("CreateCategory", content);
 
             if (response.IsSuccessStatusCode)
             {

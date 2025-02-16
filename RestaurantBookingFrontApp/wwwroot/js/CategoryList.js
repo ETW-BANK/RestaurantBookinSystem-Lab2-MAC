@@ -14,6 +14,13 @@ function loadDataTable() {
             { "data": 'name', "width": "20%" },
             { "data": 'description', "width": "20%" },
             {
+                "data": "imageUrl",
+                "render": function (data) {
+                    return `<img src="${data}" class="img-fluid rounded" style="width: 50px; height: 50px;" alt="Category Image"/>`;
+                },
+                "width": "15%"
+            },
+            {
                 "data": 'id',
                 "render": function (data, type, row) {
                     return `

@@ -29,17 +29,26 @@ namespace RetaurantBooking.Controllers
             return Ok(categories);
         }
         [HttpPost]
-        public async Task<IActionResult> CreateNewCategory([FromBody] CategoryVM category)
+       
+        public async Task<IActionResult> CreateCategory([FromBody] CategoryVM category)
         {
-            if (category== null)
+            if (category == null || string.IsNullOrEmpty(category.Name))
             {
-                return BadRequest("Invalid Category data");
+                return BadRequest(new { message = "Category Name is required!" });
             }
 
-          _categoryService.CreateCategory(category);
-
-            return Ok(new { message = "Category Created successfully." });
+            try
+            {
+                // Directly save the category with an ImageUrl (no file upload here)
+                await _categoryService.CreateCategory(category);
+                return Ok(new { message = "Category created successfully", imageUrl = category.ImageUrl });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCategory(int id)

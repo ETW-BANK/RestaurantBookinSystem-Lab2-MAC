@@ -265,6 +265,8 @@ namespace Restaurant.Data.Access.Migrations
 
                     b.HasIndex("TableId");
 
+                    b.HasIndex("menueId");
+
                     b.ToTable("Bookings");
                 });
 
@@ -291,11 +293,11 @@ namespace Restaurant.Data.Access.Migrations
 
             modelBuilder.Entity("Restaurant.Models.Menue", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("menueId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("menueId"));
 
                     b.Property<int>("Available")
                         .HasColumnType("int");
@@ -318,14 +320,9 @@ namespace Restaurant.Data.Access.Migrations
                     b.Property<int>("Qty")
                         .HasColumnType("int");
 
-                    b.Property<int?>("TableId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
+                    b.HasKey("menueId");
 
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("TableId");
 
                     b.ToTable("Menues");
                 });
@@ -440,7 +437,15 @@ namespace Restaurant.Data.Access.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Restaurant.Models.Menue", "Menue")
+                        .WithMany()
+                        .HasForeignKey("menueId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("ApplicationUser");
+
+                    b.Navigation("Menue");
 
                     b.Navigation("Tables");
                 });
@@ -453,16 +458,7 @@ namespace Restaurant.Data.Access.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Restaurant.Models.Booking", null)
-                        .WithMany("Menue")
-                        .HasForeignKey("TableId");
-
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("Restaurant.Models.Booking", b =>
-                {
-                    b.Navigation("Menue");
                 });
 #pragma warning restore 612, 618
         }

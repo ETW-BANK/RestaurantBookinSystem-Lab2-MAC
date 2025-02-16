@@ -31,12 +31,12 @@ namespace Restaurant.Models
 
         public ApplicationUser ApplicationUser { get; set; }
 
-        public int menueId { get; set; }    
 
-        [ForeignKey(nameof(TableId))]
+        public int menueId { get; set; }   
+        
+        [ForeignKey(nameof(menueId))]
 
-        public ICollection<Menue>? Menue { get; set; }    
-
+        public Menue Menue { get; set; }
         public BookingStatus BookingStatus { get; set; }    
     }
 

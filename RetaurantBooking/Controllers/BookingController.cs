@@ -12,13 +12,13 @@ namespace RetaurantBooking.Controllers
     [ApiController]
     public class BookingController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
+       
         private readonly IBookingService _bookingService;
 
 
-        public BookingController(IUnitOfWork unitOfWork, IBookingService bookingService)
+        public BookingController( IBookingService bookingService)
         {
-            _unitOfWork = unitOfWork;
+            
             _bookingService = bookingService;
 
         }
@@ -60,7 +60,7 @@ namespace RetaurantBooking.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetSingleBooking(int id)
         {
-            var booking = _unitOfWork.BookingRepository.GetFirstOrDefault(x => x.Id == id);
+            var booking = _bookingService.GetSinle(id);
             if (booking == null)
             {
                 return NotFound("Booking Not Found");
@@ -71,7 +71,7 @@ namespace RetaurantBooking.Controllers
         [HttpDelete("{bookingId}")]
         public async Task<IActionResult> DeleteBooking(int bookingId)
         {
-            var bookingToDelete = _unitOfWork.BookingRepository.GetFirstOrDefault(x => x.Id == bookingId);
+            var bookingToDelete = _bookingService.GetSinle(bookingId);
 
             if (bookingToDelete == null)
             {
@@ -87,7 +87,7 @@ namespace RetaurantBooking.Controllers
         [HttpPost("{bookingId}")]
         public async Task<IActionResult> UpdateBooking(int bookingId)
         {
-            var bookingToCancel = _unitOfWork.BookingRepository.GetFirstOrDefault(x => x.Id == bookingId);
+            var bookingToCancel = _bookingService.GetSinle(bookingId);
 
             if (bookingToCancel == null)
             {

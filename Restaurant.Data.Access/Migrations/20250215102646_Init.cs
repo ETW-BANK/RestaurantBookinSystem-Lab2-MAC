@@ -57,6 +57,20 @@ namespace Restaurant.Data.Access.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Categories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Categories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Table",
                 columns: table => new
                 {
@@ -178,6 +192,31 @@ namespace Restaurant.Data.Access.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Menues",
+                columns: table => new
+                {
+                    menueId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Price = table.Column<double>(type: "float", nullable: false),
+                    Qty = table.Column<int>(type: "int", nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    Available = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Menues", x => x.menueId);
+                    table.ForeignKey(
+                        name: "FK_Menues_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Bookings",
                 columns: table => new
                 {
@@ -187,7 +226,9 @@ namespace Restaurant.Data.Access.Migrations
                     BookingTime = table.Column<TimeSpan>(type: "time", nullable: false),
                     NumberOfGuests = table.Column<int>(type: "int", nullable: false),
                     TableId = table.Column<int>(type: "int", nullable: false),
-                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    menueId = table.Column<int>(type: "int", nullable: false),
+                    BookingStatus = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -199,11 +240,17 @@ namespace Restaurant.Data.Access.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
+                        name: "FK_Bookings_Menues_menueId",
+                        column: x => x.menueId,
+                        principalTable: "Menues",
+                        principalColumn: "menueId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_Bookings_Table_TableId",
                         column: x => x.TableId,
                         principalTable: "Table",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -251,9 +298,19 @@ namespace Restaurant.Data.Access.Migrations
                 column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Bookings_menueId",
+                table: "Bookings",
+                column: "menueId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Bookings_TableId",
                 table: "Bookings",
                 column: "TableId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Menues_CategoryId",
+                table: "Menues",
+                column: "CategoryId");
         }
 
         /// <inheritdoc />
@@ -284,7 +341,13 @@ namespace Restaurant.Data.Access.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
+                name: "Menues");
+
+            migrationBuilder.DropTable(
                 name: "Table");
+
+            migrationBuilder.DropTable(
+                name: "Categories");
         }
     }
 }

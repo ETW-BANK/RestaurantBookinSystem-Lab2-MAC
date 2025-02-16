@@ -13,11 +13,11 @@ namespace RetaurantBooking.Controllers
     [ApiController]
     public class TableController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
+        
         private readonly ITableService _tableservice;
-        public TableController(IUnitOfWork unitOfWork,ITableService tableService)
+        public TableController(ITableService tableService)
         {
-           _unitOfWork = unitOfWork;
+          
             _tableservice = tableService;   
            
         }
@@ -26,7 +26,7 @@ namespace RetaurantBooking.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTable(int id)
         {
-            var table = _unitOfWork.TableRepository.GetFirstOrDefault(x => x.Id == id);
+            var table = _tableservice.GetById(id);  
             if (table == null)
             {
                 return NotFound("Table Not Found");
@@ -75,7 +75,7 @@ namespace RetaurantBooking.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTable(int id)
         {
-            var tableToDelete = _unitOfWork.TableRepository.GetFirstOrDefault(x => x.Id == id);
+            var tableToDelete = _tableservice.GetById(id);  
             if (tableToDelete == null)
             {
                 return NotFound("Table Not Found");

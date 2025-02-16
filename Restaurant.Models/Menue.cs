@@ -12,7 +12,7 @@ namespace Restaurant.Models
     public class Menue
     {
         [Key]
-        public int Id { get; set; }
+        public int menueId { get; set; }
         public string? Name { get; set; }
         public string? Description { get; set; }
         public double Price { get; set; }
@@ -22,11 +22,10 @@ namespace Restaurant.Models
 
         public int CategoryId { get; set; }
 
-        [ForeignKey(nameof(CategoryId))]
+        [ForeignKey("CategoryId")]
 
         public Category? Category { get; set; }  
-        public Available Available { get; set; }    
-
+        public Available Available { get; set; }
 
     }
 

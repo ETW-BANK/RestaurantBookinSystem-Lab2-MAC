@@ -8,20 +8,21 @@ namespace Restaurant.Data.Access.Repository
 
         private readonly RestaurantDbContext _context;
         public IApplicationUserRepository ApplicationUserRepository { get; private set; }
-         public ITableRepository TableRepository { get; private set; }
-     
-          public IBookingRepository BookingRepository { get; private set; }
-        
-     
+        public ITableRepository TableRepository { get; private set; }
+        public IBookingRepository BookingRepository { get; private set; }
+        public ICategoryRepository CategoryRepository { get; private set; }
+        public IMenuRepository MenuRepository { get; private set; }
         public UnitOfWork(RestaurantDbContext context)
         {
             _context = context;
             TableRepository=new TableRepository(context);
             ApplicationUserRepository = new ApplicationUserRepository(context);
-            BookingRepository = new BookingRepository(context); 
-           
-          
-           
+            BookingRepository = new BookingRepository(context);
+            MenuRepository = new MenuRepository(context);
+            CategoryRepository = new CategoryRepository(context);   
+
+
+
         }
 
         public void Save()

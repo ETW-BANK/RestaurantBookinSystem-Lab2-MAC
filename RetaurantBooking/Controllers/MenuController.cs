@@ -17,19 +17,23 @@ namespace RetaurantBooking.Controllers
             _menuService = menuService;
         }
 
+       
+
         [HttpPost]
-
-        public async Task<IActionResult> Create([FromQuery] MenuVM menuVM)
+        [Route("CreateMenu")]
+        public async Task<IActionResult> CreateMenu([FromForm] MenuVM menu)
         {
-            if (menuVM == null)
+            try
             {
-                return BadRequest("Invalid menu details.");
+                await _menuService.CreateMenu(menu);
+                return Ok(new { message = "Menu created successfully", imageUrl = menu.Image });
             }
-
-            _menuService.CreateMenu(menuVM);
-
-            return Ok(new { message = "Menu created successfully." });
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
+
 
         [HttpGet]
 

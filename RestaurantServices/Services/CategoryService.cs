@@ -1,15 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Restaurant.Data.Access.Repository.IRepository;
 using Restaurant.Models;
-using Restaurant.Utility;
+
 using RestaurantServices.Services.IServices;
 using RestaurantViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RestaurantServices.Services
 {
@@ -17,24 +12,56 @@ namespace RestaurantServices.Services
     {
 
         private readonly IUnitOfWork _unitOfWork;
-        public CategoryService(IUnitOfWork unitOfWork)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public CategoryService(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
         {
-            _unitOfWork = unitOfWork; 
+            _unitOfWork = unitOfWork;
+            _webHostEnvironment = webHostEnvironment;
+
         }
         public async Task CreateCategory(CategoryVM category)
         {
-           
-
-            var newCategory = new Category
+            try
             {
-                Name = category.Name,
-                Description = category.Description,
-                ImageUrl = category.ImageUrl
-            };
+                if (category.ImageFile != null && category.ImageFile.Length > 0)
+                {
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(category.ImageFile.FileName);
+                    string uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, @"images\category");
 
-            _unitOfWork.CategoryRepository.Add(newCategory);
-            _unitOfWork.Save();
+                    // Ensure the directory exists
+                    if (!Directory.Exists(uploadPath))
+                    {
+                        Directory.CreateDirectory(uploadPath);
+                    }
+
+                    // Save the image file
+                    using (var fileStream = new FileStream(Path.Combine(uploadPath, fileName), FileMode.Create))
+                    {
+                        await category.ImageFile.CopyToAsync(fileStream);
+                    }
+
+                    // Set the correct image URL (this will be the URL that can be accessed by front-end)
+                    category.ImageUrl = $"/images/category/{fileName}";
+                }
+
+                var newCategory = new Category
+                {
+                    Name = category.Name,
+                    Description = category.Description,
+                    ImageUrl = category.ImageUrl
+                };
+
+                _unitOfWork.CategoryRepository.Add(newCategory);
+                _unitOfWork.Save();
+            }
+            catch (Exception ex)
+            {
+                // Log the error (you can log it to a file or console or use a logging library)
+                Console.WriteLine($"Error while uploading image: {ex.Message}");
+                throw; // Rethrow the exception or handle as necessary
+            }
         }
+
 
 
         public Category DeleteCategory(Category category)
@@ -52,12 +79,25 @@ namespace RestaurantServices.Services
             return categoryToDelete;
         }
 
-        public IEnumerable<Category> GetAllCategories()
+        public IEnumerable<Category> GetAllCategories(string scheme, string host)
         {
-            var categoyList = _unitOfWork.CategoryRepository.GetAll();
+            var categoryList = _unitOfWork.CategoryRepository.GetAll();
 
-            return categoyList;
+            foreach (var category in categoryList)
+            {
+                if (!string.IsNullOrEmpty(category.ImageUrl))
+                {
+                    // Ensure the path uses forward slashes (/) for web compatibility
+                    category.ImageUrl = category.ImageUrl.Replace("\\", "/");
+
+                    // If you need a full URL for API clients, construct it properly
+                    category.ImageUrl = $"{scheme}://{host}{category.ImageUrl}";
+                }
+            }
+
+            return categoryList;
         }
+
 
         public Category GetById(int id)
         {
@@ -71,9 +111,38 @@ namespace RestaurantServices.Services
             return catagorytofind;  
         }
 
-        public void UpdateCategory(CategoryVM category)
+        public async Task UpdateCategory(CategoryVM category)
         {
             var existingCategorye = _unitOfWork.CategoryRepository.GetFirstOrDefault(u => u.Id == category.Id);
+
+            if (category.ImageFile != null && category.ImageFile.Length > 0)
+            {
+
+                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(category.ImageFile.FileName);
+                string uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, @"images\category");
+
+                if (!string.IsNullOrEmpty(existingCategorye.ImageUrl)   )
+                {
+                    var oldimagePath = Path.Combine(_webHostEnvironment.WebRootPath, existingCategorye.ImageUrl.TrimStart('\\'));
+
+                    if (System.IO.File.Exists(oldimagePath))
+                    {
+                        System.IO.File.Delete(oldimagePath);
+                    }
+                }
+
+
+
+
+                using (var fileStream = new FileStream(Path.Combine(uploadPath, fileName), FileMode.Create))
+                {
+                    await category.ImageFile.CopyToAsync(fileStream);
+
+                    category.ImageUrl = $"/images/category/{fileName}";
+                }
+
+
+            }
 
             if (existingCategorye == null)
             {

@@ -17,7 +17,7 @@ namespace RestaurantServices.Services.IServices
         void UpdateMenu(MenuVM menu);
 
 
-        void CreateMenu(MenuVM menu);
+        Task CreateMenu(MenuVM menu);
 
         Menue DeleteMenu(Menue menu);
     }

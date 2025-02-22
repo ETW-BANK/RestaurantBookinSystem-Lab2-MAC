@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Restaurant.Data.Access.Data;
 using Restaurant.Data.Access.DbInisializer;
 using Restaurant.Data.Access.Repository;
 using Restaurant.Data.Access.Repository.IRepository;
-
 using ServiceRegisterExtension;
 
 namespace RetaurantBooking
@@ -26,19 +26,18 @@ namespace RetaurantBooking
                 .AddDefaultTokenProviders();
 
             builder.Services.AddControllers();
-          
 
+            // Register custom services and repositories
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IServicesRegisterExtension, ServiceRegisterExtension.ServiceRegisterExtension>();
             builder.Services.AddScoped<IDbInitilizer, DbInitializer>();
+
+            // Register additional services
             var serviceProvider = builder.Services.BuildServiceProvider();
             var serviceRegisterExtension = serviceProvider.GetRequiredService<IServicesRegisterExtension>();
             serviceRegisterExtension.RegisterServices(builder.Services);
 
-           
-
-
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            // Swagger configuration for API documentation
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -47,25 +46,43 @@ namespace RetaurantBooking
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
+                app.UseDeveloperExceptionPage(); // This will show detailed error pages.
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
 
-            app.UseHttpsRedirection();
+            // Set the path for static files (images in this case)
+            var imagePath = Path.Combine(builder.Environment.WebRootPath, "images/category");
 
-            app.UseAuthentication(); // Make sure authentication middleware is added
+            // Middleware for serving static files from the 'wwwroot' folder
+            app.UseStaticFiles();  // Default static files middleware
+
+            // Configure the image path specifically for /images/category requests
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(imagePath),
+                RequestPath = "/images/category"
+            });
+
+            // Add authentication and authorization middleware
+            app.UseAuthentication();
             app.UseAuthorization();
+
+            // Seed the database on application startup
             SeedDatabase();
+
+            // Map the controllers for routing
             app.MapControllers();
 
+            // Start the application
             app.Run();
 
+            // Seed the database with initial data
             void SeedDatabase()
             {
                 using (var scope = app.Services.CreateScope())
                 {
                     var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitilizer>();
-
                     dbInitializer.Initialize();
                 }
             }

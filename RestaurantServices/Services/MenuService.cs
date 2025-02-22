@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Restaurant.Data.Access.Repository.IRepository;
 using Restaurant.Models;
+using Restaurant.Utility;
 using RestaurantServices.Services.IServices;
 using RestaurantViewModels;
 
@@ -18,12 +19,16 @@ namespace RestaurantServices.Services
         {
             _unitOfWork = unitOfWork;   
         }
-        public void CreateMenu(MenuVM menu)
+        public async Task CreateMenu(MenuVM menu)
         {
             var category = _unitOfWork.CategoryRepository
-                        .GetFirstOrDefault(c => c.Name == menu.CategoryName);
+                                .GetFirstOrDefault(c => c.Name == menu.CategoryName);
+
             if (category == null)
                 throw new Exception("Category not found");
+
+            
+           
 
             var newMenu = new Menue
             {
@@ -31,14 +36,10 @@ namespace RestaurantServices.Services
                 Description = menu.Description,
                 Price = menu.Price,
                 Qty = menu.Qty,
-                Image = menu.Image,
+                Image = menu.Image, // Use the saved image path
                 CategoryId = category.Id,
+                Available = menu.Qty > 0 ? Available.Yes : Available.NO
             };
-
-            if (menu.Qty > 0)
-                newMenu.Available = Available.Yes;
-            else
-                newMenu.Available = Available.NO;
 
             _unitOfWork.MenuRepository.Add(newMenu);
             _unitOfWork.Save();

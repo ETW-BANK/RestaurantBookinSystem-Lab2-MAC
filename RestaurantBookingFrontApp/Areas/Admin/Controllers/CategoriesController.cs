@@ -48,6 +48,7 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
 
 
         [HttpPost]
+      
         public async Task<IActionResult> Create(CategoryVM category)
         {
             if (category == null)

@@ -13,33 +13,38 @@ namespace RetaurantBooking.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
-       
+
         private readonly ICategoryService _categoryService;
 
         public CategoryController(ICategoryService categoryService)
         {
-           
-            _categoryService = categoryService; 
+
+            _categoryService = categoryService;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllCategories()
         {
-            IEnumerable<Category> categories =_categoryService.GetAllCategories();
+            // Pass scheme and host to the service method
+            var scheme = HttpContext.Request.Scheme;
+            var host = HttpContext.Request.Host.ToString();
+
+            var categories = _categoryService.GetAllCategories(scheme, host);
+
             return Ok(categories);
         }
+
         [HttpPost]
-       
-        public async Task<IActionResult> CreateCategory([FromBody] CategoryVM category)
+
+        public async Task<IActionResult> CreateCategory([FromForm] CategoryVM category)
         {
-            if (category == null || string.IsNullOrEmpty(category.Name))
+            if (category == null)
             {
-                return BadRequest(new { message = "Category Name is required!" });
+                return BadRequest(new { message = "Category data is missing!" });
             }
 
             try
             {
-                // Directly save the category with an ImageUrl (no file upload here)
                 await _categoryService.CreateCategory(category);
                 return Ok(new { message = "Category created successfully", imageUrl = category.ImageUrl });
             }
@@ -50,12 +55,13 @@ namespace RetaurantBooking.Controllers
         }
 
 
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCategory(int id)
         {
-            var category= _categoryService.GetById(id);
+            var category = _categoryService.GetById(id);
 
-            if (category== null)
+            if (category == null)
             {
                 return NotFound("Category Not Found");
             }
@@ -73,7 +79,7 @@ namespace RetaurantBooking.Controllers
             {
                 return NotFound("Category not found");
             }
-           _categoryService.UpdateCategory(category);
+            _categoryService.UpdateCategory(category);
             return Ok(new { message = "Category Updated successfully." });
         }
         [HttpDelete("{id}")]
@@ -83,10 +89,10 @@ namespace RetaurantBooking.Controllers
             if (CategoryToDelete == null)
             {
                 return NotFound("Category Not Found");
-            }   
-         
+            }
 
-           _categoryService.DeleteCategory(CategoryToDelete);
+
+            _categoryService.DeleteCategory(CategoryToDelete);
 
             return Ok(new { message = "Category Deleted successfully." });
         }

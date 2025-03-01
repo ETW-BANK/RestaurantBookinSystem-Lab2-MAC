@@ -19,13 +19,13 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
             _httpClient = httpClient;
             _httpClient.BaseAddress = new Uri("https://localhost:7232/api/Category/");
         }
-       
+
         [HttpGet]
-      
+
         public IActionResult Index() => View();
 
 
-      
+
 
         [HttpGet]
         public async Task<IActionResult> GetCategories()
@@ -49,41 +49,24 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            ViewBag.PageTitle = "Create Category";
+            ViewBag.PageTitle = "Create Table";
             ViewBag.ButtonLabel = "Create";
 
             return View(new CategoryVM());
         }
 
-
         [HttpPost]
-
         public async Task<IActionResult> Create(CategoryVM category)
         {
-            if (category == null)
-            {
-                TempData["error"] = "Invalid category data!";
-                return View(category);
-            }
-
-            // Check if Name is null or empty
-            if (string.IsNullOrEmpty(category.Category.Name))
-            {
-                TempData["error"] = "Category Name is required!";
-                return View(category);
-            }
-
             var content = new StringContent(JsonConvert.SerializeObject(category), Encoding.UTF8, "application/json");
-
             var response = await _httpClient.PostAsync("CreateCategory", content);
 
             if (response.IsSuccessStatusCode)
             {
-                TempData["success"] = "Category created successfully.";
+                TempData["success"] = "Category Created successfully";
                 return RedirectToAction(nameof(Index));
             }
 
-            TempData["error"] = "Something went wrong!";
             return View(category);
         }
 
@@ -94,35 +77,37 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-                var CategoryResponse = JsonConvert.DeserializeObject<CategoryVM>(data);
+                var categoryResponse = JsonConvert.DeserializeObject<CategoryVM>(data);
 
                 ViewBag.PageTitle = "Edit Category";
                 ViewBag.ButtonLabel = "Update";
 
-                if (CategoryResponse != null)
+                if (categoryResponse != null)
                 {
-                    return View("Create", CategoryResponse);
+                    return View("Create", categoryResponse);
                 }
             }
 
-            return View("Error");
+            TempData["error"] = "Category not found.";
+            return RedirectToAction(nameof(Index));
         }
 
 
+
         [HttpPost]
-        public async Task<IActionResult> Edit(CategoryVM category)
+        public async Task<IActionResult> Edit(CategoryVM categoryvm)
         {
-            var content = new StringContent(JsonConvert.SerializeObject(category), Encoding.UTF8, "application/json");
+            var content = new StringContent(JsonConvert.SerializeObject(categoryvm), Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync("UpdateCategory", content);
 
             if (response.IsSuccessStatusCode)
             {
-                TempData["success"] = "Category Updated successfully";
+                TempData["success"] = "Category Info Updated successfully";
                 return RedirectToAction(nameof(Index));
             }
 
-            return View("Create", category);
-        }
+            return View("Create", categoryvm);
 
+        }
     }
 }

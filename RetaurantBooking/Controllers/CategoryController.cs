@@ -33,7 +33,7 @@ namespace YourNamespace.Backend.Controllers
         }
 
         [HttpPost]
-        [Route("CreateCategory")]
+    
         public async Task<IActionResult> CreateCategory([FromForm] CategoryVM category)
         {
             try
@@ -51,15 +51,21 @@ namespace YourNamespace.Backend.Controllers
 
 
         [HttpGet("{id}")]
-        public IActionResult GetCategory(int id)
+        public async Task< IActionResult> GetCategory(int id)
         {
-            var category = _categoryService.GetById(id);
+           
 
-            if (category == null)
+          try
             {
-                return NotFound("Category Not Found");
+               var category=   _categoryService.GetById(id);
+
+                return Ok(category);
             }
-            return Ok(category);
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+
         }
 
         [HttpPut]
@@ -73,7 +79,7 @@ namespace YourNamespace.Backend.Controllers
             try
             {
                 await _categoryService.UpdateCategory(category);
-                return Ok(new { message = "Category updated successfully." });
+                return Ok( "Category updated successfully." );
             }
             catch (Exception ex)
             {

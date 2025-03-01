@@ -17,9 +17,8 @@ namespace Restaurant.Models
         public string? Name { get; set; }
         public string? Description { get; set; }
 
-        [ForeignKey("menuId")]
-        public int menuId { get; set; }  
-        public ICollection<Menue> Menue { get; set; }
+        public string? ImageUrl { get; set; }
 
+  
     }
 }

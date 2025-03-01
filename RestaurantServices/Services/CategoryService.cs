@@ -25,19 +25,20 @@ namespace RestaurantServices.Services
 
 
 
-       
-            public Category GetById(int id)
+
+        public Category GetById(int id)
         {
-            return _unitOfWork.CategoryRepository.GetFirstOrDefault(c => c.Id == id);
+            var table = _unitOfWork.CategoryRepository.GetFirstOrDefault(u => u.Id == id);
+            return table ?? throw new Exception("Category not found");
         }
 
         public async Task UpdateCategory(CategoryVM categoryVM)
         {
-            var category = _unitOfWork.CategoryRepository.GetFirstOrDefault(c => c.Id == categoryVM.Category.Id);
+            var category = _unitOfWork.CategoryRepository.GetFirstOrDefault(c => c.Id == categoryVM.Id);
             if (category != null)
             {
-                category.Name = categoryVM.Category.Name;
-                category.Description = categoryVM.Category.Description;
+                category.Name = categoryVM.Name;
+                category.Description = categoryVM.Description;
               
                 _unitOfWork.CategoryRepository.Update(category);
                 await _unitOfWork.SaveAsync();
@@ -58,9 +59,9 @@ namespace RestaurantServices.Services
             {
                 
                 
-                Id = categoryVM.Category.Id,
-                Name = categoryVM.Category.Name,
-                Description = categoryVM.Category.Description,
+                Id = categoryVM.Id,
+                Name = categoryVM.Name,
+                Description = categoryVM.Description,
            
             };
             _unitOfWork.CategoryRepository.Add(newCategory);
@@ -73,12 +74,11 @@ namespace RestaurantServices.Services
 
             return categorylist.Select(t => new CategoryVM
             {
-                Category = new Category
-                {
+               
                     Id = t.Id,
                     Name = t.Name,
                     Description = t.Description,    
-                }
+                
               
 
             }).ToList();

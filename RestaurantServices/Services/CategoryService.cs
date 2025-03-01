@@ -62,7 +62,8 @@ namespace RestaurantServices.Services
                 Id = categoryVM.Id,
                 Name = categoryVM.Name,
                 Description = categoryVM.Description,
-           
+                ImageUrl = categoryVM.ImageUrl,
+
             };
             _unitOfWork.CategoryRepository.Add(newCategory);
             await _unitOfWork.SaveAsync();

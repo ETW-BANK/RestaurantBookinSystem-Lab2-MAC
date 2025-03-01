@@ -19,6 +19,6 @@ namespace Restaurant.Models
 
         public string? ImageUrl { get; set; }
 
-  
+
     }
 }

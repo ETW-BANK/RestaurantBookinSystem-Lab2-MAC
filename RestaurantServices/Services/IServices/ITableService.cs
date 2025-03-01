@@ -7,7 +7,8 @@ namespace Restaurant.Data.Access.Repository.Services.IServices
 {
    public interface ITableService
     {
-        IEnumerable<Tables> GetAllTables();
+      IEnumerable<TablesVM> GetAllTables();
+
 
         Tables GetById(int id);
 

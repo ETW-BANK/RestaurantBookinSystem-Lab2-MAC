@@ -30,7 +30,7 @@ namespace RetaurantBooking
             // Register custom services and repositories
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IServicesRegisterExtension, ServiceRegisterExtension.ServiceRegisterExtension>();
-            builder.Services.AddScoped<IDbInitilizer, DbInitializer>();
+           
 
             // Register additional services
             var serviceProvider = builder.Services.BuildServiceProvider();
@@ -46,23 +46,17 @@ namespace RetaurantBooking
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage(); // This will show detailed error pages.
+                app.UseDeveloperExceptionPage(); 
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
 
-            // Set the path for static files (images in this case)
-            var imagePath = Path.Combine(builder.Environment.WebRootPath, "images/category");
+           
 
-            // Middleware for serving static files from the 'wwwroot' folder
-            app.UseStaticFiles();  // Default static files middleware
+           
+            app.UseStaticFiles();  
 
-            // Configure the image path specifically for /images/category requests
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(imagePath),
-                RequestPath = "/images/category"
-            });
+            
 
             // Add authentication and authorization middleware
             app.UseAuthentication();

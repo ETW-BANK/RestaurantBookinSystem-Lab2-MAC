@@ -25,9 +25,9 @@ namespace Restaurant.Data.Access.Repository
 
         }
 
-        public void Save()
+        public async Task SaveAsync()
         {
-            _context.SaveChanges();
+        _context.SaveChanges();
         }
 
     }

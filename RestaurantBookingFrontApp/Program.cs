@@ -17,7 +17,7 @@ namespace RestaurantBookingFrontApp
             builder.Services.AddDbContext<RestaurantDbContext>(option => option.UseSqlServer(connectionstring));
 
             builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<RestaurantDbContext>().AddDefaultTokenProviders();
-          
+
             builder.Services.AddScoped<IEmailSender, EmailSender>();
             builder.Services.AddHttpClient();
 

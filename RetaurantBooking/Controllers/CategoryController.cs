@@ -1,52 +1,45 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Restaurant.Data.Access.Repository.IRepository;
-using Restaurant.Data.Access.Repository.Services;
-using Restaurant.Data.Access.Repository.Services.IServices;
 using Restaurant.Models;
+using RestaurantServices.Services;
 using RestaurantServices.Services.IServices;
 using RestaurantViewModels;
+using System;
+using System.Threading.Tasks;
 
-namespace RetaurantBooking.Controllers
+namespace YourNamespace.Backend.Controllers
 {
     [Route("api/[controller]/[Action]")]
     [ApiController]
     public class CategoryController : ControllerBase
     {
-
         private readonly ICategoryService _categoryService;
 
         public CategoryController(ICategoryService categoryService)
         {
-
             _categoryService = categoryService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllCategories()
+        public async Task<IActionResult> GetCategories()
         {
-            // Pass scheme and host to the service method
-            var scheme = HttpContext.Request.Scheme;
-            var host = HttpContext.Request.Host.ToString();
-
-            var categories = _categoryService.GetAllCategories(scheme, host);
+            var categories =  _categoryService.GetAllCategories(); 
+            if (categories == null )
+            {
+                return NotFound(new { message = "No Category found." });
+            }
 
             return Ok(categories);
         }
 
         [HttpPost]
-
+        [Route("CreateCategory")]
         public async Task<IActionResult> CreateCategory([FromForm] CategoryVM category)
         {
-            if (category == null)
-            {
-                return BadRequest(new { message = "Category data is missing!" });
-            }
-
             try
             {
                 await _categoryService.CreateCategory(category);
-                return Ok(new { message = "Category created successfully", imageUrl = category.ImageUrl });
+                return Ok(category);
             }
             catch (Exception ex)
             {
@@ -56,8 +49,9 @@ namespace RetaurantBooking.Controllers
 
 
 
+
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetCategory(int id)
+        public IActionResult GetCategory(int id)
         {
             var category = _categoryService.GetById(id);
 
@@ -67,34 +61,46 @@ namespace RetaurantBooking.Controllers
             }
             return Ok(category);
         }
+
         [HttpPut]
-        public async Task<IActionResult> UpdateCategory([FromQuery] CategoryVM category)
+        public async Task<IActionResult> UpdateCategory([FromBody] CategoryVM category)
         {
             if (category == null)
             {
                 return BadRequest("Invalid Category data");
             }
 
-            if (category == null)
+            try
             {
-                return NotFound("Category not found");
+                await _categoryService.UpdateCategory(category);
+                return Ok(new { message = "Category updated successfully." });
             }
-            _categoryService.UpdateCategory(category);
-            return Ok(new { message = "Category Updated successfully." });
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error while updating category: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while updating the category.", details = ex.Message });
+            }
         }
+
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCategory(int id)
+        public IActionResult DeleteCategory(int id)
         {
-            var CategoryToDelete = _categoryService.GetById(id);
-            if (CategoryToDelete == null)
+            var categoryToDelete = _categoryService.GetById(id);
+            if (categoryToDelete == null)
             {
                 return NotFound("Category Not Found");
             }
 
-
-            _categoryService.DeleteCategory(CategoryToDelete);
-
-            return Ok(new { message = "Category Deleted successfully." });
+            try
+            {
+                _categoryService.DeleteCategory(categoryToDelete);
+                return Ok(new { message = "Category deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error while deleting category: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while deleting the category.", details = ex.Message });
+            }
         }
     }
 }

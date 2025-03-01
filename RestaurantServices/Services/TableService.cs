@@ -35,6 +35,7 @@ namespace Restaurant.Data.Access.Repository.Services
             
             var table = new Tables
             {
+                Id = tableVM.Id,    
                 TableNumber = tableNumber,
                 NumberOfSeats = tableVM.NumberOfSeats,
                 IsAvailable = true 
@@ -42,7 +43,7 @@ namespace Restaurant.Data.Access.Repository.Services
 
           
             _unitOfWork.TableRepository.Add(table);
-            _unitOfWork.Save();
+            _unitOfWork.SaveAsync();
         }
 
 
@@ -62,14 +63,7 @@ namespace Restaurant.Data.Access.Repository.Services
         //    _unitOfWork.Save();
         //}
 
-        public IEnumerable<Tables> GetAllTables()
-        {
-           
-            var tablelist=_unitOfWork.TableRepository.GetAll().ToList();    
-
-            return tablelist;
-        }
-
+       
 
         public Tables GetById(int id)
         {
@@ -92,7 +86,7 @@ namespace Restaurant.Data.Access.Repository.Services
             existingTable.IsAvailable = tableVM.IsAvailable;
 
             _unitOfWork.TableRepository.UpdateTable(existingTable);
-            _unitOfWork.Save();
+            _unitOfWork.SaveAsync();
         }
 
 
@@ -106,10 +100,31 @@ namespace Restaurant.Data.Access.Repository.Services
                 throw new Exception("Table not found");
             }
             _unitOfWork.TableRepository.Remove(table);
-            _unitOfWork.Save();
+           _unitOfWork.SaveAsync();
 
             return table;   
 
         }
+
+
+
+        public IEnumerable<TablesVM> GetAllTables()
+        {
+
+            var tablelist = _unitOfWork.TableRepository.GetAll().ToList();
+
+             return tablelist.Select(t => new TablesVM
+             {
+                 Id = t.Id,
+                 TableNumber = t.TableNumber,
+                 NumberOfSeats = t.NumberOfSeats,
+                 IsAvailable = t.IsAvailable
+             }).ToList();   
+            
+
+
+        }
+
     }
 }
+

@@ -10,10 +10,10 @@ namespace Restaurant.Data.Access.Repository.IRepository
 
         IMenuRepository MenuRepository { get; }
 
-        ICategoryRepository CategoryRepository { get; } 
+        ICategoryRepository CategoryRepository { get; }
 
 
 
-        void Save();
+        Task SaveAsync();
     }
 }

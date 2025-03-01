@@ -42,7 +42,7 @@ namespace RestaurantServices.Services
             };
 
             _unitOfWork.MenuRepository.Add(newMenu);
-            _unitOfWork.Save();
+          await  _unitOfWork.SaveAsync();
         }
 
         public Menue DeleteMenu(Menue menu)
@@ -55,7 +55,7 @@ namespace RestaurantServices.Services
             }
 
             _unitOfWork.MenuRepository.Remove(menuToDelete);
-            _unitOfWork.Save();
+             _unitOfWork.SaveAsync();
 
             return menuToDelete;
 
@@ -122,8 +122,8 @@ namespace RestaurantServices.Services
 
             menueToUpdate.Available = (menu.Qty > 0) ? Available.Yes : Available.NO;
 
-            _unitOfWork.MenuRepository.UpdateMenu(menueToUpdate); 
-            _unitOfWork.Save();
+            _unitOfWork.MenuRepository.UpdateMenu(menueToUpdate);
+           _unitOfWork.SaveAsync();
         }
 
     }

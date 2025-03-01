@@ -11,15 +11,10 @@ namespace RestaurantServices.Services.IServices
 {
     public interface ICategoryService
     {
-        IEnumerable<Category> GetAllCategories(string scheme, string host);
-
+      IEnumerable<CategoryVM> GetAllCategories();
         Category GetById(int id);
-
-       Task UpdateCategory(CategoryVM category);
-
-
+        Task UpdateCategory(CategoryVM category);
         Task CreateCategory(CategoryVM category);
-
-        Category DeleteCategory(Category menu);
+        void DeleteCategory(Category category);
     }
 }

@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,9 +14,12 @@ namespace Restaurant.Models
     {
         [Key]
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public string? Name { get; set; }
+        public string? Description { get; set; }
 
-        public string? ImageUrl { get; set; }
+        [ForeignKey("menuId")]
+        public int menuId { get; set; }  
+        public ICollection<Menue> Menue { get; set; }
+
     }
 }

@@ -60,7 +60,7 @@ namespace RestaurantServices.Services
 
             _unitOfWork.TableRepository.UpdateTable(availableTable);  
             _unitOfWork.BookingRepository.Add(booking);
-            _unitOfWork.Save();
+            _unitOfWork.SaveAsync();
         }
 
 
@@ -139,7 +139,7 @@ namespace RestaurantServices.Services
             }
 
             _unitOfWork.BookingRepository.Remove(booking);
-            _unitOfWork.Save();
+            _unitOfWork.SaveAsync();
 
             return booking;
         }
@@ -167,7 +167,7 @@ namespace RestaurantServices.Services
 
             booking.BookingStatus = BookingStatus.Cancelled;
             _unitOfWork.BookingRepository.UpdateBooking(booking);
-            _unitOfWork.Save();
+            _unitOfWork.SaveAsync();
 
             return booking;
         }

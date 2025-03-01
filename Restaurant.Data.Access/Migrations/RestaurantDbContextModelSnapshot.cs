@@ -279,15 +279,13 @@ namespace Restaurant.Data.Access.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("menuId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -456,12 +454,17 @@ namespace Restaurant.Data.Access.Migrations
             modelBuilder.Entity("Restaurant.Models.Menue", b =>
                 {
                     b.HasOne("Restaurant.Models.Category", "Category")
-                        .WithMany()
+                        .WithMany("Menue")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Restaurant.Models.Category", b =>
+                {
+                    b.Navigation("Menue");
                 });
 #pragma warning restore 612, 618
         }

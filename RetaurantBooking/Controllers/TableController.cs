@@ -33,11 +33,10 @@ namespace RetaurantBooking.Controllers
             }
             return Ok(table);
         }
-
         [HttpGet]
         public async Task<IActionResult> GetAllTables()
         {
-            IEnumerable<Tables> tables = _tableservice.GetAllTables();
+           var tables = _tableservice.GetAllTables();
             return Ok(tables);
         }
 

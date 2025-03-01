@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Restaurant.Data.Access.DbInisializer;
 using Restaurant.Data.Access.Repository.Services;
 using Restaurant.Data.Access.Repository.Services.IServices;
 using RestaurantServices.Services;
@@ -21,7 +22,8 @@ namespace ServiceRegisterExtension
             services.AddScoped<ITableService, TableService>();
             services.AddScoped<IBookingService, BookingService>();
             services.AddScoped<IMenuService,MenuService>();
-            services.AddScoped<ICategoryService, CategoryService>();    
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IDbInitilizer, DbInitializer>();
 
         }
     }

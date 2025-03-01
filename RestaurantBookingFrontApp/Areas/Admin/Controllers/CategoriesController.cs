@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Restaurant.Models;
 using Restaurant.Utility;
 using RestaurantViewModels;
 using System.Text;
@@ -18,24 +19,32 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
             _httpClient = httpClient;
             _httpClient.BaseAddress = new Uri("https://localhost:7232/api/Category/");
         }
-        public IActionResult Index()
-        {
-            return View();
-        }
+       
         [HttpGet]
-        public async Task<IActionResult> GetAllCategories()
+      
+        public IActionResult Index() => View();
+
+
+      
+
+        [HttpGet]
+        public async Task<IActionResult> GetCategories()
         {
-            var response = await _httpClient.GetAsync("GetAllCategories");
+            var response = await _httpClient.GetAsync("GetCategories");
 
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
                 var serviceResponse = JsonConvert.DeserializeObject<List<CategoryVM>>(data);
+
                 return Json(new { data = serviceResponse });
             }
 
-            return Json(new { data = new List<CategoryVM>(), error = "Unable to retrieve categories from the server." });
+            return Json(new { data = new List<CategoryVM>(), error = "Unable to retrieve Tables from the server." });
         }
+
+
+
 
         [HttpGet]
         public IActionResult Create()
@@ -48,7 +57,7 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
 
 
         [HttpPost]
-      
+
         public async Task<IActionResult> Create(CategoryVM category)
         {
             if (category == null)

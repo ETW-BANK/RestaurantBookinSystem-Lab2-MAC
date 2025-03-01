@@ -17,24 +17,8 @@ namespace Restaurant.Data.Access.Data
         {
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<Booking>()
-                .HasOne(b => b.Tables)
-                .WithMany()
-                .HasForeignKey(b => b.TableId);
-
-
-            modelBuilder.Entity<Booking>()
-                .HasOne(b => b.ApplicationUser)
-                .WithMany()
-                .HasForeignKey(b => b.ApplicationUserId);
-
-        
 
         }
     }
-}
+
 

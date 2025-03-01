@@ -1,4 +1,4 @@
-﻿@model RestaurantViewModels.CategoryVM
+﻿@model Category
 
 <div class="card shadow border-0 my-4">
     <div class="card-header bg-secondary bg-gradient mt-0 py-3">
@@ -18,41 +18,41 @@
                 <div class="col-10">
                     <div class="border p-3">
                         <div class="form-floating py-2 col-12">
-                            <input asp-for="Name" class="form-control border-0 shadow" />
-                            <label asp-for="Name" class="ms-2 "></label>
+                            <input asp-for=" Name" class="form-control border-0 shadow" />
+                            <label asp-for=" Name" class=" ms-2 "></label>
                             <span asp-validation-for="Name" class="text-danger"></span>
                         </div>
 
                         <div class="form-floating py-2 col-12">
-                            <input asp-for="Description" class="form-control border-0 shadow" />
-                            <label asp-for="Description" class="ms-2 "></label>
-                            <span asp-validation-for="Description" class="text-danger"></span>
+                            <input asp-for=" Description" class="form-control border-0 shadow" />
+                            <label asp-for=" Description" class=" ms-2 "></label>
+                            <span asp-validation-for=" Description" class="text-danger"></span>
                         </div>
 
-                        <!-- 🖼️ Image URL Input (Optional) -->
+                      @*   <!-- 🖼️ Image URL Input (Optional) -->
                         <div class="form-floating py-2 col-12">
-                            <input asp-for="ImageUrl" class="form-control border-0 shadow" placeholder="Enter image URL" />
-                            <label asp-for="ImageUrl" class="ms-2 ">Image URL (Optional)</label>
-                            <span asp-validation-for="ImageUrl" class="text-danger"></span>
-                        </div>
+                            <input asp-for="Category.ImageUrl" class="form-control border-0 shadow" placeholder="Enter image URL" />
+                            <label asp-for="Category.ImageUrl" class="ms-2 ">Image URL (Optional)</label>
+                            <span asp-validation-for="Category.ImageUrl" class=" text-danger"></span>
+                        </div> *@
 
                         <!-- 📂 File Upload Input (Newly Added) -->
-                        <div class="py-2 col-12">
-                            <label asp-for="ImageFile" class="ms-2">Upload Image</label>
-                            <input asp-for="ImageFile" type="file" class="form-control border-0 shadow" />
-                            <span asp-validation-for="ImageFile" class="text-danger"></span>
-                        </div>
+                        @* <div class="py-2 col-12">
+                            <label asp-for="ImageUrl" class="ms-2">Upload Image</label>
+                            <input asp-for="ImageUrl" type="file" class="form-control border-0 shadow" />
+                            <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                        </div> *@
 
                         <!-- 🖼️ Preview Uploaded Image -->
-                        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                      @*   @if (!string.IsNullOrEmpty(Model.ImageFile.ToString()))
                         {
                             <div class="py-2 col-12">
                                 <label class="ms-2">Current Image</label>
                                 <div>
-                                    <img src="@Model.ImageUrl" alt="Category Image" class="img-thumbnail" width="100" height="100" />
+                                    <img src="@Model.ImageFile alt="Category Image" class="img-thumbnail" width="100" height="100" />
                                 </div>
                             </div>
-                        }
+                        } *@
 
                         <div class="row pt-2">
                             <div class="col-6 col-md-3">

@@ -33,11 +33,11 @@ namespace RestaurantServices.Services
 
         public async Task UpdateCategory(CategoryVM categoryVM)
         {
-            var category = _unitOfWork.CategoryRepository.GetFirstOrDefault(c => c.Id == categoryVM.Id);
+            var category = _unitOfWork.CategoryRepository.GetFirstOrDefault(c => c.Id == categoryVM.Category.Id);
             if (category != null)
             {
-                category.Name = categoryVM.Name;
-                category.Description = categoryVM.Description;
+                category.Name = categoryVM.Category.Name;
+                category.Description = categoryVM.Category.Description;
               
                 _unitOfWork.CategoryRepository.Update(category);
                 await _unitOfWork.SaveAsync();
@@ -56,9 +56,11 @@ namespace RestaurantServices.Services
         {
             var newCategory = new Category
             {
-                Id = categoryVM.Id,
-                Name = categoryVM.Name,
-                Description = categoryVM.Description,
+                
+                
+                Id = categoryVM.Category.Id,
+                Name = categoryVM.Category.Name,
+                Description = categoryVM.Category.Description,
            
             };
             _unitOfWork.CategoryRepository.Add(newCategory);
@@ -71,9 +73,13 @@ namespace RestaurantServices.Services
 
             return categorylist.Select(t => new CategoryVM
             {
-                Id = t.Id,
-                Name = t.Name,
-                Description = t.Description,
+                Category = new Category
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                    Description = t.Description,    
+                }
+              
 
             }).ToList();
         }

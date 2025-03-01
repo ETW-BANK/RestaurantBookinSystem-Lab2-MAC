@@ -67,7 +67,7 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
             }
 
             // Check if Name is null or empty
-            if (string.IsNullOrEmpty(category.Name))
+            if (string.IsNullOrEmpty(category.Category.Name))
             {
                 TempData["error"] = "Category Name is required!";
                 return View(category);

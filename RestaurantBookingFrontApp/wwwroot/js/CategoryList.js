@@ -11,11 +11,11 @@ function loadDataTable() {
             "dataSrc": "data",
         },
         "columns": [
-            { "data": 'id', "width": "20%" },
-            { "data": 'name', "width": "20%" },
-            { "data": 'description', "width": "20%" },
+            { "data": 'category.id', "width": "20%" },
+            { "data": 'category.name', "width": "20%" },
+            { "data": 'category.description', "width": "20%" },
             {
-                "data": 'id',
+                "data": 'category.id',
                 "render": function (data, type, row) {
                     return `
         <div class="w-75 btn-group" role="group">

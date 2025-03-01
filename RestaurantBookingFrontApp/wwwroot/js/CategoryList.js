@@ -14,6 +14,8 @@ function loadDataTable() {
             { "data": 'id', "width": "20%" },
             { "data": 'name', "width": "20%" },
             { "data": 'description', "width": "20%" },
+            { "data": 'imageUrl', "width": "20%" },
+
             {
                 "data": 'id',
                 "render": function (data, type, row) {

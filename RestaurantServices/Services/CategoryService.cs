@@ -79,8 +79,9 @@ namespace RestaurantServices.Services
                     Id = t.Id,
                     Name = t.Name,
                     Description = t.Description,    
-                
-              
+                    ImageUrl = t.ImageUrl,  
+
+
 
             }).ToList();
         }

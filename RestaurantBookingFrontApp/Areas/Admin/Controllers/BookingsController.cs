@@ -16,7 +16,7 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
         public BookingsController(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            _httpClient.BaseAddress = new Uri("https://localhost:7232/api/Booking/");  
+            _httpClient.BaseAddress = new Uri("https://localhost:4430/api/Booking/");  
         }
 
         [HttpGet]

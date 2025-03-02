@@ -1,9 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Restaurant.Data.Access.Repository.IRepository;
 using Restaurant.Models;
 using Restaurant.Utility;
@@ -28,8 +30,8 @@ namespace RestaurantServices.Services
 
         public Category GetById(int id)
         {
-            var table = _unitOfWork.CategoryRepository.GetFirstOrDefault(u => u.Id == id);
-            return table ?? throw new Exception("Category not found");
+            var category = _unitOfWork.CategoryRepository.GetFirstOrDefault(u => u.Id == id);
+            return category;
         }
 
         public async Task UpdateCategory(CategoryVM categoryVM)
@@ -49,23 +51,25 @@ namespace RestaurantServices.Services
         {
          var categorytodelete=_unitOfWork.CategoryRepository.GetFirstOrDefault(c => c.Id == category.Id);
 
+          
             _unitOfWork.CategoryRepository.Remove(categorytodelete);
             _unitOfWork.SaveAsync();
         }
 
         public async Task CreateCategory(CategoryVM categoryVM)
         {
-            var newCategory = new Category
+            string stringFilenae= UploadFile(categoryVM);
+
+            var category = new Category
             {
-                
-                
-                Id = categoryVM.Id,
                 Name = categoryVM.Name,
                 Description = categoryVM.Description,
-                ImageUrl = categoryVM.ImageUrl,
-
+                DisplayOrder = categoryVM.DisplayOrder,
+                ImageUrl = stringFilenae
             };
-            _unitOfWork.CategoryRepository.Add(newCategory);
+
+
+            _unitOfWork.CategoryRepository.Add(category);
             await _unitOfWork.SaveAsync();
         }
 
@@ -73,18 +77,48 @@ namespace RestaurantServices.Services
         {
             var categorylist = _unitOfWork.CategoryRepository.GetAll();
 
-            return categorylist.Select(t => new CategoryVM
+
+            return categorylist.ToList().Select(c => new CategoryVM
             {
-               
-                    Id = t.Id,
-                    Name = t.Name,
-                    Description = t.Description,    
-                    ImageUrl = t.ImageUrl,  
-
-
-
-            }).ToList();
+                Id = c.Id,
+                Name = c.Name,
+                Description = c.Description,
+                DisplayOrder = c.DisplayOrder,
+                ImageUrl = c.ImageUrl 
+            });
         }
+
+        private string UploadFile(CategoryVM categoryVM)
+        {
+            if (categoryVM.Image != null)
+            {
+                // Generate unique file name
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(categoryVM.Image.FileName);
+
+                // Set path to save image
+                var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/category");
+                var filePath = Path.Combine(directoryPath, fileName);
+
+                // Ensure directory exists
+                if (!Directory.Exists(directoryPath))
+                {
+                    Directory.CreateDirectory(directoryPath);
+                }
+
+                // Save file
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    categoryVM.Image.CopyTo(stream);
+                }
+
+                // Return relative path for database storage
+                return "/images/category/" + fileName;
+            }
+
+            // Return default image if no file is uploaded
+            return "/images/category/default.jpg";
+        }
+
     }
-       
-    }
+
+}

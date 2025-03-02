@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.Models;
 using RestaurantServices.Services;
@@ -14,10 +15,14 @@ namespace YourNamespace.Backend.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly ILogger<CategoryController> _logger;
 
-        public CategoryController(ICategoryService categoryService)
+        public CategoryController(ICategoryService categoryService, IWebHostEnvironment webHostEnvironment, ILogger<CategoryController> logger)
         {
             _categoryService = categoryService;
+            _webHostEnvironment = webHostEnvironment;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -29,31 +34,31 @@ namespace YourNamespace.Backend.Controllers
                 return NotFound(new { message = "No Category found." });
             }
 
-            return Ok(categories);
+            return Ok(categories);  
         }
 
         [HttpPost]
-    
+
         public async Task<IActionResult> CreateCategory([FromForm] CategoryVM category)
         {
             try
             {
+         
                 await _categoryService.CreateCategory(category);
                 return Ok(category);
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error occurred while creating category.");
                 return BadRequest(new { message = ex.Message });
             }
         }
 
 
 
-
         [HttpGet("{id}")]
         public async Task< IActionResult> GetCategory(int id)
-        {
-           
+        { 
 
           try
             {

@@ -31,9 +31,9 @@
                         </div>
 
                         <div class="py-2 col-12">
-                            <label asp-for="ImageUrl" class="ms-2">Upload Image</label>
-                            <input asp-for="ImageUrl" type="file" class="form-control border-0 shadow" />
-                            <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                            <label asp-for="Image" class="ms-2">Upload Image</label>
+                            <input asp-for="Image" type="file" name="file" class="form-control border-0 shadow" />
+                            <span asp-validation-for="Image" class="text-danger"></span>
                         </div>
 
                         <div class="row pt-2">
@@ -52,8 +52,18 @@
                                 <a asp-controller="Categories" asp-action="Index" class="btn btn-outline-primary border form-control">Back To List</a>
                             </div>
                         </div>
-
                     </div>
+                </div>
+
+                <div class="col-2">
+                    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                    {
+                        <img src="@Url.Content(Model.ImageUrl)" width="100%" style="border-radius:5px; border:solid double" />
+                    }
+                    else
+                    {
+                        <img src="/images/category/default.jpg" width="100%" style="border-radius:5px; border:solid double" />
+                    }
                 </div>
             </div>
         </form>

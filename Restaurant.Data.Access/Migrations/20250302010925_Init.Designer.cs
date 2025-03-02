@@ -12,8 +12,8 @@ using Restaurant.Data.Access.Data;
 namespace Restaurant.Data.Access.Migrations
 {
     [DbContext(typeof(RestaurantDbContext))]
-    [Migration("20250301185054_ModelchangeCategory")]
-    partial class ModelchangeCategory
+    [Migration("20250302010925_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -284,18 +284,52 @@ namespace Restaurant.Data.Access.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("DisplayOrder")
+                        .HasColumnType("int");
+
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("menuId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "",
+                            DisplayOrder = 1,
+                            ImageUrl = "/images/category/appitaizers.jpeg",
+                            Name = "Appetizers"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "",
+                            DisplayOrder = 2,
+                            ImageUrl = "/images/category/main.jpg",
+                            Name = "Main Courses"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "",
+                            DisplayOrder = 3,
+                            ImageUrl = "/images/category/desert.jpg",
+                            Name = "Desserts"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "",
+                            DisplayOrder = 4,
+                            ImageUrl = "/images/category/drinks.jpg",
+                            Name = "Drinks"
+                        });
                 });
 
             modelBuilder.Entity("Restaurant.Models.Menue", b =>

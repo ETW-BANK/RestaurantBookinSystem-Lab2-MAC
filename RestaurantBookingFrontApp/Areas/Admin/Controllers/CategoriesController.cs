@@ -21,8 +21,21 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            var response = await _httpClient.GetAsync("GetCategories");
 
-        public IActionResult Index() => View();
+            if (response.IsSuccessStatusCode)
+            {
+                var data = await response.Content.ReadAsStringAsync();
+                var categories = JsonConvert.DeserializeObject<List<Category>>(data);
+
+                return View(categories);
+            }
+
+            TempData["error"] = "Unable to retrieve categories from the server.";
+            return View(new List<CategoryVM>());
+        }
 
 
 

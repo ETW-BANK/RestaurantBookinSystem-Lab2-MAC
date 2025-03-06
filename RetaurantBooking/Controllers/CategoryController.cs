@@ -15,14 +15,11 @@ namespace YourNamespace.Backend.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
-        private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly ILogger<CategoryController> _logger;
+
 
         public CategoryController(ICategoryService categoryService, IWebHostEnvironment webHostEnvironment, ILogger<CategoryController> logger)
         {
             _categoryService = categoryService;
-            _webHostEnvironment = webHostEnvironment;
-            _logger = logger;
         }
 
         [HttpGet]
@@ -36,22 +33,16 @@ namespace YourNamespace.Backend.Controllers
 
             return Ok(categories);  
         }
-
         [HttpPost]
-
-        public async Task<IActionResult> CreateCategory([FromForm] CategoryVM category)
+        [Route("Create")]
+        public async Task<IActionResult> Create([FromForm] CategoryVM category)
         {
-            try
+            if (ModelState.IsValid)
             {
-         
-                await _categoryService.CreateCategory(category);
+             await _categoryService.CreateCategory(category);
                 return Ok(category);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred while creating category.");
-                return BadRequest(new { message = ex.Message });
-            }
+            return BadRequest(ModelState);
         }
 
 

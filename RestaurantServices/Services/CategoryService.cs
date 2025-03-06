@@ -56,67 +56,54 @@ namespace RestaurantServices.Services
             _unitOfWork.SaveAsync();
         }
 
-        public async Task CreateCategory(CategoryVM categoryVM)
+       
+        public IEnumerable<Category> GetAllCategories()
         {
-            string stringFilenae= UploadFile(categoryVM);
+            var categories = _unitOfWork.CategoryRepository.GetAll();
+
+         
+            return categories;  
+        }
+
+        public async Task<Category> CreateCategory(CategoryVM categoryVM)
+        {
+            string stringFile = UploadFile(categoryVM);
 
             var category = new Category
             {
+            
                 Name = categoryVM.Name,
                 Description = categoryVM.Description,
-                DisplayOrder = categoryVM.DisplayOrder,
-                ImageUrl = stringFilenae
+                ImageUrl = stringFile
             };
 
-
-            _unitOfWork.CategoryRepository.Add(category);
+             _unitOfWork.CategoryRepository.Add(category);
             await _unitOfWork.SaveAsync();
+
+            return category; 
         }
 
-        public IEnumerable<CategoryVM> GetAllCategories()
-        {
-            var categorylist = _unitOfWork.CategoryRepository.GetAll();
-
-
-            return categorylist.ToList().Select(c => new CategoryVM
-            {
-                Id = c.Id,
-                Name = c.Name,
-                Description = c.Description,
-                DisplayOrder = c.DisplayOrder,
-                ImageUrl = c.ImageUrl 
-            });
-        }
-
+       
         private string UploadFile(CategoryVM categoryVM)
         {
+            string fileName= null;
+
             if (categoryVM.Image != null)
             {
-                // Generate unique file name
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(categoryVM.Image.FileName);
+                
+                string uploadDir = Path.Combine(_webHostEnvironment.WebRootPath, "images");
+                fileName = Guid.NewGuid().ToString() + "_" + categoryVM.Image.FileName;
+                string filePath=Path.Combine(uploadDir, fileName);
+           
 
-                // Set path to save image
-                var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/category");
-                var filePath = Path.Combine(directoryPath, fileName);
-
-                // Ensure directory exists
-                if (!Directory.Exists(directoryPath))
+                using (var fileStream = new FileStream(filePath,FileMode.Create))
                 {
-                    Directory.CreateDirectory(directoryPath);
+                    categoryVM.Image.CopyTo(fileStream);
                 }
 
-                // Save file
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    categoryVM.Image.CopyTo(stream);
-                }
-
-                // Return relative path for database storage
-                return "/images/category/" + fileName;
             }
 
-            // Return default image if no file is uploaded
-            return "/images/category/default.jpg";
+            return fileName;
         }
 
     }

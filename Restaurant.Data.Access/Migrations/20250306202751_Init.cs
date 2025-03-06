@@ -3,8 +3,6 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
 namespace Restaurant.Data.Access.Migrations
 {
     /// <inheritdoc />
@@ -66,7 +64,6 @@ namespace Restaurant.Data.Access.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DisplayOrder = table.Column<int>(type: "int", nullable: true),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -255,17 +252,6 @@ namespace Restaurant.Data.Access.Migrations
                         principalTable: "Table",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.InsertData(
-                table: "Categories",
-                columns: new[] { "Id", "Description", "DisplayOrder", "ImageUrl", "Name" },
-                values: new object[,]
-                {
-                    { 1, "", 1, "/images/category/appitaizers.jpeg", "Appetizers" },
-                    { 2, "", 2, "/images/category/main.jpg", "Main Courses" },
-                    { 3, "", 3, "/images/category/desert.jpg", "Desserts" },
-                    { 4, "", 4, "/images/category/drinks.jpg", "Drinks" }
                 });
 
             migrationBuilder.CreateIndex(

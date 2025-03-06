@@ -19,14 +19,21 @@ function loadDataTable() {
             { "data": 'name', "width": "20%" },
             { "data": 'description', "width": "20%" },
             {
-                "data": 'imageUrl',
+                "data": "imageUrl",
                 "render": function (data, type, row) {
-                    // Ensure proper image URL handling
-                    let imageUrl = data && data.startsWith("http") ? data : (data ? "/" + data.replace(/^\/+/, '') : "/images/category/default.jpg");
-                    return `<img src="${imageUrl}" alt="${row.name}" style="width:100px; height:auto; border-radius:5px; border:solid double;" />`;
+                    let baseUrl = window.location.origin;
+
+                    // Ensure absolute path for images
+                    let imageUrl = data
+                        ? `${baseUrl}${data.startsWith('/') ? data : '/' + data}`
+                        : `${baseUrl}/images/category/default.jpg`;
+
+                    return `<img src="${imageUrl}" alt="${row.name}" 
+                     style="width:100px; height:auto; border-radius:5px; border:solid double;" />`;
                 },
                 "width": "20%"
             },
+
             {
                 "data": 'id',
                 "render": function (data, type, row) {

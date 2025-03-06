@@ -1,4 +1,4 @@
-﻿@model CategoryVM
+﻿@* @model Category
 
 <div class="card shadow border-0 my-4">
     <div class="card-header bg-secondary bg-gradient mt-0 py-3">
@@ -13,7 +13,7 @@
 
     <div class="card-body p-4">
         <form method="post" class="row" enctype="multipart/form-data">
-            <input asp-for="Id" hidden />
+            <input asp-for="id" hidden />
 
             <div class="row">
                 <div class="col-10">
@@ -30,9 +30,10 @@
                             <span asp-validation-for="Description" class="text-danger"></span>
                         </div>
 
+                        <!-- ✅ Fixed Image Upload Input -->
                         <div class="py-2 col-12">
                             <label asp-for="Image" class="ms-2">Upload Image</label>
-                            <input asp-for="Image" type="file" name="file" class="form-control border-0 shadow" />
+                            <input asp-for="Image" type="file" class="form-control border-0 shadow" />
                             <span asp-validation-for="Image" class="text-danger"></span>
                         </div>
 
@@ -55,10 +56,11 @@
                     </div>
                 </div>
 
+                <!-- ✅ Fixed Image Display -->
                 <div class="col-2">
-                    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                    @if (!string.IsNullOrEmpty(Model.Image.FileName))
                     {
-                        <img src="@Url.Content(Model.ImageUrl)" width="100%" style="border-radius:5px; border:solid double" />
+                        <img src="~/images/category/" width="100%" style="border-radius:5px; border:solid double" />
                     }
                     else
                     {
@@ -73,3 +75,4 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+ *@

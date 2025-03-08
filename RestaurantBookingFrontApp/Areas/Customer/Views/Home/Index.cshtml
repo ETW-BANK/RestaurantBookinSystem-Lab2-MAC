@@ -39,7 +39,7 @@
 
                             <div>
 
-                                <a href="@Url.Action("Instruments", new { categoryId = item.Id })" class="btn btn-primary bg-gradient border-0 form-control">Go To Menu</a>
+                                <a href="@Url.Action("Menues", new { categoryId = item.Id })" class="btn btn-primary bg-gradient border-0 form-control">Go To Menu</a>
 
 
                             </div>
@@ -63,13 +63,10 @@
 
 
 
+    <a asp-controller="CustomerBookings" asp-action="Create" class="btn btn-primary">
+        Book A Table
+    </a>
 
-
-
-
-
-
-    <a asp-controller="CustomerBookings" asp-action="Create" class="btn btn-outline-primary border form-control">Book A Table</a>
 </div>
 
 

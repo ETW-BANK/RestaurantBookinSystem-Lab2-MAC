@@ -12,11 +12,16 @@ namespace RestaurantViewModels
     public class CategoryVM
     {
         public int Id { get; set; }
-        public string? Name { get; set; }
-        public string? Description { get; set; }
-        public IFormFile? Image { get; set; }
 
-   
+        [Required]
+        [MaxLength(30)]
+        public string? Name { get; set; }
+
+        public int DisplayOrder { get; set; }
+
+       ///* public IFormFile? Image { get; set; } // */Nullable to prevent null reference errors
+
+        public string? ImageUrl { get; set; }
 
     }
 }

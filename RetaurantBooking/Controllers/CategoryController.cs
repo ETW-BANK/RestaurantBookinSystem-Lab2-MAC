@@ -35,11 +35,11 @@ namespace YourNamespace.Backend.Controllers
         }
         [HttpPost]
         [Route("Create")]
-        public async Task<IActionResult> Create([FromForm] CategoryVM category)
+        public async Task<IActionResult> Create([FromForm] CategoryVM category,IFormFile? file)
         {
             if (ModelState.IsValid)
             {
-             await _categoryService.CreateCategory(category);
+             _categoryService.CreateCategory(category,file);
                 return Ok(category);
             }
             return BadRequest(ModelState);

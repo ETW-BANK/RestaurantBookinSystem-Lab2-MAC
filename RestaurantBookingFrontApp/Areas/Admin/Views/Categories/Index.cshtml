@@ -1,64 +1,82 @@
-﻿@model IEnumerable<Category>  
+﻿@model IEnumerable<CategoryVM>
 
-    <div class="card shadow border-0 my-4">
+<div class="card shadow border-0 mt-4">
     <div class="card-header bg-secondary bg-gradient mt-0 py-3">
         <div class="row">
             <div class="col-12 text-center">
-                <h2 class="text-white py-2">
-                    Categories
-                </h2>
+                <h2 class="text-white py-2">Category List</h2>
+
             </div>
+
         </div>
     </div>
-
     <div class="card-body p-4">
-        <div class="row">
-            <div class="col-10">
-                <div class="border p-3">
-                    <table class="table table-bordered" >
-                        <thead>
-                            <tr>
-                                <th>
-                                    Name
-                                </th>
-                                <th>
-                                    Description
-                                </th>
-                                <th>
-                                    Image
-                                </th>
-                                <th>
-                                    Action
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model)
-                            {
-                                <tr>
-                                    <td>
-                                        @item.Name
-                                    </td>
-                                    <td>
-                                        @item.Description
-                                    </td>
-                                    <td>
-                                        <img src="https://localhost:44307/Images/@item.ImageUrl" class="img-fluid" style="max-height: 100px; width: 100px;" />
 
-                                    </td>
-                                    <td>
-                                        <a asp-controller="Categories" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Edit</a>
-                                        <a asp-controller="Categories" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
+        <div class="row pb-3 ">
+            <div class="col-6">
             </div>
 
-            <div class="col-2">
-                <a asp-controller="Categories" asp-action="Create" class="btn btn-primary">Create</a>
+            <div class="col-6 text-end">
+
+                <a asp-controller="Category" asp-action="Upsert" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Create New Category
+                </a>
+
             </div>
         </div>
+
+
+        <table class="table table-bordered table-striped">
+
+            <thead>
+                <tr>
+
+                    <th> Category Name</th>
+                    <th> Display Order</th>
+                    <th> Image</th>
+                    <th> Action</th>
+                </tr>
+            </thead>
+            <tbody>
+
+
+                @foreach (var item in Model.OrderBy(u => u.DisplayOrder))
+                {
+                    <tr>
+
+
+                        <td>@item.Name</td>
+                        <td>@item.DisplayOrder</td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.ImageUrl))
+                            {
+                                <img src="@item.ImageUrl" class="img-fluid" style="max-height: 100px; width:100px;" />
+
+                            }
+                            else
+                            {
+                                <span>No Image</span>
+                            }
+                        </td>
+                        <td>
+
+                            <div class="w-75 btn-group" role="group">
+
+                                <a asp-controller="Category" asp-action="Upsert" asp-route-id="@item.Id" class="btn btn-primary mx-2">
+                                    <i class="bi bi-pencil-square"></i> Edit
+                                </a>
+
+                                <a asp-controller="Category" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger mx-2">
+                                    <i class="bi bi-trash-fill"></i> Delete
+                                </a>
+                            </div>
+
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+
     </div>
+</div>

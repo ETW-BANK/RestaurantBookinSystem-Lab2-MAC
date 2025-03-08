@@ -1,5 +1,5 @@
 ﻿using System;
-using System.IO;
+
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -34,18 +34,18 @@ namespace RestaurantServices.Services
             return category;
         }
 
-        public async Task UpdateCategory(CategoryVM categoryVM)
-        {
-            var category = _unitOfWork.CategoryRepository.GetFirstOrDefault(c => c.Id == categoryVM.Id);
-            if (category != null)
-            {
-                category.Name = categoryVM.Name;
-                category.Description = categoryVM.Description;
+        //public async Task UpdateCategory(CategoryVM categoryVM)
+        //{
+        //    var category = _unitOfWork.CategoryRepository.GetFirstOrDefault(c => c.Id == categoryVM.Id);
+        //    if (category != null)
+        //    {
+        //        category.Name = categoryVM.Name;
+        //        category.Description = categoryVM.Description;
               
-                _unitOfWork.CategoryRepository.Update(category);
-                await _unitOfWork.SaveAsync();
-            }
-        }
+        //        _unitOfWork.CategoryRepository.Update(category);
+        //        await _unitOfWork.SaveAsync();
+        //    }
+        //}
 
         public void DeleteCategory(Category category)
         {
@@ -61,50 +61,72 @@ namespace RestaurantServices.Services
         {
             var categories = _unitOfWork.CategoryRepository.GetAll();
 
-         
+
             return categories;  
         }
 
-        public async Task<Category> CreateCategory(CategoryVM categoryVM)
+        public void CreateCategory(CategoryVM categoryVM, IFormFile? file)
         {
-            string stringFile = UploadFile(categoryVM);
-
-            var category = new Category
+            if (categoryVM == null)
             {
-            
-                Name = categoryVM.Name,
-                Description = categoryVM.Description,
-                ImageUrl = stringFile
-            };
-
-             _unitOfWork.CategoryRepository.Add(category);
-            await _unitOfWork.SaveAsync();
-
-            return category; 
-        }
-
-       
-        private string UploadFile(CategoryVM categoryVM)
-        {
-            string fileName= null;
-
-            if (categoryVM.Image != null)
-            {
-                
-                string uploadDir = Path.Combine(_webHostEnvironment.WebRootPath, "images");
-                fileName = Guid.NewGuid().ToString() + "_" + categoryVM.Image.FileName;
-                string filePath=Path.Combine(uploadDir, fileName);
-           
-
-                using (var fileStream = new FileStream(filePath,FileMode.Create))
-                {
-                    categoryVM.Image.CopyTo(fileStream);
-                }
-
+                throw new ArgumentNullException(nameof(categoryVM), "CategoryVM is null");
             }
 
-            return fileName;
+            string wwwRootPath = _webHostEnvironment.WebRootPath;
+
+            if (file != null)
+            {
+                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                string categoryPath = Path.Combine(wwwRootPath, "image", "category");
+
+                if (!Directory.Exists(categoryPath))
+                {
+                    Directory.CreateDirectory(categoryPath);
+                }
+
+              
+                if (!string.IsNullOrEmpty(categoryVM.ImageUrl))
+                {
+                    var oldImagePath = Path.Combine(wwwRootPath, categoryVM.ImageUrl.TrimStart('/').Replace("/", "\\"));
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+                        System.IO.File.Delete(oldImagePath);
+                    }
+                }
+
+         
+                using (var fileStream = new FileStream(Path.Combine(categoryPath, fileName), FileMode.Create))
+                {
+                    file.CopyTo(fileStream);
+                }
+
+                categoryVM.ImageUrl = $"/image/category/{fileName}";
+            }
+
+            var newCategory = new Category
+            {
+                Name = categoryVM.Name,
+                DisplayOrder = categoryVM.DisplayOrder,
+                ImageUrl = categoryVM.ImageUrl 
+            };
+
+            _unitOfWork.CategoryRepository.Add(newCategory);
+            _unitOfWork.SaveAsync();
         }
+
+
+    
+
+
+
+
+
+    public Task UpdateCategory(CategoryVM category)
+        {
+            throw new NotImplementedException();
+        }
+
+
 
     }
 

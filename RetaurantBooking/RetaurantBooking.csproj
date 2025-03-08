@@ -24,4 +24,8 @@
     <ProjectReference Include="..\ServiceRegisterExtension\ServiceRegisterExtension.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\image\category\" />
+  </ItemGroup>
+
 </Project>

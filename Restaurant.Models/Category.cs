@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -14,9 +15,18 @@ namespace Restaurant.Models
     {
         [Key]
         public int Id { get; set; }
+
+        [Required]
+        [MaxLength(30)]
+        [DisplayName("Category Name")]
         public string? Name { get; set; }
-        public string? Description { get; set; }
+
+        [DisplayName("Display Order")]
+        [Range(1, 100)]
+        public int DisplayOrder { get; set; }
         public string? ImageUrl { get; set; }
+
+       
 
 
     }

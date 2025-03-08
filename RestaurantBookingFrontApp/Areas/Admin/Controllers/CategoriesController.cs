@@ -28,7 +28,16 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-                var categories = JsonConvert.DeserializeObject<List<Category>>(data);
+                var categories = JsonConvert.DeserializeObject<List<CategoryVM>>(data);
+
+                // Ensure full URL for each category's ImageUrl
+                foreach (var category in categories)
+                {
+                    if (!string.IsNullOrEmpty(category.ImageUrl))
+                    {
+                        category.ImageUrl = $"https://localhost:44307{category.ImageUrl}";
+                    }
+                }
 
                 return View(categories);
             }
@@ -36,6 +45,7 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
             TempData["error"] = "Unable to retrieve categories from the server.";
             return View(new List<CategoryVM>());
         }
+
 
 
 

@@ -14,7 +14,7 @@ namespace RestaurantServices.Services.IServices
       IEnumerable<Category> GetAllCategories();
         Category GetById(int id);
         Task UpdateCategory(CategoryVM category);
-        Task<Category> CreateCategory(CategoryVM category);
+        void CreateCategory(CategoryVM categoryVM, IFormFile? file);
         void DeleteCategory(Category category);
     }
 }

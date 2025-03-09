@@ -1,6 +1,5 @@
 ﻿
 using Microsoft.AspNetCore.Mvc;
-using Restaurant.Models;
 using Restaurant.Services;
 using RestaurantViewModels;
 
@@ -36,7 +35,7 @@ namespace YourNamespace.Backend.Controllers
             return Ok(categories);  
         }
         [HttpPost]
-        public async Task<IActionResult> Create([FromForm] CategoryVM categoryVM)
+        public async Task<IActionResult> Create([FromForm] CategoryVM categoryVM,IFormFile? file)
         {
             if (!ModelState.IsValid)
             {
@@ -44,44 +43,11 @@ namespace YourNamespace.Backend.Controllers
                 return BadRequest(ModelState);
             }
 
-            try
-            {
-                if (categoryVM.Image != null)
-                {
-                   
-                    string folder = @"images/category/";
-                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + categoryVM.Image.FileName;
-                    string filePath = Path.Combine(folder, uniqueFileName);
-
-                   
-                    categoryVM.ImageUrl ="/"+ filePath;
-
-                    string serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folder);
-                    if (!Directory.Exists(serverFolder))
-                    {
-                        Directory.CreateDirectory(serverFolder);
-                    }
-
-                    string fullPath = Path.Combine(_webHostEnvironment.WebRootPath, filePath);
-                    using (var fileStream = new FileStream(fullPath, FileMode.Create))
-                    {
-                        await categoryVM.Image.CopyToAsync(fileStream);
-                    }
-                }
-
-              
-                await _categoryService.CreateCategory(categoryVM);
-
+                await _categoryService.CreateCategory(categoryVM,file);
             
                 return Ok("Category created successfully.");
-            }
-            catch (Exception ex)
-            {
-              
-                return StatusCode(500, $"An error occurred: {ex.Message}");
-            }
+            
         }
-
 
 
         [HttpGet("{id}")]
@@ -102,7 +68,7 @@ namespace YourNamespace.Backend.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateCategory( Category category)
+        public async Task<IActionResult> UpdateCategory( CategoryVM category,IFormFile? file)
         {
 
             var categoryToUpdate = _categoryService.GetById(category.Id);
@@ -113,7 +79,7 @@ namespace YourNamespace.Backend.Controllers
 
             try
             {
-               _categoryService.Update(category);
+               _categoryService.Update(category, file);
                 return Ok("Category updated successfully.");
             }
             catch (Exception ex)

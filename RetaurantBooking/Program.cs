@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Restaurant.Data.Access.Data;
 using Restaurant.Data.Access.DbInisializer;
+using Restaurant.Services;
 using ServiceRegisterExtension;
 
 namespace RetaurantBooking
@@ -30,13 +31,13 @@ namespace RetaurantBooking
                 // Register custom services and repositories
 
                 builder.Services.AddScoped<IServicesRegisterExtension, ServiceRegisterExtension.ServiceRegisterExtension>();
-
+                builder.Services.AddScoped<ICategoryService, CategoryService>();    
 
                 //Register additional services
                 var serviceProvider = builder.Services.BuildServiceProvider();
                 var serviceRegisterExtension = serviceProvider.GetRequiredService<IServicesRegisterExtension>();
                 serviceRegisterExtension.RegisterServices(builder.Services);
-
+                
                 // Swagger configuration for API documentation
                 builder.Services.AddEndpointsApiExplorer();
                 builder.Services.AddSwaggerGen();
@@ -51,14 +52,8 @@ namespace RetaurantBooking
                     app.UseSwaggerUI();
                 }
 
-
-
-
                 app.UseStaticFiles();
 
-
-
-             
                 app.UseAuthentication();
                 app.UseAuthorization();
 

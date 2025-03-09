@@ -1,41 +1,56 @@
-﻿@model List<CategoryVM>
+﻿@model IEnumerable<CategoryVM>
 
-<div class="card shadow border-0 my-4">
+<div class="card shadow border-0 mt-4">
     <div class="card-header bg-secondary bg-gradient mt-0 py-3">
         <div class="row">
             <div class="col-12 text-center">
                 <h2 class="text-white py-2">Category List</h2>
+
             </div>
+
         </div>
     </div>
-
     <div class="card-body p-4">
-        <div class="row pb-3">
+
+        <div class="row pb-3 ">
             <div class="col-6">
-                <a asp-action="Create" class="btn btn-primary">Create New Category</a>
+            </div>
+
+            <div class="col-6 text-end">
+
+                <a asp-controller="Categories" asp-action="Upsert" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Create New Category
+                </a>
+
             </div>
         </div>
 
+
         <table class="table table-bordered table-striped">
+
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Display Order</th>
-                    <th>Image</th> 
-                    <th>Actions</th>
+
+                    <th> Category Name</th>
+                    <th> Display Order</th>
+                    <th> Image</th>
+                    <th> Action</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var category in Model)
+
+
+                @foreach (var item in Model.OrderBy(u => u.DisplayOrder))
                 {
                     <tr>
-                        <td>@(category?.Name ?? "N/A")</td>
-                        <td>@(category?.DisplayOrder.ToString() ?? "N/A")</td>
-                        <td>
-                            @if (category?.Name!= null && !string.IsNullOrEmpty(category.ImageUrl))
-                            {
-                                <img src="@category.ImageUrl" alt="Category Image" class="card-img-top rounded" width="100px" height="100px" style="border-radius:5px; border:solid double" />
 
+
+                        <td>@item.Name</td>
+                        <td>@item.DisplayOrder</td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.ImageUrl))
+                            {
+                                <img src="@item.ImageUrl" width="50px" />
                             }
                             else
                             {
@@ -43,15 +58,24 @@
                             }
                         </td>
                         <td>
-                            <a asp-action="Edit" asp-route-id="@category?.Id" class="btn btn-warning">Edit</a>
-                            <form asp-action="Delete" method="post" class="d-inline">
-                                <input type="hidden" name="id" value="@category?.Id" />
-                                <button type="submit" class="btn btn-danger">Delete</button>
-                            </form>
+
+                            <div class="w-75 btn-group" role="group">
+
+                                <a asp-controller="Categories" asp-action="Upsert" asp-route-id="@item.Id" class="btn btn-primary mx-2">
+                                    <i class="bi bi-pencil-square"></i> Edit
+                                </a>
+
+                                <a asp-controller="Categories" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger mx-2">
+                                    <i class="bi bi-trash-fill"></i> Delete
+                                </a>
+                            </div>
+
                         </td>
                     </tr>
                 }
+
             </tbody>
         </table>
+
     </div>
 </div>

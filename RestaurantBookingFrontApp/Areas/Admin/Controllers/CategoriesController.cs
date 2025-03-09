@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+using Restaurant.Services;
 using Restaurant.Utility;
 using RestaurantViewModels;
-using System.Net.Http.Headers;
-using System.Text;
 
 
 namespace RestaurantBookingFrontApp.Controllers
@@ -13,171 +11,122 @@ namespace RestaurantBookingFrontApp.Controllers
     [Authorize(Roles = StaticData.Role_Admin)]
     public class CategoriesController : Controller
     {
-        private readonly HttpClient _httpClient;
 
-        public CategoriesController(HttpClient httpClient)
+        private readonly ICategoryService _categoryService;
+      
+
+        public CategoriesController(ICategoryService categoryService)
         {
-            _httpClient = httpClient;
-            _httpClient.BaseAddress = new Uri("https://localhost:44307/api/Category/");
-            _httpClient.Timeout = TimeSpan.FromMinutes(5);
+
+            _categoryService = categoryService;
+        
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
+
+
+            var categorylist = await _categoryService.GetAll();
+
+
+            if (categorylist == null)
+            {
+
+                TempData["error"] = "An error occurred while retrieving categories.";
+            }
+
+
+            return View(categorylist);
+
+        }
+        [HttpGet]
+        public IActionResult Upsert(int? id)
+        {
+            CategoryVM categoryVM = new();
+
+            if (id == null || id == 0)
+            {
+                
+                return View(categoryVM);
+            }
+            else
+            {
+                // Edit mode
+                var category = _categoryService.GetById(id);
+                if (category == null)
+                {
+                    return NotFound(); 
+                }
+             
+                categoryVM.Id = category.Id;
+                categoryVM.Name = category.Name;
+                categoryVM.DisplayOrder = category.DisplayOrder;
+                categoryVM.ImageUrl = category.ImageUrl;
+
+                return View(categoryVM);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Upsert(CategoryVM categoryVM,IFormFile?file)
+        {
+           
             try
             {
-                var response = await _httpClient.GetAsync("GetCategories");
-
-                if (response.IsSuccessStatusCode)
+                if (categoryVM.Id == 0)
                 {
-                    var data = await response.Content.ReadAsStringAsync();
-                    var categories = JsonConvert.DeserializeObject<List<CategoryVM>>(data);
-
-                  
-                 
-
-                    return View(categories);
+                    // Create mode
+                    await _categoryService.CreateCategory(categoryVM,file);
+                    TempData["success"] = "Category created successfully.";
                 }
                 else
                 {
-                    TempData["error"] = "Unable to retrieve categories from the server.";
-                    return View(new List<CategoryVM>());
+                    
+                     _categoryService.Update(categoryVM,file);
+
+                    TempData["success"] = "Category updated successfully.";
                 }
+
+                return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
                 TempData["error"] = $"An error occurred: {ex.Message}";
-                return View(new List<CategoryVM>());
-            }
-        }
-
-        [HttpGet]
-        public IActionResult Create()
-        {
-            return View(new CategoryVM());
-        }
-
-
-        [HttpPost]
-        public async Task<IActionResult> Create(CategoryVM categoryVM, IFormFile file)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(categoryVM);
-            }
-
-            try
-            {
-                using (var formData = new MultipartFormDataContent())
-                {
-                
-                    formData.Add(new StringContent(categoryVM.Name), "Name");
-                    formData.Add(new StringContent(categoryVM.DisplayOrder.ToString()), "DisplayOrder");
-
-                  
-                    if (file != null)
-                    {
-                        var fileContent = new StreamContent(file.OpenReadStream());
-                        fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse(file.ContentType);
-                        formData.Add(fileContent, "Image", file.FileName);
-                    }
-
-                
-                    var response = await _httpClient.PostAsync("Create", formData);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        TempData["success"] = "Category created successfully.";
-                        return RedirectToAction(nameof(Index));
-                    }
-                    else
-                    {
-                        var errorResponse = await response.Content.ReadAsStringAsync();
-                        TempData["error"] = $"Failed to create category. Error: {errorResponse}";
-                        return View(categoryVM);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                TempData["error"] = $"An error occurred while creating the category. Error: {ex.Message}";
                 return View(categoryVM);
             }
         }
 
-
-        [HttpGet]
-        public async Task<IActionResult> Edit(int id)
+        public IActionResult Delete(int? id)
         {
-            var response = await _httpClient.GetAsync($"GetById/{id}");
+            if (id == null || id == 0) return NotFound();
 
-            if (response.IsSuccessStatusCode)
-            {
-                var category = await response.Content.ReadFromJsonAsync<CategoryVM>();
-                return View(category);
-            }
+            var category = _categoryService.GetById(id);
+            if (category == null) return NotFound();
 
-            TempData["error"] = "Category not found.";
-            return RedirectToAction(nameof(Index));
+            return View(category);
         }
 
-       
-        [HttpPost]
-        public async Task<IActionResult> Edit(int id, CategoryVM category, IFormFile file)
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeletePost(int? id)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(category);
+            var category = _categoryService.GetById(id);
+
+            if (category == null) 
+            
+           {
+
+                TempData["error"] = "Category not found.";
+                return RedirectToAction(nameof(Index));
             }
 
-            using (var formData = new MultipartFormDataContent())
-            {
-                
-                var categoryJson = JsonConvert.SerializeObject(category);
-                var categoryContent = new StringContent(categoryJson, Encoding.UTF8, "application/json");
-                formData.Add(categoryContent, "categoryVM");
-
-                
-                if (file != null)
-                {
-                    var fileContent = new StreamContent(file.OpenReadStream());
-                    fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse(file.ContentType);
-                    formData.Add(fileContent, "file", file.FileName);
-                }
-
-               
-                var response = await _httpClient.PutAsync($"Update/{id}", formData);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    TempData["success"] = "Category updated successfully.";
-                    return RedirectToAction(nameof(Index));
-                }
-                else
-                {
-                    TempData["error"] = "Failed to update category. Please try again.";
-                    return View(category);
-                }
-            }
-        }
-
-   
-        [HttpPost]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var response = await _httpClient.DeleteAsync($"Delete/{id}");
-
-            if (response.IsSuccessStatusCode)
-            {
-                TempData["success"] = "Category deleted successfully.";
-            }
-            else
-            {
-                TempData["error"] = "Failed to delete category. Please try again.";
-            }
-
+            _categoryService.DeleteCategory(category);
+            TempData["success"] = "Category deleted successfully!";
             return RedirectToAction(nameof(Index));
         }
     }
 }
+
+        
+    

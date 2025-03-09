@@ -1,6 +1,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Restaurant.Services;
 using RestaurantBookingFrontApp.Models;
 using RestaurantViewModels;
 using System.Diagnostics;
@@ -15,43 +16,33 @@ namespace RestaurantBookingFrontApp.Areas.Customer.Controllers
     {
 
         private readonly ILogger<HomeController> _logger;
-        private readonly HttpClient _httpClient = new HttpClient();
-        public HomeController(ILogger<HomeController> logger, HttpClient httpClient)
+    
+        private readonly ICategoryService _categoryService;
+        public HomeController(ILogger<HomeController> logger, ICategoryService categoryService)
         {
             _logger = logger;
-            _httpClient = httpClient;
-            _httpClient.BaseAddress = new Uri("https://localhost:44307/api/Category/");
-            _httpClient = httpClient;
+      
+       
+            _categoryService = categoryService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            try
+
+
+            var categorylist = await _categoryService.GetAll();
+
+
+            if (categorylist == null)
             {
-                var response = await _httpClient.GetAsync("GetCategories");
 
-                if (response.IsSuccessStatusCode)
-                {
-                    var data = await response.Content.ReadAsStringAsync();
-                    var categories = JsonConvert.DeserializeObject<List<CategoryVM>>(data);
-
-
-
-
-                    return View(categories);
-                }
-                else
-                {
-                    TempData["error"] = "Unable to retrieve categories from the server.";
-                    return View(new List<CategoryVM>());
-                }
+                TempData["error"] = "An error occurred while retrieving categories.";
             }
-            catch (Exception ex)
-            {
-                TempData["error"] = $"An error occurred: {ex.Message}";
-                return View(new List<CategoryVM>());
-            }
+
+
+            return View(categorylist);
+
         }
 
 

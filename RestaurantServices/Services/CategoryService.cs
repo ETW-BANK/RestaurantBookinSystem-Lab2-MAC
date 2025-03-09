@@ -1,7 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 using Restaurant.Data.Access.Repository.IRepository;
 using Restaurant.Models;
 using RestaurantViewModels;
@@ -14,26 +13,45 @@ namespace Restaurant.Services
     {
 
         private readonly IUnitOfWork _unitOfWork;
-      
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        private readonly IConfiguration _configuration;
-        public CategoryService(IUnitOfWork unitOfWork,IConfiguration configuration)
+
+        public CategoryService(IUnitOfWork unitOfWork,IWebHostEnvironment webHostEnvironment)
         {
       
             _unitOfWork= unitOfWork;
-            _configuration = configuration;
+            _webHostEnvironment = webHostEnvironment;
+
         }
 
-        public async Task CreateCategory(CategoryVM category)
+        public async Task CreateCategory(CategoryVM category,IFormFile? file)
         {
-            
+            string wwwwRootPath = _webHostEnvironment.WebRootPath;
+            if (file != null)
+            {
+
+                string fileNmae = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                string categoryPath = Path.Combine(wwwwRootPath, @"image\category");
+
+                if (!Directory.Exists(categoryPath))
+                {
+                    Directory.CreateDirectory(categoryPath);
+                }
+
+                using (var fileStream = new FileStream(Path.Combine(categoryPath, fileNmae), FileMode.Create))
+                {
+                    file.CopyTo(fileStream);
+                }
+                category.ImageUrl = @"\image\category\" + fileNmae;
+            }
+
+
             var categoryExist = _unitOfWork.CategoryRepository.GetFirstOrDefault(x => x.Name == category.Name);
             if (categoryExist != null)
             {
                 throw new Exception("Category already exists.");
             }
 
-           
             var newCategory = new Category
             {
                 Name = category.Name,
@@ -48,12 +66,24 @@ namespace Restaurant.Services
             await _unitOfWork.SaveAsync();
         }
 
-
-
         public Category DeleteCategory(Category category)
         {
-          category = _unitOfWork.CategoryRepository.GetFirstOrDefault(x=>x.Id==category.Id);
-          
+           
+
+            category = _unitOfWork.CategoryRepository.GetFirstOrDefault(x=>x.Id==category.Id);
+
+            if (category == null)
+            {
+                throw new Exception("Category not found.");
+            }
+
+            string wwwRootPath = _webHostEnvironment.WebRootPath;
+            if (!string.IsNullOrEmpty(category.ImageUrl))
+            {
+                string oldPath = Path.Combine(wwwRootPath, category.ImageUrl.TrimStart('\\'));
+                if (System.IO.File.Exists(oldPath))
+                    System.IO.File.Delete(oldPath);
+            }
 
             _unitOfWork.CategoryRepository.Remove(category);
             _unitOfWork.SaveAsync();
@@ -63,37 +93,59 @@ namespace Restaurant.Services
 
         public async Task< IEnumerable<CategoryVM>> GetAll()
         {
-            var backendBaseUrl = _configuration["BackendBaseUrl"];
-            if (string.IsNullOrEmpty(backendBaseUrl))
-            {
-                throw new InvalidOperationException("BackendBaseUrl is not configured.");
-            }
-            return _unitOfWork.CategoryRepository.GetAll().Select(c => new CategoryVM()
+          
+            return  _unitOfWork.CategoryRepository.GetAll().Select(c => new CategoryVM()
          {
              Id = c.Id,
              Name = c.Name,
              DisplayOrder = c.DisplayOrder,
-             ImageUrl = $"{backendBaseUrl}{c.ImageUrl}"
+             ImageUrl = c.ImageUrl
             }).ToList();
 
 
         }
 
-        public Category GetById(int id)
+        public Category GetById(int? id)
         {
            var category = _unitOfWork.CategoryRepository.GetFirstOrDefault(c => c.Id == id);
 
             return category;    
         }
 
-        public void Update(Category category)
+        public void Update(CategoryVM category,IFormFile?file)
         {
+
+            string wwwwRootPath = _webHostEnvironment.WebRootPath;
+            if (file != null)
+            {
+
+                string fileNmae = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                string categoryPath = Path.Combine(wwwwRootPath, @"image\category");
+
+                if(string.IsNullOrEmpty(category.ImageUrl))
+                {
+                    var oldImagePath = Path.Combine(wwwwRootPath, category.ImageUrl.TrimStart('\\'));
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+                        System.IO.File.Delete(oldImagePath);
+                    }
+                }
+               
+
+                using (var fileStream = new FileStream(Path.Combine(categoryPath, fileNmae), FileMode.Create))
+                {
+                    file.CopyTo(fileStream);
+                }
+                category.ImageUrl = @"\image\category\" + fileNmae;
+            }
             var existingcateogry = _unitOfWork.CategoryRepository.GetFirstOrDefault(c => c.Id == category.Id);
 
             if (existingcateogry != null)
             {
                 existingcateogry.Name = category.Name;
                 existingcateogry.DisplayOrder = category.DisplayOrder;
+                existingcateogry.ImageUrl = category.ImageUrl;
+
                 _unitOfWork.CategoryRepository.Update(existingcateogry);
                 _unitOfWork.SaveAsync();
             }

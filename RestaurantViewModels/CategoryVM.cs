@@ -15,7 +15,7 @@ namespace RestaurantViewModels
         public string? Name { get; set; }
         [Range(1, 100)]
         public int DisplayOrder { get; set; }
-        public IFormFile? Image { get; set; }   
+       
         [ValidateNever]
         public string? ImageUrl { get; set; }
     }

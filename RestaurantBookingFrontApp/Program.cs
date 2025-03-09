@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Restaurant.Data.Access.Data;
-using Restaurant.Data.Access.Repository.IRepository;
-using Restaurant.Data.Access.Repository;
 using Restaurant.Utility;
+using Restaurant.Services;
+using ServiceRegisterExtension;
 
 namespace RestaurantBookingFrontApp
 {
@@ -22,8 +22,13 @@ namespace RestaurantBookingFrontApp
             builder.Services.AddHttpClient();
 
 
-            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-           
+            builder.Services.AddScoped<IServicesRegisterExtension, ServiceRegisterExtension.ServiceRegisterExtension>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
+
+            //Register additional services
+            var serviceProvider = builder.Services.BuildServiceProvider();
+            var serviceRegisterExtension = serviceProvider.GetRequiredService<IServicesRegisterExtension>();
+            serviceRegisterExtension.RegisterServices(builder.Services);
 
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();

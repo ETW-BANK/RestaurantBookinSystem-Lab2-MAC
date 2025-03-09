@@ -1,7 +1,5 @@
 ﻿using RestaurantViewModels;
 using Microsoft.AspNetCore.Http;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Restaurant.Models;
 
 namespace Restaurant.Services
@@ -12,12 +10,12 @@ namespace Restaurant.Services
 
       Task  <IEnumerable<CategoryVM>> GetAll();
 
-       Category GetById(int id);
+       Category GetById(int? id);
 
-        void Update(Category category);
+        void Update(CategoryVM category,IFormFile? file);
 
 
-        Task CreateCategory(CategoryVM category);
+        Task CreateCategory(CategoryVM category, IFormFile? file);
 
        Category DeleteCategory(Category category);
 

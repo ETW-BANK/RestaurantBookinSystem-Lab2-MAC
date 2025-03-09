@@ -1,15 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Restaurant.Models;
 using Restaurant.Utility;
 using RestaurantViewModels;
-using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Net.Http.Json;
 using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
+
 
 namespace RestaurantBookingFrontApp.Controllers
 {
@@ -36,16 +32,10 @@ namespace RestaurantBookingFrontApp.Controllers
                 if (response.IsSuccessStatusCode)
                 {
                     var data = await response.Content.ReadAsStringAsync();
-                    var categories = JsonConvert.DeserializeObject<List<Category>>(data);
+                    var categories = JsonConvert.DeserializeObject<List<CategoryVM>>(data);
 
-                    // Ensure full URL for each category's ImageUrl
-                    foreach (var category in categories)
-                    {
-                        if (category?.Name != null && !string.IsNullOrEmpty(category.ImageUrl))
-                        {
-                            category.ImageUrl = $"https://localhost:44307{category.ImageUrl}";
-                        }
-                    }
+                  
+                 
 
                     return View(categories);
                 }
@@ -70,9 +60,8 @@ namespace RestaurantBookingFrontApp.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Create(CategoryVM categoryVM, IFormFile? file)
+        public async Task<IActionResult> Create(CategoryVM categoryVM, IFormFile file)
         {
-           
             if (!ModelState.IsValid)
             {
                 return View(categoryVM);
@@ -80,36 +69,21 @@ namespace RestaurantBookingFrontApp.Controllers
 
             try
             {
-           
                 using (var formData = new MultipartFormDataContent())
                 {
+                
+                    formData.Add(new StringContent(categoryVM.Name), "Name");
+                    formData.Add(new StringContent(categoryVM.DisplayOrder.ToString()), "DisplayOrder");
+
                   
-                    if (categoryVM.Category.Id != 0)
-                    {
-                        formData.Add(new StringContent(categoryVM.Category.Id.ToString()), "Category.Id");
-                    }
-
-               
-                    formData.Add(new StringContent(categoryVM.Category.Name), "Category.Name");
-
-                   
-                    if (categoryVM.Category.DisplayOrder != 0)
-                    {
-                        formData.Add(new StringContent(categoryVM.Category.DisplayOrder.ToString()), "Category.DisplayOrder");
-                    }
-
-                    if (!string.IsNullOrEmpty(categoryVM.Category.ImageUrl))
-                    {
-                        formData.Add(new StringContent(categoryVM.Category.ImageUrl), "Category.ImageUrl");
-                    }
-
                     if (file != null)
                     {
                         var fileContent = new StreamContent(file.OpenReadStream());
                         fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse(file.ContentType);
-                        formData.Add(fileContent, "file", file.FileName); 
+                        formData.Add(fileContent, "Image", file.FileName);
                     }
 
+                
                     var response = await _httpClient.PostAsync("Create", formData);
 
                     if (response.IsSuccessStatusCode)
@@ -119,16 +93,14 @@ namespace RestaurantBookingFrontApp.Controllers
                     }
                     else
                     {
-                       
                         var errorResponse = await response.Content.ReadAsStringAsync();
-                        TempData["error"] = $"Failed to create category. Error: {errorResponse}"; 
+                        TempData["error"] = $"Failed to create category. Error: {errorResponse}";
                         return View(categoryVM);
                     }
                 }
             }
             catch (Exception ex)
             {
-              
                 TempData["error"] = $"An error occurred while creating the category. Error: {ex.Message}";
                 return View(categoryVM);
             }
@@ -166,7 +138,7 @@ namespace RestaurantBookingFrontApp.Controllers
                 var categoryContent = new StringContent(categoryJson, Encoding.UTF8, "application/json");
                 formData.Add(categoryContent, "categoryVM");
 
-                // Add the file to the form data (if provided)
+                
                 if (file != null)
                 {
                     var fileContent = new StreamContent(file.OpenReadStream());
@@ -174,7 +146,7 @@ namespace RestaurantBookingFrontApp.Controllers
                     formData.Add(fileContent, "file", file.FileName);
                 }
 
-                // Send the request to the backend API
+               
                 var response = await _httpClient.PutAsync($"Update/{id}", formData);
 
                 if (response.IsSuccessStatusCode)
@@ -190,9 +162,7 @@ namespace RestaurantBookingFrontApp.Controllers
             }
         }
 
-        /// <summary>
-        /// Handles the deletion of a category.
-        /// </summary>
+   
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {

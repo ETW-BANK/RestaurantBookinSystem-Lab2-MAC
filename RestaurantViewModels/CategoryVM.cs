@@ -1,17 +1,22 @@
 ﻿
-
-
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using Restaurant.Models;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+
 
 namespace RestaurantViewModels
 {
     public class CategoryVM
     {
-        public Category Category { get; set; }
+        [Key]
+        public int Id { get; set; }
+        [Required]
+        [MaxLength(30)]
+        public string? Name { get; set; }
+        [Range(1, 100)]
+        public int DisplayOrder { get; set; }
+        public IFormFile? Image { get; set; }   
+        [ValidateNever]
+        public string? ImageUrl { get; set; }
     }
 }

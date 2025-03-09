@@ -16,7 +16,7 @@ namespace RestaurantBookingApp.Areas.Admin.Controllers
         public TablesController(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            _httpClient.BaseAddress = new Uri("https://localhost:4430/api/Table/");
+            _httpClient.BaseAddress = new Uri("https://localhost:44307/api/Table/");
         }
 
         [HttpGet]

@@ -18,43 +18,40 @@
             </div>
         }
 
-        <!-- Error Message -->
         @if (TempData["error"] != null)
         {
             <div class="alert alert-danger">
                 @TempData["error"]
             </div>
         }
-        <!-- Form -->
-        <form method="post" class="row" enctype="multipart/form-data" >
+    
+        <form method="post" class="row" enctype="multipart/form-data" asp-action="Create">
             <div class="row">
                 <div class="col-10">
                     <div class="border p-3">
-                        <!-- Name Field -->
+                     
                         <div class="form-floating py-2 col-12">
-                            <input asp-for="Category.Name" class="form-control border-0 shadow" />
-                            <label asp-for="Category.Name" class="ms-2"></label>
-                            <span asp-validation-for="Category.Name" class="text-danger"></span>
+                            <input asp-for="Name" class="form-control border-0 shadow" />
+                            <label asp-for="Name" class="ms-2"></label>
+                            <span asp-validation-for="Name" class="text-danger"></span>
                         </div>
 
-                        <!-- DisplayOrder Field -->
+                   
                         <div class="form-floating py-2 col-12">
-                            <input asp-for="Category.DisplayOrder" class="form-control border-0 shadow" />
-                            <label asp-for="Category.DisplayOrder" class="ms-2"></label>
-                            <span asp-validation-for="Category.DisplayOrder" class="text-danger"></span>
+                            <input asp-for="DisplayOrder" class="form-control border-0 shadow" />
+                            <label asp-for="DisplayOrder" class="ms-2"></label>
+                            <span asp-validation-for="DisplayOrder" class="text-danger"></span>
                         </div>
 
-                        <!-- ImageUrl Field -->
                         <div class="form-floating py-2 col-12">
-                            <input type="file" name="file"  class="form-control border-0 shadow" />
-                            <label asp-for="Category.ImageUrl" class="ms-2"></label>
-                         
+                            <input type="file" name="file" class="form-control border-0 shadow" />
+                            <label asp-for="ImageUrl" class="ms-2"></label>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Buttons -->
+       
             <div class="row pt-2">
                 <div class="col-6 col-md-3">
                     <button type="submit" class="btn btn-primary form-control">Create</button>

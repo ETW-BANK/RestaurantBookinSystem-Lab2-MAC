@@ -1,4 +1,4 @@
-﻿@model List<Category>
+﻿@model List<CategoryVM>
 
 <div class="card shadow border-0 my-4">
     <div class="card-header bg-secondary bg-gradient mt-0 py-3">
@@ -21,7 +21,7 @@
                 <tr>
                     <th>Name</th>
                     <th>Display Order</th>
-                    <th>Image</th> <!-- Added Image column -->
+                    <th>Image</th> 
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -34,7 +34,8 @@
                         <td>
                             @if (category?.Name!= null && !string.IsNullOrEmpty(category.ImageUrl))
                             {
-                                <img src="@($"https://localhost:44307{category.ImageUrl}")" alt="Category Image" style="max-width: 100px; max-height: 100px;" />
+                                <img src="@category.ImageUrl" alt="Category Image" class="card-img-top rounded" width="100px" height="100px" style="border-radius:5px; border:solid double" />
+
                             }
                             else
                             {

@@ -1,14 +1,12 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Restaurant.Data.Access.Repository.IRepository;
 using Restaurant.Models;
-using RestaurantServices.Services.IServices;
 using RestaurantViewModels;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+
+
 
 namespace Restaurant.Services
 {
@@ -16,56 +14,43 @@ namespace Restaurant.Services
     {
 
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IWebHostEnvironment _webHostEnvironment;
-        public CategoryService(IUnitOfWork unitOfWork,IWebHostEnvironment webHostEnvironment)
+      
+
+        private readonly IConfiguration _configuration;
+        public CategoryService(IUnitOfWork unitOfWork,IConfiguration configuration)
         {
       
             _unitOfWork= unitOfWork;
-            _webHostEnvironment = webHostEnvironment;   
-
+            _configuration = configuration;
         }
 
-        public void CreateCategory(CategoryVM category,IFormFile? file)
+        public async Task CreateCategory(CategoryVM category)
         {
-
-            string wwwRootPath = _webHostEnvironment.WebRootPath;
-            if (file != null)
-            {
-                string FileName=Guid.NewGuid().ToString()+Path.GetExtension(file.FileName);  
-                string categoryPath = Path.Combine(wwwRootPath, @"image\category");
-
-                using(var fileStream = new FileStream(Path.Combine(categoryPath, FileName), FileMode.Create))
-                {
-                    file.CopyTo(fileStream);
-                }
-                
-                category.Category.ImageUrl = @"/image/category/" + FileName;  
-
-
-            }
-             
-
-            var categoryExist = _unitOfWork.CategoryRepository.GetFirstOrDefault(x => x.Name == category.Category.Name);
-
+            
+            var categoryExist = _unitOfWork.CategoryRepository.GetFirstOrDefault(x => x.Name == category.Name);
             if (categoryExist != null)
             {
                 throw new Exception("Category already exists.");
             }
 
+           
             var newCategory = new Category
             {
-                Name = category.Category.Name,
-                DisplayOrder = category.Category.DisplayOrder,
-                ImageUrl = category.Category.ImageUrl
+                Name = category.Name,
+                DisplayOrder = category.DisplayOrder,
+                ImageUrl = category.ImageUrl
             };
 
+         
             _unitOfWork.CategoryRepository.Add(newCategory);
-            _unitOfWork.SaveAsync();
+
+      
+            await _unitOfWork.SaveAsync();
         }
-    
 
 
-    public Category DeleteCategory(Category category)
+
+        public Category DeleteCategory(Category category)
         {
           category = _unitOfWork.CategoryRepository.GetFirstOrDefault(x=>x.Id==category.Id);
           
@@ -76,11 +61,22 @@ namespace Restaurant.Services
             return category;
         }
 
-        public IEnumerable<Category> GetAll()
+        public async Task< IEnumerable<CategoryVM>> GetAll()
         {
-          var categorylist=  _unitOfWork.CategoryRepository.GetAll();
+            var backendBaseUrl = _configuration["BackendBaseUrl"];
+            if (string.IsNullOrEmpty(backendBaseUrl))
+            {
+                throw new InvalidOperationException("BackendBaseUrl is not configured.");
+            }
+            return _unitOfWork.CategoryRepository.GetAll().Select(c => new CategoryVM()
+         {
+             Id = c.Id,
+             Name = c.Name,
+             DisplayOrder = c.DisplayOrder,
+             ImageUrl = $"{backendBaseUrl}{c.ImageUrl}"
+            }).ToList();
 
-            return categorylist;
+
         }
 
         public Category GetById(int id)

@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<CategoryVM>
 
+
 @if (Model == null || !Model.Any())
 {
     <div class="alert alert-danger">
@@ -21,10 +22,10 @@ else
                     <div class="row p-2">
                         <div class="col-12 p-1">
                             <div class="card border-0 p-3 shadow border-top border-5 rounded">
-                                <!-- Add the image here -->
-                                @if (item?.Category != null && !string.IsNullOrEmpty(item.Category.ImageUrl))
+                           
+                                @if (item != null && !string.IsNullOrEmpty(item.ImageUrl))
                                 {
-                                    <img src="@item.Category.ImageUrl" class="card-img-top rounded" alt="@item.Category.Name" style="height: 200px; object-fit: cover;" />
+                                    <img src="@item.ImageUrl" class="card-img-top rounded " alt="@item.Name" />
                                 }
                                 else
                                 {
@@ -36,13 +37,13 @@ else
                                 <div class="card-body pb-0">
                                     <div class="pl-1">
                                         <p class="card-title text-warning opacity-75 text-uppercase text-center">
-                                            @(item?.Category?.Name ?? "Unnamed Category")
+                                            @(item?.Name ?? "Unnamed Category")
                                         </p>
                                     </div>
                                 </div>
 
                                 <div>
-                                    <a href="@Url.Action("Menues", new { categoryId = item?.Category?.Id })" class="btn btn-primary bg-gradient border-0 form-control">Go To Menu</a>
+                                    <a href="@Url.Action("Menues", new { categoryId = item?.Id })" class="btn btn-primary bg-gradient border-0 form-control">Go To Menu</a>
                                 </div>
                             </div>
                         </div>

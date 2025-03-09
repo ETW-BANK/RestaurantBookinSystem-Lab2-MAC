@@ -17,7 +17,7 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
         public UsersController(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            _httpClient.BaseAddress = new Uri("https://localhost:4430/api/User/");
+            _httpClient.BaseAddress = new Uri("https://localhost:44307/api/User/");
         }
 
         [HttpGet]
@@ -38,7 +38,7 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
                     var serviceResponse = JsonConvert.DeserializeObject<ApiResponse<List<UserVm>>>(data);
 
 
-                    return Json(new { data = serviceResponse.Result });
+                    return Json(new { data = serviceResponse.Data });
                 }
 
                 return StatusCode((int)response.StatusCode, "Failed to fetch users from the API.");

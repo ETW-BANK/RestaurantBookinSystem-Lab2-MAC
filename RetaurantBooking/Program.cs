@@ -1,11 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.FileProviders;
 using Restaurant.Data.Access.Data;
 using Restaurant.Data.Access.DbInisializer;
-using Restaurant.Data.Access.Repository;
-using Restaurant.Data.Access.Repository.IRepository;
-using Restaurant.Services;
 using ServiceRegisterExtension;
 
 namespace RetaurantBooking
@@ -22,7 +18,7 @@ namespace RetaurantBooking
                 options.UseSqlServer(connectionString));
 
             // Add ASP.NET Identity services
-            builder.Services.AddIdentity<IdentityUser, IdentityRole>() // Use your custom ApplicationUser class here
+            builder.Services.AddIdentity<IdentityUser, IdentityRole>() 
                 .AddEntityFrameworkStores<RestaurantDbContext>()
                 .AddDefaultTokenProviders();
 
@@ -62,20 +58,17 @@ namespace RetaurantBooking
 
 
 
-                // Add authentication and authorization middleware
+             
                 app.UseAuthentication();
                 app.UseAuthorization();
 
-                // Seed the database on application startup
                 SeedDatabase();
 
-                // Map the controllers for routing
                 app.MapControllers();
 
-                // Start the application
                 app.Run();
 
-                // Seed the database with initial data
+               
                 void SeedDatabase()
                 {
                     using (var scope = app.Services.CreateScope())

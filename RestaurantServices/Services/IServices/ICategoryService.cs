@@ -10,14 +10,14 @@ namespace Restaurant.Services
     {
 
 
-        IEnumerable<Category> GetAll();
+      Task  <IEnumerable<CategoryVM>> GetAll();
 
        Category GetById(int id);
 
         void Update(Category category);
 
 
-         void CreateCategory(CategoryVM category,IFormFile? file);
+        Task CreateCategory(CategoryVM category);
 
        Category DeleteCategory(Category category);
 

@@ -1,12 +1,10 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Restaurant.Models;
-using Restaurant.Utility;
 using RestaurantBookingFrontApp.Models;
 using RestaurantViewModels;
 using System.Diagnostics;
-using System.Net.Http;
+
 
 
 namespace RestaurantBookingFrontApp.Areas.Customer.Controllers
@@ -38,14 +36,8 @@ namespace RestaurantBookingFrontApp.Areas.Customer.Controllers
                     var data = await response.Content.ReadAsStringAsync();
                     var categories = JsonConvert.DeserializeObject<List<CategoryVM>>(data);
 
-                    // Ensure full URL for each category's ImageUrl
-                    foreach (var category in categories)
-                    {
-                        if (category?.Category != null && !string.IsNullOrEmpty(category.Category.ImageUrl))
-                        {
-                            category.Category.ImageUrl = $"https://localhost:44307{category.Category.ImageUrl}";
-                        }
-                    }
+
+
 
                     return View(categories);
                 }

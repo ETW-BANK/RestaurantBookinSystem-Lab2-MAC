@@ -1,14 +1,10 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+﻿
 using Microsoft.AspNetCore.Mvc;
-using Restaurant.Data.Access.Repository.IRepository;
 using Restaurant.Models;
 using Restaurant.Services;
-using RestaurantServices.Services;
-using RestaurantServices.Services.IServices;
 using RestaurantViewModels;
-using System;
-using System.Threading.Tasks;
+
+
 
 namespace YourNamespace.Backend.Controllers
 {
@@ -18,18 +14,19 @@ namespace YourNamespace.Backend.Controllers
     {
         private readonly ICategoryService _categoryService;
        
-
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
         public CategoryController(ICategoryService categoryService, IWebHostEnvironment webHostEnvironment, ILogger<CategoryController> logger)
         {
             _categoryService = categoryService;
-          
+            _webHostEnvironment = webHostEnvironment;
+
         }
 
         [HttpGet]
         public async Task<IActionResult> GetCategories()
         {
-            var categories = _categoryService.GetAll();
+            var categories = await _categoryService.GetAll();
             
             if (categories == null )
             {
@@ -39,23 +36,50 @@ namespace YourNamespace.Backend.Controllers
             return Ok(categories);  
         }
         [HttpPost]
-        public async Task<IActionResult> Create([FromForm] CategoryVM categoryVM, IFormFile?file)
+        public async Task<IActionResult> Create([FromForm] CategoryVM categoryVM)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    
-                    _categoryService.CreateCategory(categoryVM,file);
-                    return Ok(categoryVM);
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(ex.Message);
-                }
+               
+                return BadRequest(ModelState);
             }
 
-            return BadRequest(ModelState);
+            try
+            {
+                if (categoryVM.Image != null)
+                {
+                   
+                    string folder = @"images/category/";
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + categoryVM.Image.FileName;
+                    string filePath = Path.Combine(folder, uniqueFileName);
+
+                   
+                    categoryVM.ImageUrl ="/"+ filePath;
+
+                    string serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folder);
+                    if (!Directory.Exists(serverFolder))
+                    {
+                        Directory.CreateDirectory(serverFolder);
+                    }
+
+                    string fullPath = Path.Combine(_webHostEnvironment.WebRootPath, filePath);
+                    using (var fileStream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        await categoryVM.Image.CopyToAsync(fileStream);
+                    }
+                }
+
+              
+                await _categoryService.CreateCategory(categoryVM);
+
+            
+                return Ok("Category created successfully.");
+            }
+            catch (Exception ex)
+            {
+              
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
         }
 
 

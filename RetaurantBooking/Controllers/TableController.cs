@@ -1,8 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Mvc;
-using Restaurant.Data.Access.Repository.IRepository;
 using Restaurant.Data.Access.Repository.Services.IServices;
-using Restaurant.Models;
 using RestaurantViewModels;
 
 

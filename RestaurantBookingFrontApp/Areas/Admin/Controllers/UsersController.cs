@@ -38,7 +38,7 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
                     var serviceResponse = JsonConvert.DeserializeObject<ApiResponse<List<UserVm>>>(data);
 
 
-                    return Json(new { data = serviceResponse.Data });
+                    return Json(new { data = serviceResponse.Result });
                 }
 
                 return StatusCode((int)response.StatusCode, "Failed to fetch users from the API.");

@@ -12,8 +12,8 @@ using Restaurant.Data.Access.Data;
 namespace Restaurant.Data.Access.Migrations
 {
     [DbContext(typeof(RestaurantDbContext))]
-    [Migration("20250308081509_Inital")]
-    partial class Inital
+    [Migration("20250308234845_addimageurlnull")]
+    partial class addimageurlnull
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -297,7 +297,29 @@ namespace Restaurant.Data.Access.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("Restaurant.Models.Menue", b =>
+            modelBuilder.Entity("Restaurant.Models.Tables", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("NumberOfSeats")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TableNumber")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Table");
+                });
+
+            modelBuilder.Entity("Restaurant.Models.category", b =>
                 {
                     b.Property<int>("menueId")
                         .ValueGeneratedOnAdd()
@@ -331,28 +353,6 @@ namespace Restaurant.Data.Access.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Menues");
-                });
-
-            modelBuilder.Entity("Restaurant.Models.Tables", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("IsAvailable")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("NumberOfSeats")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TableNumber")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Table");
                 });
 
             modelBuilder.Entity("Restaurant.Models.ApplicationUser", b =>
@@ -443,7 +443,7 @@ namespace Restaurant.Data.Access.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Restaurant.Models.Menue", "Menue")
+                    b.HasOne("Restaurant.Models.category", "Menue")
                         .WithMany()
                         .HasForeignKey("menueId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -456,7 +456,7 @@ namespace Restaurant.Data.Access.Migrations
                     b.Navigation("Tables");
                 });
 
-            modelBuilder.Entity("Restaurant.Models.Menue", b =>
+            modelBuilder.Entity("Restaurant.Models.category", b =>
                 {
                     b.HasOne("Restaurant.Models.Category", "Category")
                         .WithMany()

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Restaurant.Data.Access.Repository.IRepository
 {
-   public class MenuRepository:Repository<Menue>,IMenuRepository
+   public class MenuRepository:Repository<category>,IMenuRepository
     {
         private readonly RestaurantDbContext _db;
         public MenuRepository(RestaurantDbContext db):base(db)
@@ -16,7 +16,7 @@ namespace Restaurant.Data.Access.Repository.IRepository
             _db = db;
         }
 
-        public void UpdateMenu(Menue menue)
+        public void UpdateMenu(category menue)
         {
           _db.Update(menue);    
         }

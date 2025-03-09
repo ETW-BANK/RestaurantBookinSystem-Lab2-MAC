@@ -12,7 +12,7 @@ using Restaurant.Data.Access.Data;
 namespace Restaurant.Data.Access.Migrations
 {
     [DbContext(typeof(RestaurantDbContext))]
-    [Migration("20250308075907_Init")]
+    [Migration("20250308221521_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -284,16 +284,10 @@ namespace Restaurant.Data.Access.Migrations
                     b.Property<int>("DisplayOrder")
                         .HasColumnType("int");
 
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
-
-                    b.Property<int>("menuId")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -329,14 +323,9 @@ namespace Restaurant.Data.Access.Migrations
                     b.Property<int>("Qty")
                         .HasColumnType("int");
 
-                    b.Property<int?>("menuId")
-                        .HasColumnType("int");
-
                     b.HasKey("menueId");
 
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("menuId");
 
                     b.ToTable("Menues");
                 });
@@ -472,16 +461,7 @@ namespace Restaurant.Data.Access.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Restaurant.Models.Category", null)
-                        .WithMany("Products")
-                        .HasForeignKey("menuId");
-
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("Restaurant.Models.Category", b =>
-                {
-                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }

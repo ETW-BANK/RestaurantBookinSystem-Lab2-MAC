@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Restaurant.Models
 {
-    public class Menue
+    public class category
     {
         [Key]
         public int menueId { get; set; }

@@ -30,7 +30,7 @@ namespace RestaurantServices.Services
             
            
 
-            var newMenu = new Menue
+            var newMenu = new category
             {
                 Name = menu.Name,
                 Description = menu.Description,
@@ -45,7 +45,7 @@ namespace RestaurantServices.Services
           await  _unitOfWork.SaveAsync();
         }
 
-        public Menue DeleteMenu(Menue menu)
+        public category DeleteMenu(category menu)
         {
             var menuToDelete = _unitOfWork.MenuRepository.GetFirstOrDefault(u => u.menueId == menu.menueId, includeProperties: "Category");    
 
@@ -82,7 +82,7 @@ namespace RestaurantServices.Services
             return result;    
         }
 
-        public Menue GetById(int id)
+        public category GetById(int id)
         {
            var menu = _unitOfWork.MenuRepository.GetFirstOrDefault(u => u.menueId == id, includeProperties: "Category");
 

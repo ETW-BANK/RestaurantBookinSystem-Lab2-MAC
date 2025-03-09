@@ -23,7 +23,7 @@ namespace RestaurantBookingFrontApp
 
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
+           
 
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
@@ -35,6 +35,8 @@ namespace RestaurantBookingFrontApp
                 options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
 
             });
+         
+        
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -48,7 +50,7 @@ namespace RestaurantBookingFrontApp
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-
+           
             app.UseRouting();
 
             app.MapRazorPages();

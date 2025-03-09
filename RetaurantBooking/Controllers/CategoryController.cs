@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Restaurant.Data.Access.Repository.IRepository;
 using Restaurant.Models;
+using Restaurant.Services;
 using RestaurantServices.Services;
 using RestaurantServices.Services.IServices;
 using RestaurantViewModels;
@@ -15,17 +17,20 @@ namespace YourNamespace.Backend.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
+       
 
 
         public CategoryController(ICategoryService categoryService, IWebHostEnvironment webHostEnvironment, ILogger<CategoryController> logger)
         {
             _categoryService = categoryService;
+          
         }
 
         [HttpGet]
         public async Task<IActionResult> GetCategories()
         {
-            var categories =  _categoryService.GetAllCategories(); 
+            var categories = _categoryService.GetAll();
+            
             if (categories == null )
             {
                 return NotFound(new { message = "No Category found." });
@@ -34,14 +39,22 @@ namespace YourNamespace.Backend.Controllers
             return Ok(categories);  
         }
         [HttpPost]
-        [Route("Create")]
-        public async Task<IActionResult> Create([FromForm] CategoryVM category,IFormFile? file)
+        public async Task<IActionResult> Create([FromForm] CategoryVM categoryVM, IFormFile?file)
         {
             if (ModelState.IsValid)
             {
-             _categoryService.CreateCategory(category,file);
-                return Ok(category);
+                try
+                {
+                    
+                    _categoryService.CreateCategory(categoryVM,file);
+                    return Ok(categoryVM);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
+
             return BadRequest(ModelState);
         }
 
@@ -53,7 +66,7 @@ namespace YourNamespace.Backend.Controllers
 
           try
             {
-               var category=   _categoryService.GetById(id);
+               var category= _categoryService.GetById(id);
 
                 return Ok(category);
             }
@@ -65,8 +78,10 @@ namespace YourNamespace.Backend.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateCategory([FromBody] CategoryVM category)
+        public async Task<IActionResult> UpdateCategory( Category category)
         {
+
+            var categoryToUpdate = _categoryService.GetById(category.Id);
             if (category == null)
             {
                 return BadRequest("Invalid Category data");
@@ -74,8 +89,8 @@ namespace YourNamespace.Backend.Controllers
 
             try
             {
-                await _categoryService.UpdateCategory(category);
-                return Ok( "Category updated successfully." );
+               _categoryService.Update(category);
+                return Ok("Category updated successfully.");
             }
             catch (Exception ex)
             {
@@ -87,7 +102,7 @@ namespace YourNamespace.Backend.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteCategory(int id)
         {
-            var categoryToDelete = _categoryService.GetById(id);
+            var categoryToDelete =_categoryService.GetById(id);  
             if (categoryToDelete == null)
             {
                 return NotFound("Category Not Found");

@@ -1,133 +1,106 @@
-﻿using System;
-
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Restaurant.Data.Access.Repository.IRepository;
 using Restaurant.Models;
-using Restaurant.Utility;
 using RestaurantServices.Services.IServices;
 using RestaurantViewModels;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace RestaurantServices.Services
+namespace Restaurant.Services
 {
     public class CategoryService : ICategoryService
     {
-        private readonly IWebHostEnvironment _webHostEnvironment;
+
         private readonly IUnitOfWork _unitOfWork;
-
-        public CategoryService(IWebHostEnvironment webHostEnvironment, IUnitOfWork unitOfWork)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public CategoryService(IUnitOfWork unitOfWork,IWebHostEnvironment webHostEnvironment)
         {
-            _webHostEnvironment = webHostEnvironment;
-            _unitOfWork = unitOfWork;
+      
+            _unitOfWork= unitOfWork;
+            _webHostEnvironment = webHostEnvironment;   
+
         }
 
-
-
-
-        public Category GetById(int id)
+        public void CreateCategory(CategoryVM category,IFormFile? file)
         {
-            var category = _unitOfWork.CategoryRepository.GetFirstOrDefault(u => u.Id == id);
-            return category;
-        }
-
-        //public async Task UpdateCategory(CategoryVM categoryVM)
-        //{
-        //    var category = _unitOfWork.CategoryRepository.GetFirstOrDefault(c => c.Id == categoryVM.Id);
-        //    if (category != null)
-        //    {
-        //        category.Name = categoryVM.Name;
-        //        category.Description = categoryVM.Description;
-              
-        //        _unitOfWork.CategoryRepository.Update(category);
-        //        await _unitOfWork.SaveAsync();
-        //    }
-        //}
-
-        public void DeleteCategory(Category category)
-        {
-         var categorytodelete=_unitOfWork.CategoryRepository.GetFirstOrDefault(c => c.Id == category.Id);
-
-          
-            _unitOfWork.CategoryRepository.Remove(categorytodelete);
-            _unitOfWork.SaveAsync();
-        }
-
-       
-        public IEnumerable<Category> GetAllCategories()
-        {
-            var categories = _unitOfWork.CategoryRepository.GetAll();
-
-
-            return categories;  
-        }
-
-        public void CreateCategory(CategoryVM categoryVM, IFormFile? file)
-        {
-            if (categoryVM == null)
-            {
-                throw new ArgumentNullException(nameof(categoryVM), "CategoryVM is null");
-            }
 
             string wwwRootPath = _webHostEnvironment.WebRootPath;
-
             if (file != null)
             {
-                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                string categoryPath = Path.Combine(wwwRootPath, "image", "category");
+                string FileName=Guid.NewGuid().ToString()+Path.GetExtension(file.FileName);  
+                string categoryPath = Path.Combine(wwwRootPath, @"image\category");
 
-                if (!Directory.Exists(categoryPath))
-                {
-                    Directory.CreateDirectory(categoryPath);
-                }
-
-              
-                if (!string.IsNullOrEmpty(categoryVM.ImageUrl))
-                {
-                    var oldImagePath = Path.Combine(wwwRootPath, categoryVM.ImageUrl.TrimStart('/').Replace("/", "\\"));
-                    if (System.IO.File.Exists(oldImagePath))
-                    {
-                        System.IO.File.Delete(oldImagePath);
-                    }
-                }
-
-         
-                using (var fileStream = new FileStream(Path.Combine(categoryPath, fileName), FileMode.Create))
+                using(var fileStream = new FileStream(Path.Combine(categoryPath, FileName), FileMode.Create))
                 {
                     file.CopyTo(fileStream);
                 }
+                
+                category.Category.ImageUrl = @"/image/category/" + FileName;  
 
-                categoryVM.ImageUrl = $"/image/category/{fileName}";
+
+            }
+             
+
+            var categoryExist = _unitOfWork.CategoryRepository.GetFirstOrDefault(x => x.Name == category.Category.Name);
+
+            if (categoryExist != null)
+            {
+                throw new Exception("Category already exists.");
             }
 
             var newCategory = new Category
             {
-                Name = categoryVM.Name,
-                DisplayOrder = categoryVM.DisplayOrder,
-                ImageUrl = categoryVM.ImageUrl 
+                Name = category.Category.Name,
+                DisplayOrder = category.Category.DisplayOrder,
+                ImageUrl = category.Category.ImageUrl
             };
 
             _unitOfWork.CategoryRepository.Add(newCategory);
             _unitOfWork.SaveAsync();
         }
-
-
     
 
 
-
-
-
-    public Task UpdateCategory(CategoryVM category)
+    public Category DeleteCategory(Category category)
         {
-            throw new NotImplementedException();
+          category = _unitOfWork.CategoryRepository.GetFirstOrDefault(x=>x.Id==category.Id);
+          
+
+            _unitOfWork.CategoryRepository.Remove(category);
+            _unitOfWork.SaveAsync();
+
+            return category;
         }
 
+        public IEnumerable<Category> GetAll()
+        {
+          var categorylist=  _unitOfWork.CategoryRepository.GetAll();
 
+            return categorylist;
+        }
 
+        public Category GetById(int id)
+        {
+           var category = _unitOfWork.CategoryRepository.GetFirstOrDefault(c => c.Id == id);
+
+            return category;    
+        }
+
+        public void Update(Category category)
+        {
+            var existingcateogry = _unitOfWork.CategoryRepository.GetFirstOrDefault(c => c.Id == category.Id);
+
+            if (existingcateogry != null)
+            {
+                existingcateogry.Name = category.Name;
+                existingcateogry.DisplayOrder = category.DisplayOrder;
+                _unitOfWork.CategoryRepository.Update(existingcateogry);
+                _unitOfWork.SaveAsync();
+            }
+        }
     }
-
 }

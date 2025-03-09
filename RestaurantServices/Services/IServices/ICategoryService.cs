@@ -1,20 +1,26 @@
-﻿using Microsoft.AspNetCore.Http;
-using Restaurant.Models;
-using RestaurantViewModels;
-using System;
+﻿using RestaurantViewModels;
+using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using Restaurant.Models;
 
-namespace RestaurantServices.Services.IServices
+namespace Restaurant.Services
 {
     public interface ICategoryService
     {
-      IEnumerable<Category> GetAllCategories();
-        Category GetById(int id);
-        Task UpdateCategory(CategoryVM category);
-        void CreateCategory(CategoryVM categoryVM, IFormFile? file);
-        void DeleteCategory(Category category);
+
+
+        IEnumerable<Category> GetAll();
+
+       Category GetById(int id);
+
+        void Update(Category category);
+
+
+         void CreateCategory(CategoryVM category,IFormFile? file);
+
+       Category DeleteCategory(Category category);
+
+
     }
 }

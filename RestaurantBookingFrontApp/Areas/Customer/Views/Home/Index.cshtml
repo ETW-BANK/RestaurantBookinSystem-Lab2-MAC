@@ -1,72 +1,60 @@
-﻿     @model IEnumerable<CategoryVM>
+﻿@model IEnumerable<CategoryVM>
 
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-danger">
+        No categories found.
+    </div>
+}
+else
+{
+    <div class="containers">
+        <p class="title">
+            <span id="intro">Welcome to Green Cottage Restaurant</span> <br />
+            Your destination for authentic flavors and warm hospitality in the heart of Addis Ababa! Discover a menu that celebrates Ethiopian culinary traditions, crafted with the freshest ingredients and served in a cozy, welcoming atmosphere. Whether it’s a casual meal or a special gathering, join us for an unforgettable dining experience where every dish brings you closer to the taste of Ethiopia.
+        </p>
 
+        <div class="row pb-3">
+            @foreach (var item in Model)
+            {
+                <div class="col-lg-3 col-sm-6">
+                    <div class="row p-2">
+                        <div class="col-12 p-1">
+                            <div class="card border-0 p-3 shadow border-top border-5 rounded">
+                                <!-- Add the image here -->
+                                @if (item?.Category != null && !string.IsNullOrEmpty(item.Category.ImageUrl))
+                                {
+                                    <img src="@item.Category.ImageUrl" class="card-img-top rounded" alt="@item.Category.Name" style="height: 200px; object-fit: cover;" />
+                                }
+                                else
+                                {
+                                    <div class="card-img-top rounded bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                        <span class="text-muted">No Image</span>
+                                    </div>
+                                }
 
-<div class="containers">
-    <p class="title">
-        <span id="intro">Welcome to Green Cottage Restaurant</span> <br />
-        Your destination for authentic flavors and warm hospitality in the heart of Addis Ababa! Discover a menu that celebrates Ethiopian culinary traditions, crafted with the freshest ingredients and served in a cozy, welcoming atmosphere. Whether it’s a casual meal or a special gathering, join us for an unforgettable dining experience where every dish brings you closer to the taste of Ethiopia.
-    </p>
-
-
-    <div class="row pb-3">
-      
-
-
-        @foreach (var item in Model)
-        {
-
-            <div class="col-lg-3 col-sm-6">
-
-                <div class="row p-2">
-
-                    <div class="col-12 p-1">
-
-                        <div class="card border-0 p-3 shadow border-top border-5 rounded">
-
-
-                            <img src="@item.ImageUrl" class="card-img-top rounded " alt="@item.Name" />
-
-                            <div class="card-body pb-0">
-
-                                <div class="pl-1">
-
-                                    <p class="card-title text-warning  opacity-75 text-uppercase text-center">@item.Name</p>
-
+                                <div class="card-body pb-0">
+                                    <div class="pl-1">
+                                        <p class="card-title text-warning opacity-75 text-uppercase text-center">
+                                            @(item?.Category?.Name ?? "Unnamed Category")
+                                        </p>
+                                    </div>
                                 </div>
 
-                            </div>
-
-                            <div>
-
-                                <a href="@Url.Action("Menues", new { categoryId = item.Id })" class="btn btn-primary bg-gradient border-0 form-control">Go To Menu</a>
-
-
+                                <div>
+                                    <a href="@Url.Action("Menues", new { categoryId = item?.Category?.Id })" class="btn btn-primary bg-gradient border-0 form-control">Go To Menu</a>
+                                </div>
                             </div>
                         </div>
-
                     </div>
-
                 </div>
+            }
+        </div>
 
-
-            </div>
-
-
-
-        }
-
-
+        <div class="text-center mt-4">
+            <a asp-controller="CustomerBookings" asp-action="Create" class="btn btn-primary">
+                Book A Table
+            </a>
+        </div>
     </div>
-
-
-
-
-
-    <a asp-controller="CustomerBookings" asp-action="Create" class="btn btn-primary">
-        Book A Table
-    </a>
-
-</div>
-
-
+}

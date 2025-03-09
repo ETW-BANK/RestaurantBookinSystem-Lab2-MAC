@@ -1,6 +1,8 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Restaurant.Models;
+using Restaurant.Utility;
 using RestaurantBookingFrontApp.Models;
 using RestaurantViewModels;
 using System.Diagnostics;
@@ -15,7 +17,7 @@ namespace RestaurantBookingFrontApp.Areas.Customer.Controllers
     {
 
         private readonly ILogger<HomeController> _logger;
-        private readonly HttpClient _httpClient;
+        private readonly HttpClient _httpClient = new HttpClient();
         public HomeController(ILogger<HomeController> logger, HttpClient httpClient)
         {
             _logger = logger;
@@ -24,33 +26,41 @@ namespace RestaurantBookingFrontApp.Areas.Customer.Controllers
             _httpClient = httpClient;
         }
 
-
-
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var response = await _httpClient.GetAsync("GetCategories");
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var data = await response.Content.ReadAsStringAsync();
-                var categories = JsonConvert.DeserializeObject<List<CategoryVM>>(data);
+                var response = await _httpClient.GetAsync("GetCategories");
 
-                // Ensure full URL for each category's ImageUrl
-                foreach (var category in categories)
+                if (response.IsSuccessStatusCode)
                 {
-                    if (!string.IsNullOrEmpty(category.ImageUrl))
+                    var data = await response.Content.ReadAsStringAsync();
+                    var categories = JsonConvert.DeserializeObject<List<CategoryVM>>(data);
+
+                    // Ensure full URL for each category's ImageUrl
+                    foreach (var category in categories)
                     {
-                        category.ImageUrl = $"https://localhost:44307{category.ImageUrl}";
+                        if (category?.Category != null && !string.IsNullOrEmpty(category.Category.ImageUrl))
+                        {
+                            category.Category.ImageUrl = $"https://localhost:44307{category.Category.ImageUrl}";
+                        }
                     }
+
+                    return View(categories);
                 }
-
-                return View(categories);
+                else
+                {
+                    TempData["error"] = "Unable to retrieve categories from the server.";
+                    return View(new List<CategoryVM>());
+                }
             }
-
-            TempData["error"] = "Unable to retrieve categories from the server.";
-            return View(new List<CategoryVM>());
+            catch (Exception ex)
+            {
+                TempData["error"] = $"An error occurred: {ex.Message}";
+                return View(new List<CategoryVM>());
+            }
         }
-
 
 
         public IActionResult Privacy()

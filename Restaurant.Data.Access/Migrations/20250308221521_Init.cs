@@ -63,9 +63,7 @@ namespace Restaurant.Data.Access.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    DisplayOrder = table.Column<int>(type: "int", nullable: false),
-                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    menuId = table.Column<int>(type: "int", nullable: false)
+                    DisplayOrder = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -205,8 +203,7 @@ namespace Restaurant.Data.Access.Migrations
                     Qty = table.Column<int>(type: "int", nullable: false),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
-                    Available = table.Column<int>(type: "int", nullable: false),
-                    menuId = table.Column<int>(type: "int", nullable: true)
+                    Available = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -217,11 +214,6 @@ namespace Restaurant.Data.Access.Migrations
                         principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Menues_Categories_menuId",
-                        column: x => x.menuId,
-                        principalTable: "Categories",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -319,11 +311,6 @@ namespace Restaurant.Data.Access.Migrations
                 name: "IX_Menues_CategoryId",
                 table: "Menues",
                 column: "CategoryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Menues_menuId",
-                table: "Menues",
-                column: "menuId");
         }
 
         /// <inheritdoc />

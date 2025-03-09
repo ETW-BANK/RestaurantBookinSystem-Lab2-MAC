@@ -41,4 +41,8 @@
     <ProjectReference Include="..\RetaurantBooking\RetaurantBooking.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\image\category\" />
+  </ItemGroup>
+
 </Project>

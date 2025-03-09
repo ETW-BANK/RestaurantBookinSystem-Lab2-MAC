@@ -12,13 +12,13 @@ namespace RestaurantServices.Services.IServices
     {
         IEnumerable<MenuVM> GetAllMenues();
 
-        Menue GetById(int id);
+        category GetById(int id);
 
         void UpdateMenu(MenuVM menu);
 
 
         Task CreateMenu(MenuVM menu);
 
-        Menue DeleteMenu(Menue menu);
+        category DeleteMenu(category menu);
     }
 }

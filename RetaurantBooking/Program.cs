@@ -5,6 +5,7 @@ using Restaurant.Data.Access.Data;
 using Restaurant.Data.Access.DbInisializer;
 using Restaurant.Data.Access.Repository;
 using Restaurant.Data.Access.Repository.IRepository;
+using Restaurant.Services;
 using ServiceRegisterExtension;
 
 namespace RetaurantBooking
@@ -25,59 +26,63 @@ namespace RetaurantBooking
                 .AddEntityFrameworkStores<RestaurantDbContext>()
                 .AddDefaultTokenProviders();
 
-            builder.Services.AddControllers();
 
-            // Register custom services and repositories
-            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            builder.Services.AddScoped<IServicesRegisterExtension, ServiceRegisterExtension.ServiceRegisterExtension>();
-           
-
-            // Register additional services
-            var serviceProvider = builder.Services.BuildServiceProvider();
-            var serviceRegisterExtension = serviceProvider.GetRequiredService<IServicesRegisterExtension>();
-            serviceRegisterExtension.RegisterServices(builder.Services);
-
-            // Swagger configuration for API documentation
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
-
-            var app = builder.Build();
-
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage(); 
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
 
-           
+                builder.Services.AddControllers();
 
-           
-            app.UseStaticFiles();  
+                // Register custom services and repositories
 
-            
+                builder.Services.AddScoped<IServicesRegisterExtension, ServiceRegisterExtension.ServiceRegisterExtension>();
 
-            // Add authentication and authorization middleware
-            app.UseAuthentication();
-            app.UseAuthorization();
 
-            // Seed the database on application startup
-            SeedDatabase();
+                //Register additional services
+                var serviceProvider = builder.Services.BuildServiceProvider();
+                var serviceRegisterExtension = serviceProvider.GetRequiredService<IServicesRegisterExtension>();
+                serviceRegisterExtension.RegisterServices(builder.Services);
 
-            // Map the controllers for routing
-            app.MapControllers();
+                // Swagger configuration for API documentation
+                builder.Services.AddEndpointsApiExplorer();
+                builder.Services.AddSwaggerGen();
 
-            // Start the application
-            app.Run();
+                var app = builder.Build();
 
-            // Seed the database with initial data
-            void SeedDatabase()
-            {
-                using (var scope = app.Services.CreateScope())
+                // Configure the HTTP request pipeline.
+                if (app.Environment.IsDevelopment())
                 {
-                    var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitilizer>();
-                    dbInitializer.Initialize();
+                    app.UseDeveloperExceptionPage();
+                    app.UseSwagger();
+                    app.UseSwaggerUI();
+                }
+
+
+
+
+                app.UseStaticFiles();
+
+
+
+                // Add authentication and authorization middleware
+                app.UseAuthentication();
+                app.UseAuthorization();
+
+                // Seed the database on application startup
+                SeedDatabase();
+
+                // Map the controllers for routing
+                app.MapControllers();
+
+                // Start the application
+                app.Run();
+
+                // Seed the database with initial data
+                void SeedDatabase()
+                {
+                    using (var scope = app.Services.CreateScope())
+                    {
+                        var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitilizer>();
+                        dbInitializer.Initialize();
+                    }
                 }
             }
         }

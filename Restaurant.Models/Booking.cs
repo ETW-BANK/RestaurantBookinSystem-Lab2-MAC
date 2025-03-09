@@ -36,7 +36,7 @@ namespace Restaurant.Models
         
         [ForeignKey(nameof(menueId))]
 
-        public Menue Menue { get; set; }
+        public category Menue { get; set; }
         public BookingStatus BookingStatus { get; set; }    
     }
 

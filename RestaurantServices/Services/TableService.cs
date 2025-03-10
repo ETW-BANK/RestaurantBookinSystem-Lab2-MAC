@@ -48,21 +48,6 @@ namespace Restaurant.Data.Access.Repository.Services
 
 
 
-
-
-
-        //public void DeleteTable(int id)
-        //{
-        //    var table = _unitOfWork.TableRepository.GetFirstOrDefault(t => t.Id == id);
-        //    if (table == null)
-        //    {
-        //        throw new Exception("Table not found");
-        //    }
-
-        //    _unitOfWork.TableRepository.Remove(table);
-        //    _unitOfWork.Save();
-        //}
-
        
 
         public Tables GetById(int id)

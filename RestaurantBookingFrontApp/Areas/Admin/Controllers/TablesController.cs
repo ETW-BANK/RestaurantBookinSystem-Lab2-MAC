@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Restaurant.Data.Access.Repository.Services.IServices;
 using Restaurant.Utility;
 using RestaurantViewModels;
 using System.Text;
@@ -11,122 +12,116 @@ namespace RestaurantBookingApp.Areas.Admin.Controllers
     [Authorize(Roles = StaticData.Role_Admin)]
     public class TablesController : Controller
     {
-        private readonly HttpClient _httpClient;
+        private readonly ITableService _tableservice;
 
-        public TablesController(HttpClient httpClient)
+        public TablesController(ITableService tableService)
         {
-            _httpClient = httpClient;
-            _httpClient.BaseAddress = new Uri("https://localhost:44307/api/Table/");
+            _tableservice = tableService;
         }
-
-        [HttpGet]
-        public IActionResult Index() => View();
-
-        [HttpGet]
-        public async Task<IActionResult> GetAllTables()
+        public IActionResult Index()
         {
-            var response = await _httpClient.GetAsync("GetAllTables");
 
-            if (response.IsSuccessStatusCode)
+
+            var tablesList = _tableservice.GetAllTables();  
+
+
+            if (tablesList == null)
             {
-                var data = await response.Content.ReadAsStringAsync();
-                var serviceResponse = JsonConvert.DeserializeObject<List<TablesVM>>(data);
 
-                return Json(new { data = serviceResponse });
+                TempData["error"] = "An error occurred while retrieving categories.";
             }
 
-            return Json(new { data = new List<TablesVM>(), error = "Unable to retrieve Tables from the server." });
+
+            return View(tablesList);
         }
 
-        [HttpGet]
-        public IActionResult Create()
-        {
-            ViewBag.PageTitle = "Create Table";
-            ViewBag.ButtonLabel = "Create";
 
-            return View(new TablesVM());
+        public IActionResult Upsert(int id)
+        {
+           TablesVM tableVm = new();
+
+            if (id == 0)
+            {
+
+                return View(tableVm);
+            }
+            else
+            {
+                
+                var tables = _tableservice.GetById(id);
+                if (tables== null)
+                {
+                    return NotFound();
+                }
+
+               tableVm.Id = tables.Id;
+              tableVm.TableNumber = tables.TableNumber;
+                tableVm.NumberOfSeats= tables.NumberOfSeats;
+                tableVm.IsAvailable = tables.IsAvailable; 
+               
+
+                return View(tableVm);
+            }
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(TablesVM table)
+        public async Task<IActionResult> Upsert(TablesVM tableVM)
         {
-            var content = new StringContent(JsonConvert.SerializeObject(table), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync("CreateNewTable", content);
 
-            if (response.IsSuccessStatusCode)
+            try
             {
-                TempData["success"] = "Table Created successfully";
+                if (tableVM.Id == 0)
+                {
+                    // Create mode
+                     _tableservice.CreateTable(tableVM);
+                    TempData["success"] = "Table created successfully.";
+                }
+                else
+                {
+
+                   _tableservice.UpdateTable(tableVM);
+
+                    TempData["success"] = "Table updated successfully.";
+                }
+
                 return RedirectToAction(nameof(Index));
             }
-
-            return View(table);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Edit(int id)
-        {
-            var response = await _httpClient.GetAsync($"GetTable/{id}");
-            if (response.IsSuccessStatusCode)
+            catch (Exception ex)
             {
-                var data = await response.Content.ReadAsStringAsync();
-                var tableResponse = JsonConvert.DeserializeObject<TablesVM>(data);
-
-                ViewBag.PageTitle = "Edit Table";
-                ViewBag.ButtonLabel = "Update";
-
-                if (tableResponse != null)
-                {
-                    return View("Create", tableResponse); 
-                }
+                TempData["error"] = $"An error occurred: {ex.Message}";
+                return View(tableVM);
             }
-
-            return View("Error");
         }
 
-
-       [HttpPost]
-    public async Task<IActionResult> Edit(TablesVM table)
-    {
-    var content = new StringContent(JsonConvert.SerializeObject(table), Encoding.UTF8, "application/json");
-    var response = await _httpClient.PutAsync("Update", content);
-
-    if (response.IsSuccessStatusCode)
-    {
-        TempData["success"] = "Table Info Updated successfully";
-        return RedirectToAction(nameof(Index));
-    }
-
-    return View("Create", table); 
-}
 
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var response = await _httpClient.GetAsync($"GetTable/{id}");
-            if (response.IsSuccessStatusCode)
-            {
-                var data = await response.Content.ReadAsStringAsync();
-                var serviceResponse = JsonConvert.DeserializeObject<TablesVM>(data);
-                if (serviceResponse != null)
-                {
-                    return View(serviceResponse);
-                }
-            }
+        if ( id == 0) return NotFound();
 
-            return View("Error");
-        }
+        var table = _tableservice.GetById(id);
+            if (table == null) return NotFound();
 
-        [HttpPost]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        return View(table);
+          }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeletePost(int id)
         {
-            var response = await _httpClient.DeleteAsync($"DeleteTable/{id}");
-            if (response.IsSuccessStatusCode)
+            var table= _tableservice.GetById(id);
+
+            if (table == null)
+
             {
-                TempData["success"] = "Table Deleted successfully";
+
+                TempData["error"] = "Table not found.";
                 return RedirectToAction(nameof(Index));
             }
 
-            return View("Error");
+            _tableservice.DeleteTable(table);
+            TempData["success"] = "Table deleted successfully!";
+            return RedirectToAction(nameof(Index));
         }
     }
 }

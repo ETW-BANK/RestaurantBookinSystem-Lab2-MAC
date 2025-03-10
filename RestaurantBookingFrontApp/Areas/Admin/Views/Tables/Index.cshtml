@@ -1,40 +1,81 @@
-﻿@model IEnumerable<RestaurantViewModels.TablesVM>
+﻿@model IEnumerable<TablesVM>
 
-@{
-    ViewData["Title"] = "GetAllTables";
-}
-
-<div class="card shadow border-0 my-4">
+<div class="card shadow border-0 mt-4">
     <div class="card-header bg-secondary bg-gradient mt-0 py-3">
-        <h4 class="text-center text-white mb-0">Tables List</h4>
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Table List</h2>
+
+            </div>
+
+        </div>
     </div>
     <div class="card-body p-4">
-        <div class="row pb-3">
+
+        <div class="row pb-3 ">
             <div class="col-6">
             </div>
+
             <div class="col-6 text-end">
-                <a asp-controller="Tables" asp-area="Admin" asp-action="Create" class="btn btn-primary">
+
+                <a asp-controller="Tables" asp-action="Upsert" class="btn btn-primary">
                     <i class="bi bi-plus-circle"></i> Create New Table
                 </a>
+
             </div>
         </div>
 
-        <div class="table-responsive">
-            <table id="tblData" class="table table-hover table-bordered table-striped text-center" width="100%">
-                <thead class="table-dark">
-                    <tr>
-                        <th class="text-center small">Table Number</th>
-                        <th class="text-center small">Number Of Seats</th>
-                        <th class="text-center small">Is Available</th>
-                        <th class="text-center small">Action</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
+
+        <table class="table table-bordered table-striped">
+
+            <thead>
+                <tr>
+                    <th> ID</th>
+                    <th> Table Number</th>
+                    <th> Number Of Seats</th>
+                    <th> Is Available</th>
+                    <th> Action</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @if (Model != null)
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+
+
+                            <td>@item.Id</td>
+                            <td>@item.TableNumber</td>
+                            <td>@item.NumberOfSeats</td>
+                            <td>@item.IsAvailable</td>
+
+                            <td>
+
+                                <div class="w-75 btn-group" role="group">
+
+                                    <a asp-controller="Tables" asp-action="Upsert" asp-route-id="@item.Id" class="btn btn-primary mx-2">
+                                        <i class="bi bi-pencil-square"></i> Edit
+                                    </a>
+
+                                    <a asp-controller="Tables" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger mx-2">
+                                        <i class="bi bi-trash-fill"></i> Delete
+                                    </a>
+                                </div>
+
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <p>No data available.</p>
+                }
+
+
+            </tbody>
+        </table>
+
     </div>
 </div>
-
-@section Scripts {
-    <script src="~/js/TableList.js"></script>
-}

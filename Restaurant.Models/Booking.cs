@@ -32,11 +32,11 @@ namespace Restaurant.Models
         public ApplicationUser ApplicationUser { get; set; }
 
 
-        public int menueId { get; set; }   
+        //public int menueId { get; set; }   
         
-        [ForeignKey(nameof(menueId))]
+        //[ForeignKey(nameof(menueId))]
 
-        public category Menue { get; set; }
+        //public category Menue { get; set; }
         public BookingStatus BookingStatus { get; set; }    
     }
 

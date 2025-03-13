@@ -1,4 +1,5 @@
-﻿using Restaurant.Models;
+﻿using Microsoft.AspNetCore.Http;
+using Restaurant.Models;
 using RestaurantViewModels;
 
 
@@ -6,9 +7,9 @@ namespace RestaurantServices.Services.IServices
 {
     public interface IBookingService
     {
-        void CreateBooking(BookingVM booking);
+        Task CreateBookingAsync(BookingVM bookingVM);
 
-        Task<IEnumerable<BookingVM>> GetBookingsAsync();
+        Task <IEnumerable<BookingVM>> GetBookingsAsync();
 
         Booking DeleteBooking(Booking booking);
 

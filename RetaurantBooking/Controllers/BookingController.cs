@@ -1,9 +1,7 @@
 ﻿
 using Microsoft.AspNetCore.Mvc;
-using Restaurant.Data.Access.Repository.IRepository;
 using RestaurantServices.Services.IServices;
 using RestaurantViewModels;
-using System.Net.Http;
 using System.Security.Claims;
 
 namespace RetaurantBooking.Controllers
@@ -30,14 +28,14 @@ namespace RetaurantBooking.Controllers
 
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
+            bookingVM.ApplicationUserId = userId;
 
             if (bookingVM == null)
             {
                 return BadRequest("Invalid booking details.");
             }
-
-            _bookingService.CreateBooking(bookingVM);
+            
+            await _bookingService.CreateBookingAsync(bookingVM);
 
             return Ok(new { message = "Booking created successfully." });
         }
@@ -48,7 +46,7 @@ namespace RetaurantBooking.Controllers
         {
             try
             {
-                var bookings = await _bookingService.GetBookingsAsync();
+                var bookings = _bookingService.GetBookingsAsync();
                 return Ok(bookings);
             }
             catch (Exception ex)

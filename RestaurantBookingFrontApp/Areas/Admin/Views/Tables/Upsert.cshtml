@@ -40,8 +40,11 @@
                         </div>
 
                         <div class="form-floating py-2 col-12">
-                            <input asp-for="IsAvailable" class="form-control border-0 shadow" />
-                            <label asp-for="IsAvailable" class="ms-2 "></label>
+                            <select asp-for="IsAvailable" class="form-control border-0 shadow">
+                                <option value="true">Yes</option>
+                                <option value="false">No</option>
+                            </select>
+                            <label asp-for="IsAvailable" class="ms-2"></label>
                             <span asp-validation-for="IsAvailable" class="text-danger"></span>
                         </div>
                        

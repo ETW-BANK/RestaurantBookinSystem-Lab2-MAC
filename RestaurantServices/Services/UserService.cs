@@ -20,7 +20,7 @@ namespace RestaurantServices.Services
 
         }
 
-        public async Task<List<UserVm>> GetAllUsers()
+        public async Task<IEnumerable<UserVm>> GetAllUsers()
         {
            
             var usersList = _unitOfWork.ApplicationUserRepository.GetAll().ToList();

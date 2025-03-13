@@ -9,7 +9,7 @@ namespace RestaurantServices.Services.IServices
   public interface IUserService
     {
 
-        Task<List<UserVm>> GetAllUsers();
+        Task<IEnumerable<UserVm>> GetAllUsers();
 
         UserVm GetUser(string id);
 

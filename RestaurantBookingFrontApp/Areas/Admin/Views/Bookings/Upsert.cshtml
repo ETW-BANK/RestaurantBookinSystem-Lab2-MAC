@@ -34,11 +34,11 @@
                             <span asp-validation-for="BookingTime" class="text-danger"></span>
                         </div>
 
-                        <div class="form-floating py-2 col-12">
+                       @*  <div class="form-floating py-2 col-12">
                             <input asp-for="TableNumber" class="form-control border-0 shadow" />
                             <label asp-for="TableNumber" class="ms-2"></label>
                             <span asp-validation-for="TableNumber" class="text-danger"></span>
-                        </div>
+                        </div> *@
 
                         <div class="form-floating py-2 col-12">
                             <input asp-for="NumberOfGuests" class="form-control border-0 shadow" />
@@ -50,24 +50,24 @@
                             <input asp-for="Phone" class="form-control border-0 shadow" />
                             <label asp-for="Phone" class="ms-2"></label>
                             <span asp-validation-for="Phone" class="text-danger"></span>
-                        </div>
+                        </div> 
 
-                        <div class="form-floating py-2 col-12">
+                      <div class="form-floating py-2 col-12">
                             <input asp-for="Email" class="form-control border-0 shadow" />
                             <label asp-for="Email" class="ms-2"></label>
                             <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
 
-                        <div class="form-floating py-2 col-12">
+                      @*   <div class="form-floating py-2 col-12">
                             <select asp-for="BookingStatus" class="form-control border-0 shadow">
                                 <option value="Active">Active</option>
                                 <option value="Cancelled">Cancelled</option>
                             </select>
                             <label asp-for="BookingStatus" class="ms-2"></label>
                             <span asp-validation-for="BookingStatus" class="text-danger"></span>
-                        </div>
+                        </div> *@
 
-                    
+
 
                         <div class="row pt-2">
                             <div class="col-6 col-md-3">
@@ -88,7 +88,7 @@
                     </div>
                 </div>
 
-              
+
             </div>
         </form>
     </div>

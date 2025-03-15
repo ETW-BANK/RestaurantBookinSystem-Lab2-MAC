@@ -1,5 +1,4 @@
 ﻿
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Restaurant.Data.Access.Repository.IRepository;
 using Restaurant.Data.Access.Repository.Services.IServices;
 using Restaurant.Models;
@@ -19,8 +18,6 @@ namespace Restaurant.Data.Access.Repository.Services
             _unitOfWork = unitOfWork;
       
         }
-
-
 
         public void CreateTable(TablesVM tableVM)
         {
@@ -48,8 +45,6 @@ namespace Restaurant.Data.Access.Repository.Services
 
 
 
-       
-
         public Tables GetById(int id)
         {
             var table = _unitOfWork.TableRepository.GetFirstOrDefault(u => u.Id == id);
@@ -73,7 +68,6 @@ namespace Restaurant.Data.Access.Repository.Services
             _unitOfWork.TableRepository.UpdateTable(existingTable);
             _unitOfWork.SaveAsync();
         }
-
 
 
         public Tables DeleteTable(Tables table)

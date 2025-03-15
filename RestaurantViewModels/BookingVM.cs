@@ -22,20 +22,20 @@ namespace RestaurantViewModels
 
             [Required]
             public string ApplicationUserId { get; set; }
-
+            public ApplicationUser applicationUser { get; set; }
             [Required]
             public int TableNumber { get; set; }
 
             [Required]
-            public string Name { get; set; }
+            public string? Name { get; set; }
 
             [Required]
     
-            public string Phone { get; set; }
+            public string? Phone { get; set; }
 
             [Required]
             [EmailAddress]
-            public string Email { get; set; }
+            public string? Email { get; set; }
 
             [Required]
             public BookingStatus BookingStatus { get; set; }

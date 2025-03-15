@@ -19,42 +19,51 @@ namespace RestaurantServices.Services
 
         public async Task CreateBookingAsync(BookingVM bookingVM)
         {
+           
             if (!TimeSpan.TryParse(bookingVM.BookingTime, out var bookingTime))
             {
                 throw new ArgumentException("Invalid booking time format. Expected format: HH:mm.");
             }
 
-            var availableTable = _unitOfWork.TableRepository.GetFirstOrDefault(t => t.IsAvailable && t.NumberOfSeats >= bookingVM.NumberOfGuests);
-            if (availableTable == null)
-            {
-                throw new InvalidOperationException("No available tables that match the number of guests.");
-            }
-
-      
             if (bookingVM.NumberOfGuests <= 0)
             {
                 throw new ArgumentException("Number of guests must be greater than zero.");
             }
 
+           
+            var availableTables = _unitOfWork.TableRepository
+                .GetAll(t => t.IsAvailable && t.NumberOfSeats >= bookingVM.NumberOfGuests)
+                .ToList();
+
+       
+            if (availableTables.Count==0)
+            {
+                throw new InvalidOperationException("No available tables at this time.");
+            }
+           
+            var availableTable = availableTables.First();
+
+      
             if (bookingVM.NumberOfGuests > availableTable.NumberOfSeats)
             {
                 throw new ArgumentException("Number of guests exceeds the seating capacity of the selected table.");
             }
 
-         
+
             var booking = new Booking
             {
                 BookingDate = DateOnly.FromDateTime(bookingVM.BookingDate),
+                ApplicationUser = new ApplicationUser { Name = bookingVM.Name, PhoneNumber = bookingVM.Phone, Email = bookingVM.Email },
                 BookingTime = bookingTime,
                 NumberOfGuests = bookingVM.NumberOfGuests,
                 ApplicationUserId = bookingVM.ApplicationUserId,
                 TableId = availableTable.Id,
                 BookingStatus = BookingStatus.Active,
+             
             };
 
+       
             _unitOfWork.BookingRepository.Add(booking);
-
-          
             await _unitOfWork.SaveAsync();
         }
 
@@ -82,52 +91,75 @@ namespace RestaurantServices.Services
         }
 
 
-        public Booking GetSinle(int bookingId)
+        public BookingVM GetSingle(int id)
         {
-            var booking = _unitOfWork.BookingRepository.GetFirstOrDefault(x => x.Id == bookingId, includeProperties: "ApplicationUser,Tables");
+            var booking = _unitOfWork.BookingRepository.GetFirstOrDefault(
+    x => x.Id == id, includeProperties: "ApplicationUser");
 
             if (booking == null)
             {
-                throw new Exception("Booking not found.");
+                return null; 
             }
-            var existingbooking = new BookingVM
+
+            var bookingVM = new BookingVM
             {
-                BookingId = bookingId,
-                BookingDate = booking.BookingDate.ToDateTime(TimeOnly.MinValue),
-                BookingTime = booking.BookingTime.ToString(@"hh\:mm"),
+                BookingId = booking.Id,
+                BookingDate = booking.BookingDate.ToDateTime(TimeOnly.MinValue), 
+                BookingTime = booking.BookingTime.ToString(), 
+                TableNumber = booking.TableId, 
                 NumberOfGuests = booking.NumberOfGuests,
-                TableNumber = booking.Tables.TableNumber,
+                BookingStatus = booking.BookingStatus,
                 ApplicationUserId = booking.ApplicationUserId,
-                Name = booking.ApplicationUser.Name,
-                Email = booking.ApplicationUser.Email,
-                Phone = booking.ApplicationUser.PhoneNumber,
+                Name=booking.ApplicationUser.Name,
+                Phone=booking.ApplicationUser.PhoneNumber,
+                Email=booking.ApplicationUser.Email
+                
             };
 
-            return booking;
-
-        }
-
-        public Booking DeleteBooking(Booking booking)
-        {
-            booking = _unitOfWork.BookingRepository.GetFirstOrDefault(x => x.Id == booking.Id);
-
-            if (booking == null)
+         
+            if (booking.ApplicationUser != null)
             {
-                throw new Exception("Booking not found.");
+                bookingVM.applicationUser = new ApplicationUser
+                {
+                    Name = booking.ApplicationUser.Name,
+                    PhoneNumber = booking.ApplicationUser.PhoneNumber,
+                    Email=booking.ApplicationUser.Email
+                    
+                };
             }
 
-            var table = _unitOfWork.TableRepository.GetFirstOrDefault(x => x.Id == booking.TableId);
+            return bookingVM;
+        }
 
+
+        public async Task<Booking> DeleteBooking(Booking booking)
+        {
+            if (booking == null)
+            {
+                throw new ArgumentNullException(nameof(booking), "Booking cannot be null.");
+            }
+
+            var existingBooking = _unitOfWork.BookingRepository.GetFirstOrDefault(x => x.Id == booking.Id);
+            if (existingBooking == null)
+            {
+                throw new InvalidOperationException("Booking not found.");
+            }
+
+          
+            var table = _unitOfWork.TableRepository.GetFirstOrDefault(x => x.Id == existingBooking.TableId);
             if (table != null)
             {
                 table.IsAvailable = true;
-                _unitOfWork.TableRepository.UpdateTable(table);
+                _unitOfWork.TableRepository.UpdateTable(table); 
             }
 
-            _unitOfWork.BookingRepository.Remove(booking);
-            _unitOfWork.SaveAsync();
+        
+            _unitOfWork.BookingRepository.Remove(existingBooking);
 
-            return booking;
+        
+            await _unitOfWork.SaveAsync();
+
+            return existingBooking;
         }
         public Booking CancelBooking(Booking booking)
         {
@@ -148,8 +180,8 @@ namespace RestaurantServices.Services
                 table.IsAvailable = true;
                 _unitOfWork.TableRepository.UpdateTable(table);
             }
-          
-
+           
+         
 
             booking.BookingStatus = BookingStatus.Cancelled;
             _unitOfWork.BookingRepository.UpdateBooking(booking);
@@ -184,6 +216,26 @@ namespace RestaurantServices.Services
             }).ToList();
         }
 
-       
+        public void Update(BookingVM booking)
+        {
+            var existingbooking= _unitOfWork.BookingRepository.GetFirstOrDefault(x => x.Id == booking.BookingId);
+
+            if (existingbooking == null)
+            {
+                throw new Exception("Booking not found");
+            }
+
+
+           existingbooking.Id = booking.BookingId;
+            existingbooking.BookingDate = DateOnly.FromDateTime(booking.BookingDate);
+            existingbooking.BookingTime = TimeSpan.Parse(booking.BookingTime);
+            existingbooking.NumberOfGuests = booking.NumberOfGuests;
+            existingbooking.ApplicationUserId = booking.ApplicationUserId;
+            existingbooking.BookingStatus = booking.BookingStatus;
+
+
+            _unitOfWork.BookingRepository.UpdateBooking(existingbooking);
+            _unitOfWork.SaveAsync();
+        }
     }
 }

@@ -58,7 +58,7 @@ namespace RetaurantBooking.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetSingleBooking(int id)
         {
-            var booking = _bookingService.GetSinle(id);
+            var booking = _bookingService.GetSingle(id);
             if (booking == null)
             {
                 return NotFound("Booking Not Found");
@@ -69,32 +69,31 @@ namespace RetaurantBooking.Controllers
         [HttpDelete("{bookingId}")]
         public async Task<IActionResult> DeleteBooking(int bookingId)
         {
-            var bookingToDelete = _bookingService.GetSinle(bookingId);
+            var bookingToDelete = _bookingService.GetSingle(bookingId);
 
             if (bookingToDelete == null)
             {
                 return NotFound("Booking not found.");
             }
 
-
-            _bookingService.DeleteBooking(bookingToDelete);
-
-            return Ok("Booking deleted successfully.");
+            return Ok(bookingToDelete);
         }
 
-        [HttpPost("{bookingId}")]
-        public async Task<IActionResult> UpdateBooking(int bookingId)
-        {
-            var bookingToCancel = _bookingService.GetSinle(bookingId);
 
-            if (bookingToCancel == null)
+
+        [HttpPost("{bookingId}")]
+        public async  Task<IActionResult> UpdateBooking(int bookingId)
+        {
+            var bookingToUpdate = _bookingService.GetSingle(bookingId);
+
+            if (bookingToUpdate == null)
             {
                 return NotFound("Booking not found.");
             }
 
-            _bookingService.CancelBooking(bookingToCancel);
+            _bookingService.Update(bookingToUpdate);
 
-            return Ok("Booking Cancelled successfully.");
+            return Ok("Booking Updated successfully.");
         }
 
 
@@ -112,9 +111,6 @@ namespace RetaurantBooking.Controllers
 
             return Ok(result);
         } 
-
-
-      
 
 
     }

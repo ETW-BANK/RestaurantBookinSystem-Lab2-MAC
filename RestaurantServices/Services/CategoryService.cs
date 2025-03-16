@@ -67,30 +67,7 @@ namespace Restaurant.Services
             await _unitOfWork.SaveAsync();
         }
 
-        public Category DeleteCategory(Category category)
-        {
-           
-
-            category = _unitOfWork.CategoryRepository.GetFirstOrDefault(x=>x.Id==category.Id);
-
-            if (category == null)
-            {
-                throw new Exception("Category not found.");
-            }
-
-            string wwwRootPath = _webHostEnvironment.WebRootPath;
-            if (!string.IsNullOrEmpty(category.ImageUrl))
-            {
-                string oldPath = Path.Combine(wwwRootPath, category.ImageUrl.TrimStart('\\'));
-                if (System.IO.File.Exists(oldPath))
-                    System.IO.File.Delete(oldPath);
-            }
-
-            _unitOfWork.CategoryRepository.Remove(category);
-            _unitOfWork.SaveAsync();
-
-            return category;
-        }
+      
 
         public async Task< IEnumerable<CategoryVM>> GetAll()
         {
@@ -151,6 +128,44 @@ namespace Restaurant.Services
                 _unitOfWork.CategoryRepository.Update(existingcateogry);
                 _unitOfWork.SaveAsync();
             }
+        }
+
+        public async Task<Category> DeleteCategory(Category category)
+        {
+           
+            category = _unitOfWork.CategoryRepository.GetFirstOrDefault(
+                x => x.Id == category.Id,
+                includeProperties: "Menues" 
+            );
+
+            if (category == null)
+            {
+                throw new Exception("Category not found.");
+            }
+
+            string wwwRootPath = _webHostEnvironment.WebRootPath;
+            if (!string.IsNullOrEmpty(category.ImageUrl))
+            {
+                string oldPath = Path.Combine(wwwRootPath, category.ImageUrl.TrimStart('\\'));
+                if (System.IO.File.Exists(oldPath))
+                {
+                    System.IO.File.Delete(oldPath);
+                }
+            }
+
+         
+            if (category.Menues != null && category.Menues.Any())
+            {
+                _unitOfWork.MenuRepository.RemoveRange(category.Menues);
+            }
+
+        
+            _unitOfWork.CategoryRepository.Remove(category);
+
+           
+            await _unitOfWork.SaveAsync();
+
+            return category;
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Restaurant.Services
 
         Task CreateCategory(CategoryVM category, IFormFile? file);
 
-       Category DeleteCategory(Category category);
+        Task<Category> DeleteCategory(Category category);
 
 
     }

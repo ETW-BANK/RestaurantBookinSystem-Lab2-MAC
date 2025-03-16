@@ -52,7 +52,7 @@ namespace RestaurantBookingFrontApp.Controllers
             }
             else
             {
-                // Edit mode
+                
                 var category = _categoryService.GetById(id);
                 if (category == null)
                 {
@@ -76,7 +76,7 @@ namespace RestaurantBookingFrontApp.Controllers
             {
                 if (categoryVM.Id == 0)
                 {
-                    // Create mode
+                  
                     await _categoryService.CreateCategory(categoryVM,file);
                     TempData["success"] = "Category created successfully.";
                 }
@@ -109,19 +109,22 @@ namespace RestaurantBookingFrontApp.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeletePost(int? id)
+        public async Task<IActionResult> DeletePost(int? id)
         {
-            var category = _categoryService.GetById(id);
-
-            if (category == null) 
-            
-           {
-
+            if (id == null || id == 0)
+            {
                 TempData["error"] = "Category not found.";
                 return RedirectToAction(nameof(Index));
             }
 
-            _categoryService.DeleteCategory(category);
+            var category = _categoryService.GetById(id);
+
+            if (category == null)
+            {
+                TempData["error"] = "Category not found.";
+                return RedirectToAction(nameof(Index));
+            }
+           await _categoryService.DeleteCategory(category); 
             TempData["success"] = "Category deleted successfully!";
             return RedirectToAction(nameof(Index));
         }

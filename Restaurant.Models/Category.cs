@@ -15,7 +15,8 @@ namespace Restaurant.Models
         public int DisplayOrder { get; set; }
 
         [ValidateNever]
-        public string? ImageUrl { get; set; }    
+        public string? ImageUrl { get; set; }
+        public ICollection<Menue>? Menues { get; set; }
 
     }
 }

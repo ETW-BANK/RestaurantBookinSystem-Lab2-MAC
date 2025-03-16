@@ -48,7 +48,7 @@ namespace RestaurantBookingFrontApp.Areas.Customer
             else
             {
                 var bookings = _bookingService.GetSingle(id);
-                if (bookings == null) // Check if bookings is null
+                if (bookings == null) 
                 {
                     return NotFound();
                 }

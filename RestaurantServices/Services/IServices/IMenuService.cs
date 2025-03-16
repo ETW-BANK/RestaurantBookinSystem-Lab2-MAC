@@ -10,12 +10,12 @@ namespace RestaurantServices.Services.IServices
         Task<List<Menue>> GetAll();
 
         Task<MenuVM?> GetbyId(int? id);
-
+        Menue GetMenuById(int? id);
         Task Update(MenuVM menu, IFormFile? file);
 
 
         Task CreateMenue(MenuVM menueVM, IFormFile? file);
 
-       void DeleteMenue(int? id);    
+        Menue DeleteMenu(Menue menu);
     }
 }

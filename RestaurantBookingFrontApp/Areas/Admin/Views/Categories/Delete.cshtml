@@ -10,9 +10,9 @@
     </div>
     <div class="card-body p-4">
         <form method="post" class="row">
-            <input asp-for="Id" hidden /> <!-- Ensure the ID is passed to the POST action -->
+            <input asp-for="Id" hidden /> 
             <div class="border p-3">
-                <!-- Disabled fields for Name and DisplayOrder -->
+              
                 <div class="form-floating py-2 col-12">
                     <input asp-for="Name" disabled class="form-control border-0 shadow" />
                     <label asp-for="Name" class="ms-2"></label>
@@ -24,7 +24,6 @@
                 </div>
 
 
-                <!-- Buttons for Delete and Back to List -->
                 <div class="row pt-2">
                     <div class="col-6 col-md-3">
                         <button type="submit" class="btn btn-danger form-control">Delete</button>

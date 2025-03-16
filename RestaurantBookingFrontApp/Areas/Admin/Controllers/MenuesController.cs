@@ -89,7 +89,7 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
         {
             if (id == null || id == 0) return NotFound();
 
-            var menu = _menuService.GetbyId(id);
+            var menu = _menuService.GetMenuById(id);
             if (menu == null) return NotFound();
 
             return View(menu);
@@ -97,10 +97,10 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeletePost(Menue menue)
+        public IActionResult DeletePost(int?id)
         {
-            var menu = _menuService.GetbyId(menue.menueId);
-            if (menu.Id == null)
+            var menu = _menuService.GetMenuById(id);
+            if (menu.menueId == null)
             {
                 TempData["error"] = "Invalid menu ID.";
                 return RedirectToAction(nameof(Index));
@@ -109,7 +109,7 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
 
             try
             {
-                _menuService.DeleteMenue(menu.Id);
+                _menuService.DeleteMenu(menu);
                 TempData["success"] = "Menu deleted successfully!";
             }
             catch (Exception ex)

@@ -178,31 +178,37 @@ namespace RestaurantServices.Services
 
        
 
-        public void DeleteMenue(int? id)
-        {
-            var menutodelete = _unitOfWork.MenuRepository.GetFirstOrDefault(x => x.menueId == id);
+      
 
-            if (menutodelete == null)
+        public Menue GetMenuById(int? id)
+        {
+            var menue = _unitOfWork.MenuRepository.GetFirstOrDefault(c => c.menueId == id);
+
+            return menue;
+        }
+
+        public Menue DeleteMenu(Menue menu)
+        {
+            menu= _unitOfWork.MenuRepository.GetFirstOrDefault(x => x.menueId == menu.menueId);
+
+            if (menu == null)
             {
-                throw new Exception("Menu not found.");
+                throw new Exception("Category not found.");
             }
 
             string wwwRootPath = _webHostEnvironment.WebRootPath;
-            if (!string.IsNullOrEmpty(menutodelete.ImageUrl))
+            if (!string.IsNullOrEmpty(menu.ImageUrl))
             {
-                string oldPath = Path.Combine(wwwRootPath, menutodelete.ImageUrl.TrimStart('\\'));
-
+                string oldPath = Path.Combine(wwwRootPath, menu.ImageUrl.TrimStart('\\'));
                 if (System.IO.File.Exists(oldPath))
                     System.IO.File.Delete(oldPath);
             }
 
-            _unitOfWork.MenuRepository.Remove(menutodelete);
+            _unitOfWork.MenuRepository.Remove(menu);
             _unitOfWork.SaveAsync();
 
-          
+            return menu;
         }
-
-      
     }
 
     }

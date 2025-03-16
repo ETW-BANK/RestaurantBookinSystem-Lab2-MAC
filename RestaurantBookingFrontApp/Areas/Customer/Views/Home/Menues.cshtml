@@ -1,0 +1,64 @@
+﻿@model IEnumerable<Menue>
+
+
+<div class="row pb-3">
+
+    @foreach (var item in Model)
+    {
+
+        <div class="col-lg-3 col-sm-6">
+
+            <div class="row p-2">
+
+                <div class="col-12 p-1">
+
+                    <div class="card border-0 p-3 shadow border-top border-5 rounded">
+
+
+                        <img src="@item.ImageUrl" class="card-img-top rounded " alt="@item.ImageUrl" />
+
+                        <div class="card-body pb-0">
+
+                            <div class="pl-1">
+
+                                <p class="card-title text-warning  opacity-75 text-uppercase text-center">@item.Name</p>
+
+                            </div>
+
+                            <div class="pl-1">
+
+                                <p class="card-title text-dark opacity-75 text-uppercase text-center">@item.Description</p>
+
+                            </div>
+
+                            <div class="pl-1">
+
+                                <p class="card-title text-info  opacity-75 text-uppercase text-center">Price:<span>@item.Price</span></p>
+
+                            </div>
+
+
+                        </div>
+
+                        <div>
+
+                            <a href="@Url.Action("Details",  new { menueId = item.menueId })" class="btn btn-primary bg-gradient border-0 form-control">Details</a>
+
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+    }
+
+
+</div>
+

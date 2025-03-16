@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Restaurant.Services;
 using RestaurantBookingFrontApp.Models;
+using RestaurantServices.Services.IServices;
 using RestaurantViewModels;
 using System.Diagnostics;
 
@@ -18,12 +19,14 @@ namespace RestaurantBookingFrontApp.Areas.Customer.Controllers
         private readonly ILogger<HomeController> _logger;
     
         private readonly ICategoryService _categoryService;
-        public HomeController(ILogger<HomeController> logger, ICategoryService categoryService)
+        private readonly IMenuService _menuService;
+        public HomeController(ILogger<HomeController> logger, ICategoryService categoryService,IMenuService menuService)
         {
             _logger = logger;
       
        
             _categoryService = categoryService;
+            _menuService = menuService; 
         }
 
         [HttpGet]
@@ -43,6 +46,18 @@ namespace RestaurantBookingFrontApp.Areas.Customer.Controllers
 
             return View(categorylist);
 
+        }
+        public async Task<IActionResult> Menues()
+        {
+            var menuelist = await _menuService.GetAll();
+
+            if (menuelist == null)
+            {
+                TempData["error"] = "No menus found.";
+                return View(menuelist);
+            }
+
+            return View(menuelist);
         }
 
 

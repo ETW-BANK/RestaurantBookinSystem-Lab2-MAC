@@ -43,6 +43,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\image\category\" />
+    <Folder Include="wwwroot\image\menu\" />
   </ItemGroup>
 
 </Project>

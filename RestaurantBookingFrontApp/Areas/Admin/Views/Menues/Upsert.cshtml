@@ -1,0 +1,93 @@
+﻿@model MenuVM
+
+<div class="card shadow border-0 my-4">
+    <div class="card-header bg-secondary bg-gradient mt-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2"> @(Model.Menue.menueId != 0 ? "Update" : "Create") Menu</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <form method="post" class="row" enctype="multipart/form-data">
+            <input asp-for="Menue.menueId" hidden />
+            <input asp-for="Menue.ImageUrl" hidden />
+
+            <div class="row">
+                <div class="col-10">
+                    <div class="border p-3">
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="Menue.Name" class="form-control border-0 shadow" />
+                            <label asp-for="Menue.Name" class="ms-2"></label>
+                            <span asp-validation-for="Menue.Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating py-2 col-12">
+                         <select asp-for="Menue.CategoryId" asp-items="@Model.CategoryList" class="form-control border-0 shadow">
+                                <option value="">-- Select Category --</option>
+                            </select>
+                            <label asp-for="Menue.CategoryId" class="ms-2"></label>
+                            <span asp-validation-for="Menue.CategoryId" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="Menue.Description" class="form-control border-0 shadow" />
+                            <label asp-for="Menue.Description" class="ms-2"></label>
+                            <span asp-validation-for="Menue.Description" class=" text-danger"></span>
+                        </div>
+
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="Menue.Price" class="form-control border-0 shadow" />
+                            <label asp-for="Menue.Price" class="ms-2"></label>
+                            <span asp-validation-for="Menue.Price" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="Menue.Qty" class="form-control border-0 shadow" />
+                            <label asp-for="Menue.Qty" class="ms-2"></label>
+                            <span asp-validation-for="Menue.Qty" class="text-danger"></span>
+                        </div>
+
+                        <!-- Dropdown for Available -->
+                        <div class="form-floating py-2 col-12">
+                            <select asp-for="Available" asp-items="Html.GetEnumSelectList<Available>()" class="form-control border-0 shadow">
+                                <option value="">-- Select Availability --</option>
+                            </select>
+                            <label asp-for="Available" class="ms-2"></label>
+                            <span asp-validation-for="Available" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating py-2 col-12">
+                            <input type="file" name="file" class="form-control border-0 shadow" />
+                            <label asp-for="Menue.ImageUrl" class="ms-2"></label>
+                        </div>
+
+                        <div class="row pt-2">
+                            <div class="col-6 col-md-3">
+                                @if (Model.Menue.menueId!= 0)
+                                {
+                                    <button type="submit" class="btn btn-primary form-control">Update</button>
+                                }
+                                else
+                                {
+                                    <button type="submit" class="btn btn-primary form-control">Create</button>
+                                }
+                            </div>
+
+                            <div class="col-6 col-md-3">
+                                <a asp-controller="Menues" asp-action="Index" class="btn btn-outline-primary border form-control">Back To List</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-2">
+                    <img src="@Model.Menue.ImageUrl" width="100%" style="border-radius:5px; border:1px solid #bbb9b9" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

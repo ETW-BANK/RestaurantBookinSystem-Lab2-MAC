@@ -54,6 +54,7 @@ namespace Restaurant.Services
 
             var newCategory = new Category
             {
+            
                 Name = category.Name,
                 DisplayOrder = category.DisplayOrder,
                 ImageUrl = category.ImageUrl
@@ -94,12 +95,13 @@ namespace Restaurant.Services
         public async Task< IEnumerable<CategoryVM>> GetAll()
         {
           
-            return  _unitOfWork.CategoryRepository.GetAll().Select(c => new CategoryVM()
+            return   _unitOfWork.CategoryRepository.GetAll().Select(c => new CategoryVM()
          {
              Id = c.Id,
              Name = c.Name,
              DisplayOrder = c.DisplayOrder,
-             ImageUrl = c.ImageUrl
+             ImageUrl = c.ImageUrl,
+            
             }).ToList();
 
 

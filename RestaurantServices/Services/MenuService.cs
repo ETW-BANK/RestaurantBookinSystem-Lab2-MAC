@@ -1,130 +1,212 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Restaurant.Data.Access.Repository.IRepository;
 using Restaurant.Models;
-using Restaurant.Utility;
 using RestaurantServices.Services.IServices;
 using RestaurantViewModels;
+using System;
+
 
 namespace RestaurantServices.Services
 {
     public class MenuService : IMenuService
     {
         private IUnitOfWork _unitOfWork;
-
-        public MenuService(IUnitOfWork unitOfWork)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public MenuService(IUnitOfWork unitOfWork,IWebHostEnvironment webHostEnvironment)
         {
-            _unitOfWork = unitOfWork;   
+            _unitOfWork = unitOfWork;
+            _webHostEnvironment = webHostEnvironment;
         }
-        public async Task CreateMenu(MenuVM menu)
+
+        public async Task<List<Menue>> GetAll()
         {
-            var category = _unitOfWork.CategoryRepository
-                                .GetFirstOrDefault(c => c.Name == menu.CategoryName);
+            var categoryList = _unitOfWork.CategoryRepository.GetAll()
+                .Select(i => new SelectListItem
+                {
+                    Text = i.Name,
+                    Value = i.Id.ToString()
+                }).ToList(); // Convert to List
 
-            if (category == null)
-                throw new Exception("Category not found");
+            var menus =  _unitOfWork.MenuRepository.GetAll(includeProperties:"Category").ToList(); // Ensure async retrieval
 
-            
-           
+            return menus;
+        }
 
-            var newMenu = new category
+
+        public async Task<MenuVM?> GetbyId(int? id)
+        {
+
+            MenuVM menueVM = new()
             {
-                Name = menu.Name,
-                Description = menu.Description,
-                Price = menu.Price,
-                Qty = menu.Qty,
-                Image = menu.Image, // Use the saved image path
-                CategoryId = category.Id,
-                Available = menu.Qty > 0 ? Available.Yes : Available.NO
+                CategoryList = _unitOfWork.CategoryRepository.GetAll().Select(u => new SelectListItem
+                {
+                    Text = u.Name,
+                    Value = u.Id.ToString()
+                }),
+
+               Menue = new Menue()
             };
 
-            _unitOfWork.MenuRepository.Add(newMenu);
-          await  _unitOfWork.SaveAsync();
-        }
-
-        public category DeleteMenu(category menu)
-        {
-            var menuToDelete = _unitOfWork.MenuRepository.GetFirstOrDefault(u => u.menueId == menu.menueId, includeProperties: "Category");    
-
-            if (menuToDelete == null)
+            if (id == null || id == 0)
             {
-                throw new Exception("Menu not found");
+                return menueVM;
+            }
+            else
+            {
+               menueVM.Menue = _unitOfWork.MenuRepository.GetFirstOrDefault(u => u.menueId == id);
+
+                return menueVM;
             }
 
-            _unitOfWork.MenuRepository.Remove(menuToDelete);
-             _unitOfWork.SaveAsync();
-
-            return menuToDelete;
 
         }
 
-        public IEnumerable<MenuVM> GetAllMenues()
+
+
+        public async Task Update(MenuVM menu, IFormFile? file)
         {
-           var menuList = _unitOfWork.MenuRepository.GetAll(includeProperties: "Category");
+            string wwwRootPath = _webHostEnvironment.WebRootPath;
 
-            var result = menuList.Select(m => new MenuVM
+            if (file != null)
             {
-                MenueId = m.menueId,    
-                Name = m.Name,
-                Description = m.Description,
-                Price = m.Price,
-                Qty = m.Qty,
-                Image = m.Image,
-                CategoryName = m.Category.Name,
-                AvailableStatus = m.Available.ToString()
-
-
-            }).ToList();
-
-            return result;    
-        }
-
-        public category GetById(int id)
-        {
-           var menu = _unitOfWork.MenuRepository.GetFirstOrDefault(u => u.menueId == id, includeProperties: "Category");
-
-            if (menu == null)
-            {
-                throw new Exception("Menu not found");
-            }
+    
+                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                string menuPath = Path.Combine(wwwRootPath, @"image\menu");
+          
+                if (!Directory.Exists(menuPath))
+                {
+                    Directory.CreateDirectory(menuPath);
+                }
                
-            return menu;   
+                if (!string.IsNullOrEmpty(menu.Menue.ImageUrl))
+                {
+                    var oldImagePath = Path.Combine(wwwRootPath, menu.Menue.ImageUrl.TrimStart('\\'));
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+                        System.IO.File.Delete(oldImagePath);
+                    }
+                }
+               
+                using (var fileStream = new FileStream(Path.Combine(menuPath, fileName), FileMode.Create))
+                {
+                    file.CopyTo(fileStream);
+                }
+          
+                menu.Menue.ImageUrl = @"\image\menu\" + fileName;
+            }
 
-           
+            var existingMenu = _unitOfWork.MenuRepository.GetFirstOrDefault(c => c.menueId == menu.Menue.menueId);
+
+            if (menu.Menue.menueId !=0 )
+            {
+            
+                existingMenu.Name = menu.Menue.Name;
+                existingMenu.Description = menu.Menue.Description;
+                existingMenu.ImageUrl = menu.Menue.ImageUrl;
+                existingMenu.Price = menu.Menue.Price;
+                existingMenu.Qty = menu.Menue.Qty;
+                existingMenu.Available = menu.Available;
+                existingMenu.CategoryId = menu.Menue.CategoryId;
+
+
+                _unitOfWork.MenuRepository.UpdateMenu(menu.Menue);
+
+             
+                await _unitOfWork.SaveAsync();
+            }
+            else
+            {
+                throw new InvalidOperationException("Menu not found.");
+            }
         }
-
-        public void UpdateMenu(MenuVM menu)
+        public async Task CreateMenue(MenuVM menueVM, IFormFile? file)
         {
-            var menueToUpdate = _unitOfWork.MenuRepository.GetFirstOrDefault(u => u.menueId == menu.MenueId);
-
-            if (menueToUpdate == null)
+            string wwwwRootPath = _webHostEnvironment.WebRootPath;
+            if (file != null)
             {
-                throw new Exception("Menu not found");
+                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                string menuPath = Path.Combine(wwwwRootPath, @"image\menu");
+
+                if (!Directory.Exists(menuPath))
+                {
+                    Directory.CreateDirectory(menuPath);
+                }
+
+                using (var fileStream = new FileStream(Path.Combine(menuPath, fileName), FileMode.Create))
+                {
+                    file.CopyTo(fileStream);
+                }
+                menueVM.Menue.ImageUrl = @"\image\menu\" + fileName;
             }
 
-            var category = _unitOfWork.CategoryRepository
-                            .GetFirstOrDefault(c => c.Name == menu.CategoryName);
-
-            if (category == null)
+            var menuExist = _unitOfWork.MenuRepository.GetFirstOrDefault(x => x.Name == menueVM.Menue.Name);
+            if (menuExist != null)
             {
-                throw new Exception("Category not found");
+                throw new Exception("Menu already exists.");
             }
 
-            menueToUpdate.Name = menu.Name;
-            menueToUpdate.Description = menu.Description;
-            menueToUpdate.Price = menu.Price;
-            menueToUpdate.Qty = menu.Qty;
-            menueToUpdate.Image = menu.Image;
-            menueToUpdate.CategoryId = category.Id;
+            IEnumerable<SelectListItem> categoryList = _unitOfWork.CategoryRepository.GetAll().Select(i => new SelectListItem
+            {
+                Text = i.Name,
+                Value = i.Id.ToString()
+            });
 
-            menueToUpdate.Available = (menu.Qty > 0) ? Available.Yes : Available.NO;
+            if (!categoryList.Any()) 
+            {
+                throw new Exception("Selected category not found.");
+            }
 
-            _unitOfWork.MenuRepository.UpdateMenu(menueToUpdate);
-           _unitOfWork.SaveAsync();
+            var menu = new Menue
+            {
+                menueId = menueVM.Menue.menueId,
+                Name = menueVM.Menue.Name,
+                Description = menueVM.Menue.Description,
+                Price = menueVM.Menue.Price,
+                Qty = menueVM.Menue.Qty,
+                ImageUrl = menueVM.Menue.ImageUrl,
+                Available = menueVM.Available,
+                CategoryId = menueVM.Menue.CategoryId,
+            
+            };
+
+            _unitOfWork.MenuRepository.Add(menu);
+            await _unitOfWork.SaveAsync();
         }
+
+       
+
+        public void DeleteMenue(int? id)
+        {
+            var menutodelete = _unitOfWork.MenuRepository.GetFirstOrDefault(x => x.menueId == id);
+
+            if (menutodelete == null)
+            {
+                throw new Exception("Menu not found.");
+            }
+
+            string wwwRootPath = _webHostEnvironment.WebRootPath;
+            if (!string.IsNullOrEmpty(menutodelete.ImageUrl))
+            {
+                string oldPath = Path.Combine(wwwRootPath, menutodelete.ImageUrl.TrimStart('\\'));
+
+                if (System.IO.File.Exists(oldPath))
+                    System.IO.File.Delete(oldPath);
+            }
+
+            _unitOfWork.MenuRepository.Remove(menutodelete);
+            _unitOfWork.SaveAsync();
+
+          
+        }
+
+      
+    }
 
     }
-}
+
+
+    
+

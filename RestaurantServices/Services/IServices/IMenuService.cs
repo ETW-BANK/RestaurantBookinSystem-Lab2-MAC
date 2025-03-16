@@ -1,24 +1,21 @@
-﻿using Restaurant.Models;
+﻿using Microsoft.AspNetCore.Http;
+using Restaurant.Models;
 using RestaurantViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace RestaurantServices.Services.IServices
 {
     public interface IMenuService
     {
-        IEnumerable<MenuVM> GetAllMenues();
+        Task<List<Menue>> GetAll();
 
-        category GetById(int id);
+        Task<MenuVM?> GetbyId(int? id);
 
-        void UpdateMenu(MenuVM menu);
+        Task Update(MenuVM menu, IFormFile? file);
 
 
-        Task CreateMenu(MenuVM menu);
+        Task CreateMenue(MenuVM menueVM, IFormFile? file);
 
-        category DeleteMenu(category menu);
+       void DeleteMenue(int? id);    
     }
 }

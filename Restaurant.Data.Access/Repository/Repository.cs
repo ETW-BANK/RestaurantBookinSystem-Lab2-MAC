@@ -17,6 +17,7 @@ namespace Restaurant.Data.Access.Repository
             _context = context;
             this.dbset = _context.Set<T>();
             _context.ApplicationUsers.Include(u => u.Role);
+            _context.Menues.Include(u => u.Category);   
         }
         public void Add(T entity)
         {

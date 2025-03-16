@@ -19,6 +19,6 @@ namespace Restaurant.Services
 
         Task<Category> DeleteCategory(Category category);
 
-
+        Category GetMenuCategory(int? id);
     }
 }

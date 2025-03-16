@@ -83,7 +83,12 @@ namespace Restaurant.Services
 
 
         }
+        public Category GetMenuCategory(int? id)
+        {
+            var category = _unitOfWork.CategoryRepository.GetFirstOrDefault(c => c.Id == id,includeProperties:"Menues");
 
+            return category;
+        }
         public Category GetById(int? id)
         {
            var category = _unitOfWork.CategoryRepository.GetFirstOrDefault(c => c.Id == id);

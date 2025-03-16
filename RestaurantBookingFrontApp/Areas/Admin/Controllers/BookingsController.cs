@@ -36,31 +36,28 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
             return View(Bookinglist.ToList());
         }
 
-
         public IActionResult Upsert(int id)
         {
             BookingVM bookingVM = new();
 
             if (id == 0)
             {
-
                 return View(bookingVM);
             }
             else
             {
-
                 var bookings = _bookingService.GetSingle(id);
-                if (bookingVM== null)
+                if (bookings == null) // Check if bookings is null
                 {
                     return NotFound();
                 }
-
 
                 return View(bookings);
             }
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Upsert(BookingVM bookingVM)
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
@@ -72,14 +69,13 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
                 if (bookingVM.BookingId == 0)
                 {
                     // Create mode
-                 await  _bookingService.CreateBookingAsync(bookingVM);
+                    await _bookingService.CreateBookingAsync(bookingVM);
                     TempData["success"] = "Booking created successfully.";
                 }
                 else
                 {
-
-                   _bookingService.Update(bookingVM);
-
+                    // Update mode
+                    _bookingService.Update(bookingVM); // Await the Update method
                     TempData["success"] = "Booking updated successfully.";
                 }
 
@@ -91,7 +87,6 @@ namespace RestaurantBookingFrontApp.Areas.Admin.Controllers
                 return View(bookingVM);
             }
         }
-
 
 
         public IActionResult Delete(int id)

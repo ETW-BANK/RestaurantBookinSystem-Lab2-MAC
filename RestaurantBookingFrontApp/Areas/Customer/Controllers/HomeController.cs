@@ -1,6 +1,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Restaurant.Models;
 using Restaurant.Services;
 using RestaurantBookingFrontApp.Models;
 using RestaurantServices.Services.IServices;
@@ -47,14 +48,33 @@ namespace RestaurantBookingFrontApp.Areas.Customer.Controllers
             return View(categorylist);
 
         }
-        public async Task<IActionResult> Menues()
+        public async Task<IActionResult> Menues(int categoryId)
         {
-            var menuelist = await _menuService.GetAll();
+            IEnumerable<Menue> menuelist;
 
-            if (menuelist == null)
+            if (categoryId > 0)
             {
-                TempData["error"] = "No menus found.";
-                return View(menuelist);
+               
+                var category = _categoryService.GetMenuCategory(categoryId);
+
+                if (category == null)
+                {
+                    TempData["error"] = "Category not found.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                menuelist = category.Menues;
+            }
+            else
+            {
+             
+                TempData["error"] = "Invalid category ID.";
+                menuelist = Enumerable.Empty<Menue>();
+            }
+
+            if (menuelist == null || !menuelist.Any())
+            {
+                TempData["error"] = "No menus found for the selected category.";
             }
 
             return View(menuelist);

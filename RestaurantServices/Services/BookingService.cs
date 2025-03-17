@@ -35,15 +35,9 @@ namespace RestaurantServices.Services
                 .GetAll(t => t.IsAvailable && t.NumberOfSeats >= bookingVM.NumberOfGuests)
                 .ToList();
 
-       
-            if (availableTables.Count==0)
-            {
-                throw new InvalidOperationException("No available tables at this time.");
-            }
-           
             var availableTable = availableTables.First();
 
-      
+
             if (bookingVM.NumberOfGuests > availableTable.NumberOfSeats)
             {
                 throw new ArgumentException("Number of guests exceeds the seating capacity of the selected table.");
@@ -59,10 +53,13 @@ namespace RestaurantServices.Services
                 ApplicationUserId = bookingVM.ApplicationUserId,
                 TableId = availableTable.Id,
                 BookingStatus = BookingStatus.Active,
+            
              
             };
 
-       
+            availableTable.IsAvailable = false; 
+
+            _unitOfWork.TableRepository.UpdateTable(availableTable); 
             _unitOfWork.BookingRepository.Add(booking);
             await _unitOfWork.SaveAsync();
         }
